@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Employee\StoreEmployeeRequest;
 use App\Models\User;
 use App\Notifications\EmployeeCreated;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -25,14 +26,14 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         Gate::authorize(ability: 'create', arguments: User::class);
 
         return view(view: 'dashboard.pages.employees.create');
     }
 
-    public function store(StoreEmployeeRequest $request)
+    public function store(StoreEmployeeRequest $request): RedirectResponse
     {
         $password = Str::password();
 
@@ -53,7 +54,7 @@ class EmployeeController extends Controller
         return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: 'Employee has been created successfully.');
     }
 
-    public function show(User $employee)
+    public function show(User $employee): View
     {
         Gate::authorize(ability: 'view', arguments: $employee);
 
@@ -62,7 +63,7 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function destroy(User $employee)
+    public function destroy(User $employee): RedirectResponse
     {
         Gate::authorize(ability: 'delete', arguments: $employee);
 
