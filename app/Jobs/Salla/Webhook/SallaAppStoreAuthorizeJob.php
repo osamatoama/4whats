@@ -4,6 +4,7 @@ namespace App\Jobs\Salla\Webhook;
 
 use App\Enums\ProviderType;
 use App\Enums\UserRole;
+use App\Jobs\Salla\Pull\Customers\SallaPullCustomersJob;
 use App\Models\Store;
 use App\Models\User;
 use App\Notifications\Salla\UserCreatedUsingSallaWebhook;
@@ -68,7 +69,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 ));
             }
 
-            DB::transaction(callback: function () use ($resourceOwner, $user): void {
+            $store = DB::transaction(callback: function () use ($resourceOwner, $user): Store {
                 $user->tokens()->create(attributes: [
                     'provider_type' => ProviderType::SALLA,
                     'access_token' => $this->data['access_token'],
@@ -77,7 +78,8 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 ]);
 
                 $data = $resourceOwner->toArray();
-                $user->store()->create(attributes: [
+
+                return $user->store()->create(attributes: [
                     'provider_type' => ProviderType::SALLA,
                     'provider_id' => $data['merchant']['id'],
                     'name' => $data['merchant']['name'],
@@ -86,6 +88,8 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                     'domain' => $data['merchant']['domain'],
                 ]);
             });
+
+            SallaPullCustomersJob::dispatch(accessToken: $this->data['access_token'], storeId: $store->id);
         } catch (Exception $e) {
             logger()->error(message: $e);
         }

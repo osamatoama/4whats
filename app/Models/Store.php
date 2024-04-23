@@ -6,6 +6,7 @@ use App\Enums\ProviderType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Store extends Model
 {
@@ -29,6 +30,11 @@ class Store extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(related: User::class);
+    }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany(related: Contact::class, foreignKey: 'store_id');
     }
 
     public function scopeSalla(Builder $query, ?int $providerId = null): Builder

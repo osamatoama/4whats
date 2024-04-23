@@ -23,7 +23,7 @@ class UpdateExpiredTokenJob implements ShouldQueue
     public function __construct(
         public Token $token,
     ) {
-        //
+        $this->maxAttempts = 5;
     }
 
     /**
