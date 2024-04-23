@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\ProviderType;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -52,11 +54,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function scopeCanAccessDashboard(Builder $query): Builder
-    {
-        return $query->role([UserRole::ADMIN, UserRole::MERCHANT, UserRole::EMPLOYEE]);
-    }
-
     public function children(): HasMany
     {
         return $this->hasMany(related: User::class);
@@ -65,6 +62,26 @@ class User extends Authenticatable
     public function parent(): BelongsTo
     {
         return $this->belongsTo(related: User::class, foreignKey: 'user_id');
+    }
+
+    public function tokens(): HasMany
+    {
+        return $this->hasMany(related: Token::class, foreignKey: 'user_id');
+    }
+
+    public function sallaToken(): HasOne
+    {
+        return $this->hasOne(related: Token::class, foreignKey: 'user_id')->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA)->latest();
+    }
+
+    public function store(): HasOne
+    {
+        return $this->hasOne(related: Store::class, foreignKey: 'user_id');
+    }
+
+    public function scopeCanAccessDashboard(Builder $query): Builder
+    {
+        return $query->role([UserRole::ADMIN, UserRole::MERCHANT, UserRole::EMPLOYEE]);
     }
 
     protected function isAdmin(): Attribute
