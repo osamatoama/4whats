@@ -4,7 +4,7 @@ namespace App\Jobs\Concerns;
 
 use Exception;
 
-trait HandelException
+trait HandleException
 {
     public int $tries = 0;
 
