@@ -39,7 +39,10 @@ class SallaPullCustomersPerPageJob implements ShouldQueue
             $response = $service->customers()->get(page: $this->page);
         } catch (SallaMerchantException $e) {
             $this->handleException(
-                e: new SallaMerchantException(message: "Exception while pulling orders from salla | Store: $this->storeId | Page: $this->page | Message: {$e->getMessage()}", code: $e->getCode()),
+                e: new SallaMerchantException(
+                    message: "Exception while pulling customers from salla | Store: $this->storeId | Page: $this->page | Message: {$e->getMessage()}",
+                    code: $e->getCode(),
+                ),
             );
 
             return;

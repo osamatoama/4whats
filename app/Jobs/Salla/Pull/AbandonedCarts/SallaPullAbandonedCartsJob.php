@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Salla\Pull\Customers;
+namespace App\Jobs\Salla\Pull\AbandonedCarts;
 
 use App\Jobs\Concerns\HandleException;
 use App\Services\Salla\Merchant\SallaMerchantException;
@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 
-class SallaPullCustomersJob implements ShouldQueue
+class SallaPullAbandonedCartsJob implements ShouldQueue
 {
     use Batchable, Dispatchable, HandleException, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -35,11 +35,11 @@ class SallaPullCustomersJob implements ShouldQueue
         $service = new SallaMerchantService(accessToken: $this->accessToken);
 
         try {
-            $response = $service->customers()->get();
+            $response = $service->abandonedCarts()->get();
         } catch (SallaMerchantException $e) {
             $this->handleException(
                 e: new SallaMerchantException(
-                    message: "Exception while pulling customers from salla | Store: $this->storeId | Message: {$e->getMessage()}",
+                    message: "Exception while pulling abandoned carts from salla | Store: $this->storeId | Message: {$e->getMessage()}",
                     code: $e->getCode(),
                 ),
             );
@@ -49,7 +49,7 @@ class SallaPullCustomersJob implements ShouldQueue
 
         $jobs = [];
         for ($page = 1, $totalPages = $response['pagination']['totalPages']; $page <= $totalPages; $page++) {
-            $jobs[] = new SallaPullCustomersPerPageJob(
+            $jobs[] = new SallaPullAbandonedCartsPerPageJob(
                 accessToken: $this->accessToken,
                 storeId: $this->storeId,
                 page: $page,
@@ -59,7 +59,7 @@ class SallaPullCustomersJob implements ShouldQueue
         if ($this->batchId !== null) {
             $this->batch()->add(jobs: $jobs);
         } else {
-            Bus::batch(jobs: [$jobs])->name(name: 'salla.pull.customers:'.$this->storeId)->dispatch();
+            Bus::batch(jobs: [$jobs])->name(name: 'salla.pull.abandoned-carts:'.$this->storeId)->dispatch();
         }
     }
 }

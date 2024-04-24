@@ -4,6 +4,7 @@ namespace App\Jobs\Salla\Webhook;
 
 use App\Enums\ProviderType;
 use App\Enums\UserRole;
+use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
 use App\Jobs\Salla\Pull\Customers\SallaPullCustomersJob;
 use App\Models\Store;
 use App\Models\User;
@@ -15,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -89,7 +91,10 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 ]);
             });
 
-            SallaPullCustomersJob::dispatch(accessToken: $this->data['access_token'], storeId: $store->id);
+            Bus::chain(jobs: [
+                Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.customers:'.$store->id),
+                Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.abandoned-carts:'.$store->id),
+            ])->dispatch();
         } catch (Exception $e) {
             logger()->error(message: $e);
         }

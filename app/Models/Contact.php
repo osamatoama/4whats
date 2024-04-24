@@ -6,6 +6,7 @@ use App\Enums\ContactSource;
 use App\Enums\ProviderType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contact extends Model
 {
@@ -32,5 +33,10 @@ class Contact extends Model
     public function store(): BelongsTo
     {
         return $this->belongsTo(related: Store::class);
+    }
+
+    public function abandonedCarts(): HasMany
+    {
+        return $this->hasMany(related: AbandonedCart::class, foreignKey: 'contact_id');
     }
 }

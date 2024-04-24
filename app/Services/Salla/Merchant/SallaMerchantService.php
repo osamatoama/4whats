@@ -2,6 +2,7 @@
 
 namespace App\Services\Salla\Merchant;
 
+use App\Services\Salla\Merchant\Support\AbandonedCarts;
 use App\Services\Salla\Merchant\Support\Customers;
 use Illuminate\Http\Client\Response;
 
@@ -20,6 +21,15 @@ class SallaMerchantService
         $abstract = Customers::class.':'.$this->accessToken;
 
         app()->singletonIf($abstract, fn (): Customers => new Customers(service: $this, client: $this->client));
+
+        return app($abstract);
+    }
+
+    public function abandonedCarts(): AbandonedCarts
+    {
+        $abstract = AbandonedCarts::class.':'.$this->accessToken;
+
+        app()->singletonIf($abstract, fn (): AbandonedCarts => new AbandonedCarts(service: $this, client: $this->client));
 
         return app($abstract);
     }
