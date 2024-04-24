@@ -2,20 +2,19 @@
 
 namespace App\Jobs\Salla\Pull\AbandonedCarts;
 
-use App\Jobs\Concerns\HandleException;
+use App\Jobs\Concerns\InteractsWithBatches;
+use App\Jobs\Concerns\InteractsWithException;
 use App\Services\Salla\Merchant\SallaMerchantException;
 use App\Services\Salla\Merchant\SallaMerchantService;
-use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Bus;
 
 class SallaPullAbandonedCartsPerPageJob implements ShouldQueue
 {
-    use Batchable, Dispatchable, HandleException, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithBatches, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
@@ -55,11 +54,6 @@ class SallaPullAbandonedCartsPerPageJob implements ShouldQueue
                 data: $customer,
             );
         }
-
-        if ($this->batchId !== null) {
-            $this->batch()->add(jobs: $jobs);
-        } else {
-            Bus::batch(jobs: [$jobs])->name(name: 'salla.pull.abandoned-carts:'.$this->storeId)->dispatch();
-        }
+        $this->addOrCreateBatch(jobs: $jobs, name: 'salla.pull.abandoned-carts:'.$this->storeId);
     }
 }

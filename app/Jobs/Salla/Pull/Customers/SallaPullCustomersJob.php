@@ -2,20 +2,19 @@
 
 namespace App\Jobs\Salla\Pull\Customers;
 
-use App\Jobs\Concerns\HandleException;
+use App\Jobs\Concerns\InteractsWithBatches;
+use App\Jobs\Concerns\InteractsWithException;
 use App\Services\Salla\Merchant\SallaMerchantException;
 use App\Services\Salla\Merchant\SallaMerchantService;
-use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Bus;
 
 class SallaPullCustomersJob implements ShouldQueue
 {
-    use Batchable, Dispatchable, HandleException, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithBatches, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
@@ -55,11 +54,6 @@ class SallaPullCustomersJob implements ShouldQueue
                 page: $page,
             );
         }
-
-        if ($this->batchId !== null) {
-            $this->batch()->add(jobs: $jobs);
-        } else {
-            Bus::batch(jobs: [$jobs])->name(name: 'salla.pull.customers:'.$this->storeId)->dispatch();
-        }
+        $this->addOrCreateBatch(jobs: $jobs, name: 'salla.pull.customers:'.$this->storeId);
     }
 }

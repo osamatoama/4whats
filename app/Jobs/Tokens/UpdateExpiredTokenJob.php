@@ -3,7 +3,7 @@
 namespace App\Jobs\Tokens;
 
 use App\Enums\ProviderType;
-use App\Jobs\Concerns\HandleException;
+use App\Jobs\Concerns\InteractsWithException;
 use App\Models\Token;
 use App\Services\Salla\OAuth\SallaOAuthException;
 use App\Services\Salla\OAuth\SallaOAuthService;
@@ -15,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 
 class UpdateExpiredTokenJob implements ShouldQueue
 {
-    use Dispatchable, HandleException, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.

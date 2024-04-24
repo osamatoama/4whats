@@ -4,8 +4,8 @@ namespace App\Jobs\Salla\Pull\AbandonedCarts;
 
 use App\Enums\ContactSource;
 use App\Enums\ProviderType;
+use App\Jobs\Concerns\InteractsWithBatches;
 use App\Models\Contact;
-use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
 
 class SallaPullAbandonedCartJob implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithBatches, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
