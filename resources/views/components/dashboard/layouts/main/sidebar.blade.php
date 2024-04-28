@@ -33,7 +33,7 @@
                     <h6 class="menu-title">@lang('dashboard.common.dashboard')</h6>
                 </div>
                 <ul class="nav flex-column">
-                    <x-dashboard.nav-link :url="route(name: 'dashboard.home')" :text="__(key: 'dashboard.pages.home.title')" :is-active="request()->routeIs(patterns: 'dashboard.home')"/>
+                    <x-dashboard.layouts.main.navigation/>
                 </ul>
             </div>
         </div>

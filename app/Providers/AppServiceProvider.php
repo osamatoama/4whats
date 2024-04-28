@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,5 +38,7 @@ class AppServiceProvider extends ServiceProvider
 
             return url(path: '/');
         });
+
+        Paginator::useBootstrapFive();
     }
 }

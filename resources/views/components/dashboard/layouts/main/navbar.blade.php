@@ -14,18 +14,18 @@
                 <div class="dropdown-menu dropdown-menu-end">
                     <a class="dropdown-item" href="{{ url(path: 'profile') }}">
                         <i class="ti ti-user font-16 me-1 align-text-bottom"></i>
-                        @lang('dashboard.header.profile')
+                        @lang('dashboard.navbar.profile')
                     </a>
                     <a class="dropdown-item" href="{{ url(path: 'settings') }}">
                         <i class="ti ti-settings font-16 me-1 align-text-bottom"></i>
-                        @lang('dashboard.header.settings')
+                        @lang('dashboard.navbar.settings')
                     </a>
                     <div class="dropdown-divider mb-0"></div>
                     <form action="{{ route(name: 'dashboard.logout') }}" method="POST">
                         @csrf
                         <button class="dropdown-item">
                             <i class="ti ti-power font-16 me-1 align-text-bottom"></i>
-                            @lang('dashboard.header.logout')
+                            @lang('dashboard.navbar.logout')
                         </button>
                     </form>
                 </div>

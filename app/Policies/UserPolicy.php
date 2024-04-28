@@ -11,11 +11,6 @@ class UserPolicy
         return $user->is_merchant;
     }
 
-    public function view(User $user, User $model): bool
-    {
-        return $user->is_merchant && $model->user_id === $user->id;
-    }
-
     public function create(User $user): bool
     {
         return $user->is_merchant;

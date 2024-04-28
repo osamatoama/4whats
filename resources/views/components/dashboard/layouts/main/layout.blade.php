@@ -12,6 +12,10 @@
     <link rel="shortcut icon" href="assets/images/favicon.ico">
 
     <!-- App css -->
+    @if(isset($pluginsStyles))
+        {{ $pluginsStyles }}
+    @endif
+    <link href="{{ asset(path: 'assets/dashboard/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset(path: 'assets/dashboard/css/bootstrap-rtl.min.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset(path: 'assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset(path: 'assets/dashboard/css/app-rtl.min.css') }}" rel="stylesheet" type="text/css"/>
@@ -21,9 +25,9 @@
 </head>
 <body id="body">
 
-<x-dashboard.layouts.main.leftbar/>
+<x-dashboard.layouts.main.sidebar/>
 
-<x-dashboard.layouts.main.topbar/>
+<x-dashboard.layouts.main.navbar/>
 
 <div class="page-wrapper">
     <div class="page-content-tab">
@@ -62,6 +66,12 @@
     {{ $pluginsScripts }}
 @endif
 <script src="{{ asset(path: 'assets/dashboard/js/app.js') }}"></script>
+<script src="{{ asset('assets/dashboard/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script>
+    @session('success')
+    swal.fire({text: '{{ $value }}', icon: 'success'});
+    @endsession
+</script>
 @if(isset($scripts))
     {{ $scripts }}
 @endif

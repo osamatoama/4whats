@@ -19,7 +19,7 @@ class EmployeeController extends Controller
     {
         Gate::authorize(ability: 'viewAny', arguments: User::class);
 
-        $employees = auth()->user()->children;
+        $employees = auth()->user()->children()->paginate();
 
         return view(view: 'dashboard.pages.employees.index', data: [
             'employees' => $employees,
@@ -51,24 +51,19 @@ class EmployeeController extends Controller
 
         $employee->notify(instance: new EmployeeCreated(email: $employee->email, password: $password));
 
-        return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: 'Employee has been created successfully.');
-    }
+        $message = __(key: 'dashboard.messages.model_has_been_successfully_created', replace: ['model' => __(key: 'models.employee')]);
 
-    public function show(User $employee): View
-    {
-        Gate::authorize(ability: 'view', arguments: $employee);
-
-        return view(view: 'dashboard.pages.employees.show', data: [
-            'employee' => $employee,
-        ]);
+        return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: $message);
     }
 
     public function destroy(User $employee): RedirectResponse
     {
         Gate::authorize(ability: 'delete', arguments: $employee);
 
-        $employee->delete();
+        // $employee->delete();
 
-        return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: 'Employee has been deleted successfully.');
+        $message = __(key: 'dashboard.messages.model_has_been_successfully_deleted', replace: ['model' => __(key: 'models.employee')]);
+
+        return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: $message);
     }
 }

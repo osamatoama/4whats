@@ -4,8 +4,9 @@ return [
     'common' => [
         'title' => '٤ واتس',
         'dashboard' => 'لوحة التحكم',
+        'are_you_sure' => 'هل انت متاكد؟',
     ],
-    'header' => [
+    'navbar' => [
         'profile' => 'الملف الشخصي',
         'settings' => 'الاعدادات',
         'logout' => 'تسجيل الخروج',
@@ -29,5 +30,24 @@ return [
         'home' => [
             'title' => 'الصفحة الرئيسية',
         ],
+        'employees' => [
+            'index' => [
+                'title' => 'الموظفين',
+                'employees_details' => 'تفاصيل الموظفين',
+                'create_a_new_employee' => 'اضافة موظف جديد',
+                'cols' => [
+                    'id' => '#',
+                    'name' => 'الاسم',
+                    'email' => 'البريد الالكتروني',
+                    'actions' => 'الاجراءات',
+                    'delete' => 'حذف',
+                ],
+                'no_employees' => 'لا يوجد موظفين',
+            ],
+        ],
+    ],
+    'messages' => [
+        'model_has_been_successfully_created' => 'تم اضافة :model بنجاح',
+        'model_has_been_successfully_deleted' => 'تم حذف :model بنجاح',
     ],
 ];
