@@ -22,10 +22,10 @@
                     <table class="table table-hover mb-0">
                         <thead>
                         <tr>
-                            <th>@lang('dashboard.pages.employees.index.cols.id')</th>
-                            <th>@lang('dashboard.pages.employees.index.cols.name')</th>
-                            <th>@lang('dashboard.pages.employees.index.cols.email')</th>
-                            <th>@lang('dashboard.pages.employees.index.cols.actions')</th>
+                            <th>@lang('dashboard.pages.employees.columns.id')</th>
+                            <th>@lang('dashboard.pages.employees.columns.name')</th>
+                            <th>@lang('dashboard.pages.employees.columns.email')</th>
+                            <th>@lang('dashboard.common.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -40,7 +40,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-danger" onclick="return confirm('@lang('dashboard.common.are_you_sure')')">
-                                                @lang('dashboard.pages.employees.index.cols.delete')
+                                                @lang('dashboard.common.delete')
                                             </button>
                                         </form>
                                     @endcan
