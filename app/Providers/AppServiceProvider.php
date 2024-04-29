@@ -39,6 +39,6 @@ class AppServiceProvider extends ServiceProvider
             return url(path: '/');
         });
 
-        Paginator::useBootstrapFive();
+        Paginator::defaultView(view: 'dashboard.partials.pagination.default');
     }
 }

@@ -72,4 +72,12 @@ return [
         'model_has_been_successfully_created' => 'تم اضافة :model بنجاح',
         'model_has_been_successfully_deleted' => 'تم حذف :model بنجاح',
     ],
+    'pagination' => [
+        'previous' => '&laquo;',
+        'next' => '&raquo;',
+        'showing' => 'عرض',
+        'to' => 'الي',
+        'of' => 'من',
+        'results' => 'نتائج',
+    ],
 ];
