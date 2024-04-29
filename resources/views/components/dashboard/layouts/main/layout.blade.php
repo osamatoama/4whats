@@ -8,20 +8,9 @@
     <meta content="Valinteca" name="author"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="{{ asset(path: 'assets/dashboard/images/favicon.ico') }}">
 
-    <!-- App css -->
-    @if(isset($pluginsStyles))
-        {{ $pluginsStyles }}
-    @endif
-    <link href="{{ asset(path: 'assets/dashboard/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ asset(path: 'assets/dashboard/css/bootstrap-rtl.min.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ asset(path: 'assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ asset(path: 'assets/dashboard/css/app-rtl.min.css') }}" rel="stylesheet" type="text/css"/>
-    @if(isset($styles))
-        {{ $styles }}
-    @endif
+    <x-dashboard.layouts.main.styles :plugins-styles="$pluginsStyles ?? null" :styles="$styles ?? null"/>
 </head>
 <body id="body">
 
@@ -59,21 +48,6 @@
     </div>
 </div>
 
-<script src="{{ asset(path: 'assets/dashboard/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset(path: 'assets/dashboard/libs/simplebar/simplebar.min.js') }}"></script>
-<script src="{{ asset(path: 'assets/dashboard/libs/feather-icons/feather.min.js') }}"></script>
-@if(isset($pluginsScripts))
-    {{ $pluginsScripts }}
-@endif
-<script src="{{ asset(path: 'assets/dashboard/js/app.js') }}"></script>
-<script src="{{ asset('assets/dashboard/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-<script>
-    @session('success')
-    swal.fire({text: '{{ $value }}', icon: 'success'});
-    @endsession
-</script>
-@if(isset($scripts))
-    {{ $scripts }}
-@endif
+<x-dashboard.layouts.main.scripts :plugins-scripts="$pluginsScripts ?? null" :scripts="$scripts ?? null"/>
 </body>
 </html>

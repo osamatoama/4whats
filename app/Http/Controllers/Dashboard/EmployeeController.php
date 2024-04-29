@@ -60,7 +60,7 @@ class EmployeeController extends Controller
     {
         Gate::authorize(ability: 'delete', arguments: $employee);
 
-        // $employee->delete();
+        $employee->delete();
 
         $message = __(key: 'dashboard.messages.model_has_been_successfully_deleted', replace: ['model' => __(key: 'models.employee')]);
 
