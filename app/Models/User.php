@@ -54,6 +54,11 @@ class User extends Authenticatable
         ];
     }
 
+    protected function getDefaultGuardName(): string
+    {
+        return 'web';
+    }
+
     public function children(): HasMany
     {
         return $this->hasMany(related: User::class);

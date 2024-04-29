@@ -3,10 +3,11 @@
 namespace App\Notifications\Salla;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UserCreatedUsingSallaWebhook extends Notification
+class UserCreatedUsingSallaWebhook extends Notification implements ShouldQueue
 {
     use Queueable;
 
