@@ -22,7 +22,6 @@
             id="password"
             name="password"
             :placeholder="__(key: 'dashboard.pages.auth.login.password')"
-            :value="old(key: 'email')"
             required
         />
     </div>

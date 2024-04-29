@@ -7,12 +7,13 @@
                     <div class="d-flex align-items-center">
                         <img src="{{ asset(path: 'assets/dashboard/images/users/user-4.jpg') }}" alt="profile-user" class="rounded-circle me-2 thumb-sm"/>
                         <div>
+                            <small class="d-none d-md-block font-11">{{ auth()->user()->role->label() }}</small>
                             <span class="d-none d-md-block fw-semibold font-12">{{ auth()->user()->name }} <i class="mdi mdi-chevron-down"></i></span>
                         </div>
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a class="dropdown-item" href="{{ url(path: 'profile') }}">
+                    {{--<a class="dropdown-item" href="{{ url(path: 'profile') }}">
                         <i class="ti ti-user font-16 me-1 align-text-bottom"></i>
                         @lang('dashboard.navbar.profile')
                     </a>
@@ -20,7 +21,7 @@
                         <i class="ti ti-settings font-16 me-1 align-text-bottom"></i>
                         @lang('dashboard.navbar.settings')
                     </a>
-                    <div class="dropdown-divider mb-0"></div>
+                    <div class="dropdown-divider mb-0"></div>--}}
                     <form action="{{ route(name: 'dashboard.logout') }}" method="POST">
                         @csrf
                         <button class="dropdown-item">

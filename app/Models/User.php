@@ -123,4 +123,11 @@ class User extends Authenticatable
             get: fn (mixed $value, array $attributes): bool => $attributes['user_id'] !== null,
         );
     }
+
+    protected function role(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): UserRole => UserRole::from(value: $this->roles->first()->name),
+        );
+    }
 }

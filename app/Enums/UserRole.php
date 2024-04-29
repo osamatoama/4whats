@@ -7,4 +7,9 @@ enum UserRole: string
     case ADMIN = 'admin';
     case MERCHANT = 'merchant';
     case EMPLOYEE = 'employee';
+
+    public function label(): string
+    {
+        return __(key: 'roles.'.$this->value);
+    }
 }
