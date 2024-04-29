@@ -40,6 +40,10 @@
                                 </div>
                             </div>
                             <div class="card-body pt-0">
+                                @session('status')
+                                <div class="alert alert-success mt-4">{{ $value }}</div>
+                                @endsession
+
                                 {{ $slot }}
                             </div>
                         </div>

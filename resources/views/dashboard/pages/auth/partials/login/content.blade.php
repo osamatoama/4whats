@@ -1,5 +1,6 @@
-<form class="my-4" action="{{ route('dashboard.login') }}" method="POST">
+<form action="{{ route('dashboard.login') }}" method="POST" class="my-4">
     @csrf
+
     <div class="form-group mb-2">
         <x-dashboard.forms.label for="email" :value="__(key: 'dashboard.pages.auth.login.email')"/>
         <x-dashboard.forms.input
@@ -24,6 +25,7 @@
             :placeholder="__(key: 'dashboard.pages.auth.login.password')"
             required
         />
+        <x-dashboard.forms.error key="password"/>
     </div>
 
     <div class="form-group row mt-3">
@@ -32,6 +34,12 @@
                 <input class="form-check-input" name="remember" type="checkbox" id="remember">
                 <label class="form-check-label" for="remember">@lang('dashboard.pages.auth.login.remember_me')</label>
             </div>
+        </div>
+        <div class="col-sm-6 text-end">
+            <a href="{{ route(name: 'dashboard.password.request') }}" class="text-muted font-13">
+                <i class="dripicons-lock"></i>
+                @lang('dashboard.pages.auth.login.forgot_password')
+            </a>
         </div>
     </div>
 

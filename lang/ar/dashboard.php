@@ -24,12 +24,27 @@ return [
         'auth' => [
             'login' => [
                 'title' => 'تسجيل الدخول',
-                'lets_get_started_4whats' => 'لنبدا ٤ واتس',
                 'login_to_continue_to_4whats' => 'سجل دخول لتكمل الي ٤ واتس',
                 'email' => 'البريد الالكتروني',
                 'password' => 'كلمة السر',
                 'remember_me' => 'تذكرني',
+                'forgot_password' => 'نسيت كلمة السر؟',
                 'login' => 'تسجيل دخول',
+            ],
+            'forgot_password' => [
+                'title' => 'نسيت كلمة السر',
+                'enter_your_email_and_instructions_will_be_sent_to_you' => 'ادخل بريدك الالكتروني وسيتم ارسال التعليمات لك',
+                'email' => 'البريد الالكتروني',
+                'send' => 'ارسال',
+                'remember_it' => 'هل تتذكره؟',
+                'login_here' => 'سجل الدخول من هنا',
+            ],
+            'reset_password' => [
+                'title' => 'اعادة تعيين كلمة السر',
+                'email' => 'البريد الالكتروني',
+                'password' => 'كلمة المرور الجديدة',
+                'password_confirmation' => 'تاكيد كلمة المرور الجديدة',
+                'reset' => 'اعادة تعيين',
             ],
         ],
         'home' => [
