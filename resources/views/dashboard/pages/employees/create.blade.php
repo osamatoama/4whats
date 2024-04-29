@@ -11,5 +11,5 @@
         @include('dashboard.pages.employees.partials.create.breadcrumb')
     </x-slot:breadcrumb>
 
-    @include('dashboard.pages.home.employees.create.content')
+    @include('dashboard.pages.employees.partials.create.content')
 </x-dashboard.layouts.main.layout>
