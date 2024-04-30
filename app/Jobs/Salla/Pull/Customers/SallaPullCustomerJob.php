@@ -40,7 +40,7 @@ class SallaPullCustomerJob implements ShouldQueue
             'first_name' => $this->data['first_name'],
             'last_name' => $this->data['last_name'],
             'email' => $this->data['email'],
-            'phone' => $this->data['mobile_code'].$this->data['mobile'],
+            'mobile' => $this->data['mobile_code'].$this->data['mobile'],
             'gender' => $this->data['gender'] ?: null,
         ]);
     }
