@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Store extends Model
 {
@@ -35,6 +36,11 @@ class Store extends Model
     public function customers(): HasMany
     {
         return $this->hasMany(related: Contact::class, foreignKey: 'store_id');
+    }
+
+    public function widget(): HasOne
+    {
+        return $this->hasOne(related: Widget::class, foreignKey: 'store_id');
     }
 
     public function scopeSalla(Builder $query, ?int $providerId = null): Builder

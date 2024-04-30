@@ -81,7 +81,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
                 $data = $resourceOwner->toArray();
 
-                return $user->store()->create(attributes: [
+                $store = $user->store()->create(attributes: [
                     'provider_type' => ProviderType::SALLA,
                     'provider_id' => $data['merchant']['id'],
                     'name' => $data['merchant']['name'],
@@ -89,6 +89,10 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                     'email' => $data['email'],
                     'domain' => $data['merchant']['domain'],
                 ]);
+
+                $store->widget()->create();
+
+                return $store;
             });
 
             Bus::chain(jobs: [
