@@ -84,6 +84,21 @@ class User extends Authenticatable
         return $this->hasOne(related: Store::class, foreignKey: 'user_id');
     }
 
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(related: Contact::class, foreignKey: 'user_id');
+    }
+
+    public function abandonedCarts(): HasMany
+    {
+        return $this->hasMany(related: AbandonedCart::class, foreignKey: 'user_id');
+    }
+
+    public function widget(): HasOne
+    {
+        return $this->hasOne(related: Widget::class, foreignKey: 'user_id');
+    }
+
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
         return $query->role([UserRole::ADMIN, UserRole::MERCHANT, UserRole::EMPLOYEE]);

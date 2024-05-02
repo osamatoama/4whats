@@ -21,7 +21,7 @@ class SallaPullCustomersPerPageJob implements ShouldQueue
      */
     public function __construct(
         public string $accessToken,
-        public int $storeId,
+        public int $userId,
         public int $page = 1,
     ) {
         $this->maxAttempts = 5;
@@ -39,7 +39,7 @@ class SallaPullCustomersPerPageJob implements ShouldQueue
         } catch (SallaMerchantException $e) {
             $this->handleException(
                 e: new SallaMerchantException(
-                    message: "Exception while pulling customers from salla | Store: $this->storeId | Page: $this->page | Message: {$e->getMessage()}",
+                    message: "Exception while pulling customers from salla | User: $this->userId | Page: $this->page | Message: {$e->getMessage()}",
                     code: $e->getCode(),
                 ),
             );
@@ -50,10 +50,10 @@ class SallaPullCustomersPerPageJob implements ShouldQueue
         $jobs = [];
         foreach ($response['data'] as $customer) {
             $jobs[] = new SallaPullCustomerJob(
-                storeId: $this->storeId,
+                userId: $this->userId,
                 data: $customer,
             );
         }
-        $this->addOrCreateBatch(jobs: $jobs, name: 'salla.pull.customers:'.$this->storeId);
+        $this->addOrCreateBatch(jobs: $jobs, name: 'salla.pull.customers:'.$this->userId);
     }
 }

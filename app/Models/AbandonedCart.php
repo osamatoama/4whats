@@ -11,7 +11,7 @@ use Illuminate\Support\Number;
 class AbandonedCart extends Model
 {
     protected $fillable = [
-        'store_id',
+        'user_id',
         'contact_id',
         'provider_type',
         'provider_id',
@@ -37,9 +37,9 @@ class AbandonedCart extends Model
         );
     }
 
-    public function store(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(related: Store::class);
+        return $this->belongsTo(related: User::class);
     }
 
     public function contact(): BelongsTo

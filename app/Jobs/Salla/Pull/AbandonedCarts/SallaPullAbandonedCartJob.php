@@ -21,7 +21,7 @@ class SallaPullAbandonedCartJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public int $storeId,
+        public int $userId,
         public array $data,
     ) {
         //
@@ -32,22 +32,24 @@ class SallaPullAbandonedCartJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $name = str(string: $this->data['customer']['name']);
+
         Contact::query()
             ->firstOrCreate(attributes: [
-                'store_id' => $this->storeId,
+                'user_id' => $this->userId,
                 'provider_type' => ProviderType::SALLA,
                 'provider_id' => $this->data['customer']['id'],
                 'source' => ContactSource::SALLA,
             ], values: [
-                'first_name' => str(string: $this->data['customer']['name'])->before(search: ' ')->toString(),
-                'last_name' => str(string: $this->data['customer']['name'])->after(search: ' ')->toString(),
+                'first_name' => $name->before(search: ' ')->toString(),
+                'last_name' => $name->after(search: ' ')->toString(),
                 'email' => $this->data['customer']['email'],
                 'phone' => $this->data['customer']['mobile'],
                 'gender' => null,
             ])
             ->abandonedCarts()
             ->updateOrCreate(attributes: [
-                'store_id' => $this->storeId,
+                'user_id' => $this->userId,
                 'provider_type' => ProviderType::SALLA,
                 'provider_id' => $this->data['id'],
             ], values: [

@@ -20,7 +20,7 @@ class SallaPullCustomerJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public int $storeId,
+        public int $userId,
         public array $data,
     ) {
         //
@@ -32,7 +32,7 @@ class SallaPullCustomerJob implements ShouldQueue
     public function handle(): void
     {
         Contact::query()->updateOrCreate(attributes: [
-            'store_id' => $this->storeId,
+            'user_id' => $this->userId,
             'provider_type' => ProviderType::SALLA,
             'provider_id' => $this->data['id'],
             'source' => ContactSource::SALLA,

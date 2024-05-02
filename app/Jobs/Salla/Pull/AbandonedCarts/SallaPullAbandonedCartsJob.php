@@ -21,7 +21,7 @@ class SallaPullAbandonedCartsJob implements ShouldQueue
      */
     public function __construct(
         public string $accessToken,
-        public int $storeId,
+        public int $userId,
     ) {
         $this->maxAttempts = 5;
     }
@@ -38,7 +38,7 @@ class SallaPullAbandonedCartsJob implements ShouldQueue
         } catch (SallaMerchantException $e) {
             $this->handleException(
                 e: new SallaMerchantException(
-                    message: "Exception while pulling abandoned carts from salla | Store: $this->storeId | Message: {$e->getMessage()}",
+                    message: "Exception while pulling abandoned carts from salla | User: $this->userId | Message: {$e->getMessage()}",
                     code: $e->getCode(),
                 ),
             );
@@ -50,10 +50,10 @@ class SallaPullAbandonedCartsJob implements ShouldQueue
         for ($page = 1, $totalPages = $response['pagination']['totalPages']; $page <= $totalPages; $page++) {
             $jobs[] = new SallaPullAbandonedCartsPerPageJob(
                 accessToken: $this->accessToken,
-                storeId: $this->storeId,
+                userId: $this->userId,
                 page: $page,
             );
         }
-        $this->addOrCreateBatch(jobs: $jobs, name: 'salla.pull.abandoned-carts:'.$this->storeId);
+        $this->addOrCreateBatch(jobs: $jobs, name: 'salla.pull.abandoned-carts:'.$this->userId);
     }
 }

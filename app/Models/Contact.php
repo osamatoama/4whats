@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Contact extends Model
 {
     protected $fillable = [
-        'store_id',
+        'user_id',
         'provider_type',
         'provider_id',
         'source',
@@ -30,9 +30,9 @@ class Contact extends Model
         ];
     }
 
-    public function store(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(related: Store::class);
+        return $this->belongsTo(related: User::class);
     }
 
     public function abandonedCarts(): HasMany
