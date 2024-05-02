@@ -6,6 +6,7 @@ use App\Enums\ProviderType;
 use App\Enums\UserRole;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
 use App\Jobs\Salla\Pull\Customers\SallaPullCustomersJob;
+use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
 use App\Models\Store;
 use App\Models\User;
 use App\Notifications\Salla\UserCreatedUsingSallaWebhook;
@@ -99,6 +100,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             Bus::chain(jobs: [
                 Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], userId: $user->id))->name(name: 'salla.pull.customers:'.$user->id),
                 Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], userId: $user->id))->name(name: 'salla.pull.abandoned-carts:'.$user->id),
+                Bus::batch(jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], userId: $user->id))->name(name: 'salla.pull.order-statuses:'.$user->id),
             ])->dispatch();
         } catch (Exception $e) {
             logger()->error(message: $e);

@@ -4,6 +4,7 @@ namespace App\Services\Salla\Merchant;
 
 use App\Services\Salla\Merchant\Support\AbandonedCarts;
 use App\Services\Salla\Merchant\Support\Customers;
+use App\Services\Salla\Merchant\Support\OrderStatuses;
 use Illuminate\Http\Client\Response;
 
 class SallaMerchantService
@@ -14,6 +15,15 @@ class SallaMerchantService
         protected string $accessToken,
     ) {
         $this->client = new Client(accessToken: $this->accessToken);
+    }
+
+    public function orderStatuses(): OrderStatuses
+    {
+        $abstract = OrderStatuses::class.':'.$this->accessToken;
+
+        app()->singletonIf($abstract, fn (): OrderStatuses => new OrderStatuses(service: $this, client: $this->client));
+
+        return app($abstract);
     }
 
     public function customers(): Customers

@@ -59,14 +59,14 @@ class User extends Authenticatable
         return 'web';
     }
 
-    public function children(): HasMany
-    {
-        return $this->hasMany(related: User::class);
-    }
-
     public function parent(): BelongsTo
     {
         return $this->belongsTo(related: User::class, foreignKey: 'user_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(related: User::class);
     }
 
     public function tokens(): HasMany
@@ -97,6 +97,11 @@ class User extends Authenticatable
     public function widget(): HasOne
     {
         return $this->hasOne(related: Widget::class, foreignKey: 'user_id');
+    }
+
+    public function orderStatuses(): HasMany
+    {
+        return $this->hasMany(related: OrderStatus::class, foreignKey: 'user_id');
     }
 
     public function scopeCanAccessDashboard(Builder $query): Builder
