@@ -104,6 +104,11 @@ class User extends Authenticatable
         return $this->hasMany(related: OrderStatus::class, foreignKey: 'user_id');
     }
 
+    public function settings(): HasMany
+    {
+        return $this->hasMany(related: Setting::class, foreignKey: 'user_id');
+    }
+
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
         return $query->role([UserRole::ADMIN, UserRole::MERCHANT, UserRole::EMPLOYEE]);
