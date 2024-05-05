@@ -6,6 +6,7 @@ use App\Enums\ProviderType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class OrderStatus extends Model
 {
@@ -37,5 +38,10 @@ class OrderStatus extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(related: User::class);
+    }
+
+    public function template(): MorphOne
+    {
+        return $this->morphOne(related: MessageTemplate::class, name: 'templatable');
     }
 }
