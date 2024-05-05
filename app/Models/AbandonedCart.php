@@ -33,7 +33,6 @@ class AbandonedCart extends Model
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes): string => Number::currency(number: $value / 100, in: $attributes['total_currency'], locale: app()->getLocale()),
-            set: fn (mixed $value) => (int) ($value * 100),
         );
     }
 

@@ -39,7 +39,7 @@ class SallaPullAbandonedCartJob implements ShouldQueue
             'provider_id' => $this->data['id'],
         ], values: [
             'contact_id' => $this->getContactId(),
-            'total_amount' => $this->data['total']['amount'],
+            'total_amount' => $this->data['total']['amount'] * 100,
             'total_currency' => $this->data['total']['currency'],
             'checkout_url' => $this->data['checkout_url'],
             'created_at' => Carbon::parse(time: $this->data['created_at']['date'], timezone: $this->data['created_at']['timezone'])->timezone(value: config(key: 'app.timezone')),
