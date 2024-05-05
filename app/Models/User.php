@@ -111,7 +111,7 @@ class User extends Authenticatable
 
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
-        return $query->role([UserRole::ADMIN, UserRole::MERCHANT, UserRole::EMPLOYEE]);
+        return $this->scopeRole(query: $query, roles: [UserRole::ADMIN, UserRole::MERCHANT, UserRole::EMPLOYEE]);
     }
 
     protected function isAdmin(): Attribute
