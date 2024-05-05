@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('message');
             $table->json('placeholders');
             $table->unsignedMediumInteger('delay_in_seconds');
+            $table->boolean('is_enabled')->default(false);
             $table->timestamps();
         });
     }
