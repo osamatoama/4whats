@@ -37,6 +37,15 @@ class SallaPullOrderStatusJob implements ShouldQueue
         ], values: [
             'order_status_id' => $this->data['parent'] === null ? null : $this->getOrderStatusId(),
             'name' => $this->data['name'],
+        ])->template()->createOrFirst(attributes: [], values: [
+            'user_id' => $this->userId,
+            'message' => $this->data['name'],
+            'placeholders' => [
+                '[CUSTOMER_NAME]',
+                '[STATUS_NAME]',
+                '[ORDER_ID]',
+            ],
+            'delay_in_seconds' => 60 * 60 * 2,
         ]);
     }
 

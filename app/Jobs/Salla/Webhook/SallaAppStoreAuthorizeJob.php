@@ -63,6 +63,27 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
                     $user->widget()->create();
 
+                    $user->settings()->create(attributes: ['key' => 'messages.abandoned_carts'])->template()->create(attributes: [
+                        'user_id' => $user->id,
+                        'message' => 'Abandoned Cart',
+                        'placeholders' => [
+                            '[CUSTOMER_NAME]',
+                            '[CART_AMOUNT]',
+                            '[CART_CURRENCY]',
+                            '[CHECKOUT_URL]',
+                        ],
+                        'delay_in_seconds' => 60 * 60 * 2,
+                    ]);
+
+                    $user->settings()->create(attributes: ['key' => 'messages.otp'])->template()->create(attributes: [
+                        'user_id' => $user->id,
+                        'message' => 'OTP',
+                        'placeholders' => [
+                            '[CUSTOMER_NAME]',
+                            '[OTP]',
+                        ],
+                    ]);
+
                     return [
                         'user' => $user,
                         'password' => $password,

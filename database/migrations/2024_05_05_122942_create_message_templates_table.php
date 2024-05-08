@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->morphs('templatable');
             $table->text('message');
-            $table->json('placeholders');
-            $table->unsignedMediumInteger('delay_in_seconds');
+            $table->json('placeholders')->nullable();
+            $table->unsignedMediumInteger('delay_in_seconds')->default(0);
             $table->boolean('is_enabled')->default(false);
             $table->timestamps();
         });
