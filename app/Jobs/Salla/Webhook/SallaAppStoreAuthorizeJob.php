@@ -3,6 +3,7 @@
 namespace App\Jobs\Salla\Webhook;
 
 use App\Enums\ProviderType;
+use App\Enums\Settings\StoreSettings;
 use App\Enums\UserRole;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
 use App\Jobs\Salla\Pull\Customers\SallaPullCustomersJob;
@@ -133,7 +134,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
     protected function createSettings(Store $store): void
     {
-        $store->settings()->create(attributes: ['key' => 'messages.abandoned_carts'])->template()->create(attributes: [
+        $store->settings()->create(attributes: ['key' => StoreSettings::MESSAGES_ABANDONED_CARTS->value])->template()->create(attributes: [
             'store_id' => $store->id,
             'message' => 'Abandoned Cart',
             'placeholders' => [
@@ -145,7 +146,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             'delay_in_seconds' => 60 * 60 * 2,
         ]);
 
-        $store->settings()->create(attributes: ['key' => 'messages.otp'])->template()->create(attributes: [
+        $store->settings()->create(attributes: ['key' => StoreSettings::MESSAGES_OTP->value])->template()->create(attributes: [
             'store_id' => $store->id,
             'message' => 'OTP',
             'placeholders' => [
