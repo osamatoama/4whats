@@ -37,4 +37,8 @@ return [
         'webhook_token' => env(key: 'SALLA_WEBHOOK_TOKEN'),
     ],
 
+    'four_whats' => [
+        'voucher' => env(key: 'FOUR_WHATS_VOUCHER'),
+    ],
+
 ];
