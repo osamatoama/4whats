@@ -5,6 +5,7 @@ namespace App\Jobs\Salla\Webhook;
 use App\Enums\ProviderType;
 use App\Enums\Settings\StoreSettings;
 use App\Enums\UserRole;
+use App\Jobs\FourWhats\FourWhatsCreateUserJob;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
 use App\Jobs\Salla\Pull\Customers\SallaPullCustomersJob;
 use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
@@ -61,6 +62,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
                 $this->createWidget(store: $store);
                 $this->createSettings(store: $store);
+                $this->createExpiredWhatsappAccount(store: $store);
 
                 return $store;
             });
@@ -83,6 +85,8 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             ]);
 
             $user->assignRole(UserRole::MERCHANT);
+
+            FourWhatsCreateUserJob::dispatch(user: $user, mobile: $resourceOwner->getMobile(), password: $password);
 
             return [
                 'user' => $user,
@@ -153,6 +157,15 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 '[CUSTOMER_NAME]',
                 '[OTP]',
             ],
+        ]);
+    }
+
+    protected function createExpiredWhatsappAccount(Store $store): void
+    {
+        $store->whatsappAccount()->create(attributes: [
+            'label' => $store->name,
+            'mobile' => $store->mobile,
+            'expired_at' => now()->subSecond(),
         ]);
     }
 

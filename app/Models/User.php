@@ -26,6 +26,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'user_id',
+        'four_whats_id',
+        'four_whats_api_key',
         'name',
         'email',
         'password',
@@ -133,6 +135,13 @@ class User extends Authenticatable
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes): UserRole => UserRole::from(value: $this->roles->first()->name),
+        );
+    }
+
+    protected function isIntegratedWithFourWhats(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): bool => $attributes['four_whats_api_key'] !== null,
         );
     }
 }
