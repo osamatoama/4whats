@@ -12,7 +12,7 @@ class OrderStatus extends Model
 {
     protected $fillable = [
         'order_status_id',
-        'user_id',
+        'store_id',
         'provider_type',
         'provider_id',
         'name',
@@ -35,9 +35,9 @@ class OrderStatus extends Model
         return $this->hasMany(related: OrderStatus::class, foreignKey: 'order_status_id');
     }
 
-    public function user(): BelongsTo
+    public function store(): BelongsTo
     {
-        return $this->belongsTo(related: User::class);
+        return $this->belongsTo(related: Store::class);
     }
 
     public function template(): MorphOne

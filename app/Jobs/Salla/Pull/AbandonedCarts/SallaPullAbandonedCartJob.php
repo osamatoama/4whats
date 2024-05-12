@@ -22,7 +22,7 @@ class SallaPullAbandonedCartJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public int $userId,
+        public int $storeId,
         public array $data,
     ) {
         //
@@ -34,7 +34,7 @@ class SallaPullAbandonedCartJob implements ShouldQueue
     public function handle(): void
     {
         AbandonedCart::query()->updateOrCreate(attributes: [
-            'user_id' => $this->userId,
+            'store_id' => $this->storeId,
             'provider_type' => ProviderType::SALLA,
             'provider_id' => $this->data['id'],
         ], values: [
@@ -42,8 +42,8 @@ class SallaPullAbandonedCartJob implements ShouldQueue
             'total_amount' => $this->data['total']['amount'] * 100,
             'total_currency' => $this->data['total']['currency'],
             'checkout_url' => $this->data['checkout_url'],
-            'created_at' => Carbon::parse(time: $this->data['created_at']['date'], timezone: $this->data['created_at']['timezone'])->timezone(value: config(key: 'app.timezone')),
-            'updated_at' => Carbon::parse(time: $this->data['updated_at']['date'], timezone: $this->data['updated_at']['timezone'])->timezone(value: config(key: 'app.timezone')),
+            'created_at' => $this->parseDate(time: $this->data['created_at']['date'], timezone: $this->data['created_at']['timezone']),
+            'updated_at' => $this->parseDate(time: $this->data['updated_at']['date'], timezone: $this->data['updated_at']['timezone']),
         ]);
     }
 
@@ -53,7 +53,7 @@ class SallaPullAbandonedCartJob implements ShouldQueue
 
         return Contact::query()
             ->firstOrCreate(attributes: [
-                'user_id' => $this->userId,
+                'store_id' => $this->storeId,
                 'provider_type' => ProviderType::SALLA,
                 'provider_id' => $this->data['customer']['id'],
                 'source' => ContactSource::SALLA,
@@ -64,5 +64,10 @@ class SallaPullAbandonedCartJob implements ShouldQueue
                 'phone' => $this->data['customer']['mobile'],
                 'gender' => null,
             ])->id;
+    }
+
+    protected function parseDate(string $time, string $timezone): Carbon
+    {
+        return Carbon::parse(time: $time, timezone: $timezone)->timezone(value: config(key: 'app.timezone'));
     }
 }

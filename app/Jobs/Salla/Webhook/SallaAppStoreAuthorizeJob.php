@@ -20,6 +20,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Salla\OAuth2\Client\Provider\SallaUser;
 
 class SallaAppStoreAuthorizeJob implements ShouldQueue
 {
@@ -48,83 +49,118 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             $resourceOwner = (new SallaOAuthService())->getResourceOwner(accessToken: $this->data['access_token']);
             $email = $resourceOwner->getEmail();
 
-            $user = User::where(column: 'email', operator: '=', value: $email)->first();
-            if ($user === null) {
-                $userData = DB::transaction(callback: function () use ($resourceOwner, $email): array {
-                    $password = Str::password();
+            $user = User::where(column: 'email', operator: '=', value: $email)->firstOr(
+                callback: fn (): User => $this->createUser(resourceOwner: $resourceOwner, email: $email),
+            );
 
-                    $user = User::query()->create(attributes: [
-                        'name' => $resourceOwner->getName(),
-                        'email' => $email,
-                        'password' => $password,
-                    ]);
+            $store = DB::transaction(callback: function () use ($resourceOwner, $user): Store {
+                $this->createToken(user: $user);
 
-                    $user->assignRole(UserRole::MERCHANT);
+                $store = $this->createStore(user: $user, resourceOwner: $resourceOwner);
 
-                    $user->widget()->create();
+                $this->createWidget(store: $store);
+                $this->createSettings(store: $store);
 
-                    $user->settings()->create(attributes: ['key' => 'messages.abandoned_carts'])->template()->create(attributes: [
-                        'user_id' => $user->id,
-                        'message' => 'Abandoned Cart',
-                        'placeholders' => [
-                            '[CUSTOMER_NAME]',
-                            '[CART_AMOUNT]',
-                            '[CART_CURRENCY]',
-                            '[CHECKOUT_URL]',
-                        ],
-                        'delay_in_seconds' => 60 * 60 * 2,
-                    ]);
-
-                    $user->settings()->create(attributes: ['key' => 'messages.otp'])->template()->create(attributes: [
-                        'user_id' => $user->id,
-                        'message' => 'OTP',
-                        'placeholders' => [
-                            '[CUSTOMER_NAME]',
-                            '[OTP]',
-                        ],
-                    ]);
-
-                    return [
-                        'user' => $user,
-                        'password' => $password,
-                    ];
-                });
-
-                $user = $userData['user'];
-
-                $user->notify(instance: new UserCreatedUsingSallaWebhook(
-                    email: $email,
-                    password: $userData['password'],
-                ));
-            }
-
-            DB::transaction(callback: function () use ($resourceOwner, $user): void {
-                $user->tokens()->create(attributes: [
-                    'provider_type' => ProviderType::SALLA,
-                    'access_token' => $this->data['access_token'],
-                    'refresh_token' => $this->data['refresh_token'],
-                    'expired_at' => $this->data['expires'],
-                ]);
-
-                $data = $resourceOwner->toArray();
-
-                $user->store()->create(attributes: [
-                    'provider_type' => ProviderType::SALLA,
-                    'provider_id' => $data['merchant']['id'],
-                    'name' => $data['merchant']['name'],
-                    'mobile' => $data['mobile'],
-                    'email' => $data['email'],
-                    'domain' => $data['merchant']['domain'],
-                ]);
+                return $store;
             });
 
-            Bus::chain(jobs: [
-                Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], userId: $user->id))->name(name: 'salla.pull.customers:'.$user->id),
-                Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], userId: $user->id))->name(name: 'salla.pull.abandoned-carts:'.$user->id),
-                Bus::batch(jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], userId: $user->id))->name(name: 'salla.pull.order-statuses:'.$user->id),
-            ])->dispatch();
+            $this->pullStoreData(store: $store);
         } catch (Exception $e) {
             logger()->error(message: $e);
         }
+    }
+
+    protected function createUser(SallaUser $resourceOwner, string $email): User
+    {
+        $userData = DB::transaction(callback: function () use ($resourceOwner, $email): array {
+            $password = Str::password();
+
+            $user = User::query()->create(attributes: [
+                'name' => $resourceOwner->getName(),
+                'email' => $email,
+                'password' => $password,
+            ]);
+
+            $user->assignRole(UserRole::MERCHANT);
+
+            return [
+                'user' => $user,
+                'password' => $password,
+            ];
+        });
+
+        $user = $userData['user'];
+
+        $user->notify(instance: new UserCreatedUsingSallaWebhook(
+            email: $email,
+            password: $userData['password'],
+        ));
+
+        return $user;
+    }
+
+    protected function createToken(User $user): void
+    {
+        $user->tokens()->create(attributes: [
+            'provider_type' => ProviderType::SALLA,
+            'access_token' => $this->data['access_token'],
+            'refresh_token' => $this->data['refresh_token'],
+            'expired_at' => $this->data['expires'],
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function createStore(User $user, SallaUser $resourceOwner): Store
+    {
+        $data = $resourceOwner->toArray();
+
+        return $user->stores()->create(attributes: [
+            'provider_type' => ProviderType::SALLA,
+            'provider_id' => $data['merchant']['id'],
+            'name' => $data['merchant']['name'],
+            'mobile' => $data['mobile'],
+            'email' => $data['email'],
+            'domain' => $data['merchant']['domain'],
+        ]);
+    }
+
+    protected function createWidget(Store $store): void
+    {
+        $store->widget()->create();
+    }
+
+    protected function createSettings(Store $store): void
+    {
+        $store->settings()->create(attributes: ['key' => 'messages.abandoned_carts'])->template()->create(attributes: [
+            'store_id' => $store->id,
+            'message' => 'Abandoned Cart',
+            'placeholders' => [
+                '[CUSTOMER_NAME]',
+                '[CART_AMOUNT]',
+                '[CART_CURRENCY]',
+                '[CHECKOUT_URL]',
+            ],
+            'delay_in_seconds' => 60 * 60 * 2,
+        ]);
+
+        $store->settings()->create(attributes: ['key' => 'messages.otp'])->template()->create(attributes: [
+            'store_id' => $store->id,
+            'message' => 'OTP',
+            'placeholders' => [
+                '[CUSTOMER_NAME]',
+                '[OTP]',
+            ],
+        ]);
+    }
+
+    protected function pullStoreData(Store $store): void
+    {
+        Bus::chain(jobs: [
+            Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.customers:'.$store->id),
+            Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.abandoned-carts:'.$store->id),
+            Bus::batch(jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.order-statuses:'.$store->id),
+        ])->dispatch();
     }
 }

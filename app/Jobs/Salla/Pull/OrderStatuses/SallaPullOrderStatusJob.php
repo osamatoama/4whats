@@ -19,7 +19,7 @@ class SallaPullOrderStatusJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public int $userId,
+        public int $storeId,
         public array $data,
     ) {
         //
@@ -31,14 +31,14 @@ class SallaPullOrderStatusJob implements ShouldQueue
     public function handle(): void
     {
         OrderStatus::query()->updateOrCreate(attributes: [
-            'user_id' => $this->userId,
+            'store_id' => $this->storeId,
             'provider_type' => ProviderType::SALLA,
             'provider_id' => $this->data['id'],
         ], values: [
             'order_status_id' => $this->data['parent'] === null ? null : $this->getOrderStatusId(),
             'name' => $this->data['name'],
-        ])->template()->createOrFirst(attributes: [], values: [
-            'user_id' => $this->userId,
+        ])->template()->firstOrCreate(attributes: [], values: [
+            'store_id' => $this->storeId,
             'message' => $this->data['name'],
             'placeholders' => [
                 '[CUSTOMER_NAME]',
@@ -52,7 +52,7 @@ class SallaPullOrderStatusJob implements ShouldQueue
     protected function getOrderStatusId(): int
     {
         return OrderStatus::query()->firstOrCreate(attributes: [
-            'user_id' => $this->userId,
+            'store_id' => $this->storeId,
             'provider_type' => ProviderType::SALLA,
             'provider_id' => $this->data['parent']['id'],
         ], values: [

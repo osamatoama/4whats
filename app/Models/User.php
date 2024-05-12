@@ -79,39 +79,14 @@ class User extends Authenticatable
         return $this->hasOne(related: Token::class, foreignKey: 'user_id')->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA)->latest();
     }
 
-    public function store(): HasOne
+    public function stores(): HasMany
     {
-        return $this->hasOne(related: Store::class, foreignKey: 'user_id');
+        return $this->hasMany(related: Store::class, foreignKey: 'user_id');
     }
 
-    public function contacts(): HasMany
+    public function sallaStore(): HasOne
     {
-        return $this->hasMany(related: Contact::class, foreignKey: 'user_id');
-    }
-
-    public function abandonedCarts(): HasMany
-    {
-        return $this->hasMany(related: AbandonedCart::class, foreignKey: 'user_id');
-    }
-
-    public function widget(): HasOne
-    {
-        return $this->hasOne(related: Widget::class, foreignKey: 'user_id');
-    }
-
-    public function orderStatuses(): HasMany
-    {
-        return $this->hasMany(related: OrderStatus::class, foreignKey: 'user_id');
-    }
-
-    public function settings(): HasMany
-    {
-        return $this->hasMany(related: Setting::class, foreignKey: 'user_id');
-    }
-
-    public function messageTemplates(): HasMany
-    {
-        return $this->hasMany(related: MessageTemplate::class, foreignKey: 'user_id');
+        return $this->hasOne(related: Store::class, foreignKey: 'store_id')->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA);
     }
 
     public function scopeCanAccessDashboard(Builder $query): Builder

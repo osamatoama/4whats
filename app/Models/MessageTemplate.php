@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class MessageTemplate extends Model
 {
     protected $fillable = [
-        'user_id',
+        'store_id',
         'templatable_id',
         'templatable_type',
         'message',
@@ -28,9 +28,9 @@ class MessageTemplate extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function store(): BelongsTo
     {
-        return $this->belongsTo(related: User::class);
+        return $this->belongsTo(related: Store::class);
     }
 
     public function templatable(): MorphTo

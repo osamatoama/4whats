@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Widget extends Model
 {
     protected $fillable = [
-        'user_id',
+        'store_id',
         'message',
         'color',
         'is_enabled',
@@ -21,8 +21,8 @@ class Widget extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function store(): BelongsTo
     {
-        return $this->belongsTo(related: User::class);
+        return $this->belongsTo(related: Store::class);
     }
 }
