@@ -39,6 +39,12 @@ return [
 
     'four_whats' => [
         'voucher' => env(key: 'FOUR_WHATS_VOUCHER'),
+        'support' => [
+            'instance_id' => env(key: 'FOUR_WHATS_SUPPORT_INSTANCE_ID'),
+            'instance_token' => env(key: 'FOUR_WHATS_SUPPORT_INSTANCE_TOKEN'),
+            'email' => env(key: 'FOUR_WHATS_SUPPORT_EMAIL'),
+            'mobile' => env(key: 'FOUR_WHATS_SUPPORT_MOBILE'),
+        ],
     ],
 
 ];
