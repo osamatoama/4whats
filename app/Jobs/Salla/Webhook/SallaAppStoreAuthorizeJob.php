@@ -84,7 +84,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 'password' => $password,
             ]);
 
-            $user->assignRole(UserRole::MERCHANT);
+            $user->assignRole(UserRole::MERCHANT->asModel());
 
             FourWhatsCreateUserJob::dispatch(user: $user, mobile: $resourceOwner->getMobile(), password: $password);
 

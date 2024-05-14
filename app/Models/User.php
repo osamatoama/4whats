@@ -56,11 +56,6 @@ class User extends Authenticatable
         ];
     }
 
-    protected function getDefaultGuardName(): string
-    {
-        return 'web';
-    }
-
     public function parent(): BelongsTo
     {
         return $this->belongsTo(related: User::class, foreignKey: 'user_id');
@@ -93,7 +88,11 @@ class User extends Authenticatable
 
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
-        return $this->scopeRole(query: $query, roles: [UserRole::ADMIN, UserRole::MERCHANT, UserRole::EMPLOYEE]);
+        return $this->scopeRole(query: $query, roles: [
+            UserRole::ADMIN->asModel(),
+            UserRole::MERCHANT->asModel(),
+            UserRole::EMPLOYEE->asModel(),
+        ]);
     }
 
     protected function isAdmin(): Attribute

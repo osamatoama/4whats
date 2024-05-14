@@ -44,7 +44,7 @@ class EmployeeController extends Controller
                 'password' => $password,
             ]);
 
-            $employee->assignRole(UserRole::EMPLOYEE);
+            $employee->assignRole(UserRole::EMPLOYEE->asModel());
 
             return $employee;
         });

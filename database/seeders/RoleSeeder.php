@@ -16,6 +16,7 @@ class RoleSeeder extends Seeder
         foreach (UserRole::cases() as $role) {
             Role::query()->firstOrCreate(attributes: [
                 'name' => $role->value,
+                'guard_name' => $role->guardName(),
             ]);
         }
     }
