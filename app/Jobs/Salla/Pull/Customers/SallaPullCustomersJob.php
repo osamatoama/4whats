@@ -38,7 +38,7 @@ class SallaPullCustomersJob implements ShouldQueue
         } catch (SallaMerchantException $e) {
             $this->handleException(
                 e: new SallaMerchantException(
-                    message: "Exception while pulling customers from salla | Store: $this->storeId | Message: {$e->getMessage()}",
+                    message: "Exception while pulling customers from salla | Store: {$this->storeId} | Message: {$e->getMessage()}",
                     code: $e->getCode(),
                 ),
             );

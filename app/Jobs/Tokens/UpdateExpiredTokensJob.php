@@ -26,8 +26,14 @@ class UpdateExpiredTokensJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Token::query()->whereDate(column: 'expired_at', operator: '<=', value: now()->addDays(value: 2))->each(callback: function (Token $token): void {
-            UpdateExpiredTokenJob::dispatch(token: $token);
-        });
+        Token::query()
+            ->whereDate(
+                column: 'expired_at',
+                operator: '<=',
+                value: now()->addDays(value: 2),
+            )
+            ->each(callback: function (Token $token): void {
+                UpdateExpiredTokenJob::dispatch(token: $token);
+            });
     }
 }

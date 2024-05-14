@@ -71,7 +71,7 @@ class User extends Authenticatable
         return $this->hasMany(related: User::class);
     }
 
-    public function tokens(): HasMany
+    public function providerTokens(): HasMany
     {
         return $this->hasMany(related: Token::class, foreignKey: 'user_id');
     }

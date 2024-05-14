@@ -30,23 +30,26 @@ class SallaPullOrderStatusJob implements ShouldQueue
      */
     public function handle(): void
     {
-        OrderStatus::query()->updateOrCreate(attributes: [
-            'store_id' => $this->storeId,
-            'provider_type' => ProviderType::SALLA,
-            'provider_id' => $this->data['id'],
-        ], values: [
-            'order_status_id' => $this->data['parent'] === null ? null : $this->getOrderStatusId(),
-            'name' => $this->data['name'],
-        ])->template()->firstOrCreate(attributes: [], values: [
-            'store_id' => $this->storeId,
-            'message' => $this->data['name'],
-            'placeholders' => [
-                '[CUSTOMER_NAME]',
-                '[STATUS_NAME]',
-                '[ORDER_ID]',
-            ],
-            'delay_in_seconds' => 60 * 60 * 2,
-        ]);
+        OrderStatus::query()
+            ->updateOrCreate(attributes: [
+                'store_id' => $this->storeId,
+                'provider_type' => ProviderType::SALLA,
+                'provider_id' => $this->data['id'],
+            ], values: [
+                'order_status_id' => $this->data['parent'] === null ? null : $this->getOrderStatusId(),
+                'name' => $this->data['name'],
+            ])
+            ->template()
+            ->firstOrCreate(attributes: [], values: [
+                'store_id' => $this->storeId,
+                'message' => $this->data['name'],
+                'placeholders' => [
+                    '[CUSTOMER_NAME]',
+                    '[STATUS_NAME]',
+                    '[ORDER_ID]',
+                ],
+                'delay_in_seconds' => 60 * 60 * 2,
+            ]);
     }
 
     protected function getOrderStatusId(): int

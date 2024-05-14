@@ -42,7 +42,7 @@ class UpdateExpiredTokenJob implements ShouldQueue
             $token = (new SallaOAuthService())->getNewToken(refreshToken: $this->token->refresh_token);
         } catch (SallaOAuthException $e) {
             $this->handleException(
-                e: new SallaOAuthException(message: "Exception while updating salla access token | Token ID: $this->token->id | Message: {$e->getMessage()}", code: $e->getCode()),
+                e: new SallaOAuthException(message: "Exception while updating salla access token | Token: {$this->token->id} | Message: {$e->getMessage()}", code: $e->getCode()),
             );
 
             return;

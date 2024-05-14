@@ -39,7 +39,7 @@ class SallaPullAbandonedCartsPerPageJob implements ShouldQueue
         } catch (SallaMerchantException $e) {
             $this->handleException(
                 e: new SallaMerchantException(
-                    message: "Exception while pulling abandoned carts from salla | Store: $this->storeId | Page: $this->page | Message: {$e->getMessage()}",
+                    message: "Exception while pulling abandoned carts from salla | Store: {$this->storeId} | Page: {$this->page} | Message: {$e->getMessage()}",
                     code: $e->getCode(),
                 ),
             );

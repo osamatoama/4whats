@@ -106,7 +106,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
     protected function createToken(User $user): void
     {
-        $user->tokens()->create(attributes: [
+        $user->providerTokens()->create(attributes: [
             'provider_type' => ProviderType::SALLA,
             'access_token' => $this->data['access_token'],
             'refresh_token' => $this->data['refresh_token'],
