@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook;
 
+use App\Enums\MessageTemplates\SallaMessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\Settings\StoreSettings;
 use App\Enums\UserRole;
@@ -61,7 +62,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 $store = $this->createStore(user: $user, resourceOwner: $resourceOwner);
 
                 $this->createWidget(store: $store);
-                $this->createSettings(store: $store);
+                $this->createMessageTemplates(store: $store);
                 $this->createExpiredWhatsappAccount(store: $store);
 
                 return $store;
@@ -136,28 +137,32 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
         $store->widget()->create();
     }
 
-    protected function createSettings(Store $store): void
+    protected function createMessageTemplates(Store $store): void
     {
-        $store->settings()->create(attributes: ['key' => StoreSettings::MESSAGES_ABANDONED_CARTS->value])->template()->create(attributes: [
-            'store_id' => $store->id,
-            'message' => 'Abandoned Cart',
-            'placeholders' => [
-                '[CUSTOMER_NAME]',
-                '[CART_AMOUNT]',
-                '[CART_CURRENCY]',
-                '[CHECKOUT_URL]',
-            ],
-            'delay_in_seconds' => 60 * 60 * 2,
-        ]);
+        foreach (SallaMessageTemplate::cases() as $messageTemplateEnum) {
+            if ($messageTemplateEnum === SallaMessageTemplate::ORDER_STATUSES) {
+                continue;
+            }
 
-        $store->settings()->create(attributes: ['key' => StoreSettings::MESSAGES_OTP->value])->template()->create(attributes: [
-            'store_id' => $store->id,
-            'message' => 'OTP',
-            'placeholders' => [
-                '[CUSTOMER_NAME]',
-                '[OTP]',
-            ],
-        ]);
+            $store->messageTemplates()->create(attributes: [
+                'key' => $messageTemplateEnum->value,
+                'message' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+                'placeholders' => $messageTemplateEnum->placeholders(),
+                'delay_in_seconds' => $messageTemplateEnum->delayInSeconds(),
+            ]);
+
+            if ($messageTemplateEnum === SallaMessageTemplate::REVIEW_ORDER) {
+                $store->settings()->create(attributes: [
+                    'key' => StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
+                ]);
+            }
+
+            if ($messageTemplateEnum === SallaMessageTemplate::NEW_ORDER_FOR_EMPLOYEES) {
+                $store->settings()->create(attributes: [
+                    'key' => StoreSettings::SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES,
+                ]);
+            }
+        }
     }
 
     protected function createExpiredWhatsappAccount(Store $store): void

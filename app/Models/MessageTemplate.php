@@ -6,14 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class MessageTemplate extends Model
 {
     protected $fillable = [
         'store_id',
-        'templatable_id',
-        'templatable_type',
+        'key',
         'message',
         'placeholders',
         'delay_in_seconds',
@@ -31,11 +29,6 @@ class MessageTemplate extends Model
     public function store(): BelongsTo
     {
         return $this->belongsTo(related: Store::class);
-    }
-
-    public function templatable(): MorphTo
-    {
-        return $this->morphTo();
     }
 
     public function scopeEnabled(Builder $query): Builder

@@ -2,9 +2,11 @@
 
 namespace App\Jobs\Salla\Pull\OrderStatuses;
 
+use App\Enums\MessageTemplates\SallaMessageTemplate;
 use App\Enums\ProviderType;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Models\OrderStatus;
+use App\Models\Store;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,30 +32,33 @@ class SallaPullOrderStatusJob implements ShouldQueue
      */
     public function handle(): void
     {
-        OrderStatus::query()
-            ->updateOrCreate(attributes: [
-                'store_id' => $this->storeId,
-                'provider_type' => ProviderType::SALLA,
-                'provider_id' => $this->data['id'],
-            ], values: [
-                'order_status_id' => $this->data['parent'] === null ? null : $this->getOrderStatusId(),
-                'name' => $this->data['name'],
-            ])
-            ->template()
-            ->firstOrCreate(attributes: [], values: [
-                'store_id' => $this->storeId,
-                'message' => $this->data['name'],
-                'placeholders' => [
-                    '[CUSTOMER_NAME]',
-                    '[STATUS_NAME]',
-                    '[ORDER_ID]',
-                ],
-                'delay_in_seconds' => 60 * 60 * 2,
-            ]);
+        $store = Store::query()->find(id: $this->storeId);
+
+        $orderStatus = $store->orderStatuses()->updateOrCreate(attributes: [
+            'store_id' => $this->storeId,
+            'provider_type' => ProviderType::SALLA,
+            'provider_id' => $this->data['id'],
+        ], values: [
+            'order_status_id' => $this->getOrderStatusId(),
+            'name' => $this->data['name'],
+        ]);
+
+        $messageTemplateEnum = SallaMessageTemplate::ORDER_STATUSES;
+        $store->messageTemplates()->firstOrCreate(attributes: [
+            'key' => $messageTemplateEnum->value.'.'.$orderStatus->id,
+        ], values: [
+            'message' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'placeholders' => $messageTemplateEnum->placeholders(),
+            'delay_in_seconds' => $messageTemplateEnum->delayInSeconds(),
+        ]);
     }
 
-    protected function getOrderStatusId(): int
+    protected function getOrderStatusId(): ?int
     {
+        if ($this->data['parent'] === null) {
+            return null;
+        }
+
         return OrderStatus::query()->firstOrCreate(attributes: [
             'store_id' => $this->storeId,
             'provider_type' => ProviderType::SALLA,

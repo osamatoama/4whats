@@ -15,12 +15,14 @@ return new class extends Migration
         Schema::create('message_templates', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
-            $table->morphs('templatable');
+            $table->string('key');
             $table->text('message');
             $table->json('placeholders')->nullable();
             $table->unsignedMediumInteger('delay_in_seconds')->default(0);
             $table->boolean('is_enabled')->default(false);
             $table->timestamps();
+
+            $table->unique(['store_id', 'key']);
         });
     }
 
