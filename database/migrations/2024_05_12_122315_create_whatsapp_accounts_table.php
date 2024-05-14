@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
             $table->string('label');
-            $table->string('mobile')->nullable();
+            $table->string('connected_mobile')->nullable();
             $table->unsignedBigInteger('instance_id')->nullable();
             $table->string('instance_token')->nullable();
             $table->timestamp('expired_at')->nullable();

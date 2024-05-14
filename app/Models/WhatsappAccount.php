@@ -10,7 +10,7 @@ class WhatsappAccount extends Model
     protected $fillable = [
         'store_id',
         'label',
-        'mobile',
+        'connected_mobile',
         'instance_id',
         'instance_token',
         'expired_at',

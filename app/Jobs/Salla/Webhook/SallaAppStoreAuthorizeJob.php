@@ -164,7 +164,6 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
     {
         $store->whatsappAccount()->create(attributes: [
             'label' => $store->name,
-            'mobile' => $store->mobile,
             'expired_at' => now()->subSecond(),
         ]);
     }
