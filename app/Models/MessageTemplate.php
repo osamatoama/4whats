@@ -13,7 +13,6 @@ class MessageTemplate extends Model
         'store_id',
         'key',
         'message',
-        'placeholders',
         'delay_in_seconds',
         'is_enabled',
     ];
@@ -21,7 +20,6 @@ class MessageTemplate extends Model
     protected function casts(): array
     {
         return [
-            'placeholders' => 'array',
             'is_enabled' => 'boolean',
         ];
     }

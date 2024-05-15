@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
             $table->string('key');
             $table->text('message');
-            $table->json('placeholders')->nullable();
             $table->unsignedMediumInteger('delay_in_seconds')->default(0);
             $table->boolean('is_enabled')->default(false);
             $table->timestamps();

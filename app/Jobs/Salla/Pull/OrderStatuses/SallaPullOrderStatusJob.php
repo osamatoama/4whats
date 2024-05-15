@@ -47,8 +47,7 @@ class SallaPullOrderStatusJob implements ShouldQueue
         $store->messageTemplates()->firstOrCreate(attributes: [
             'key' => $messageTemplateEnum->value.'.'.$orderStatus->id,
         ], values: [
-            'message' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
-            'placeholders' => $messageTemplateEnum->placeholders(),
+            'message' => $messageTemplateEnum->defaultMessage(),
             'delay_in_seconds' => $messageTemplateEnum->delayInSeconds(),
         ]);
     }

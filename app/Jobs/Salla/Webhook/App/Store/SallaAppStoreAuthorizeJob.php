@@ -146,8 +146,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
             $store->messageTemplates()->create(attributes: [
                 'key' => $messageTemplateEnum->value,
-                'message' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
-                'placeholders' => $messageTemplateEnum->placeholders(),
+                'message' => $messageTemplateEnum->defaultMessage(),
                 'delay_in_seconds' => $messageTemplateEnum->delayInSeconds(),
             ]);
 
