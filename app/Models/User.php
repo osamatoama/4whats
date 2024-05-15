@@ -89,6 +89,11 @@ class User extends Authenticatable
         return $this->hasOne(related: FourWhatsCredential::class, foreignKey: 'user_id')->latest();
     }
 
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(related: Subscription::class, foreignKey: 'user_id');
+    }
+
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
         return $this->scopeRole(query: $query, roles: [
@@ -144,6 +149,13 @@ class User extends Authenticatable
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes): bool => $this->fourWhatsCredential !== null,
+        );
+    }
+
+    protected function isNotIntegratedWithFourWhats(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): bool => $this->fourWhatsCredential === null,
         );
     }
 }

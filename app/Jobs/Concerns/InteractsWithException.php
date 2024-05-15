@@ -12,13 +12,13 @@ trait InteractsWithException
 
     public bool $shouldLog = true;
 
-    protected function handleException(Exception $e): void
+    protected function handleException(Exception $e, bool $fail = false): void
     {
         if ($this->shouldLog) {
             logger()->error(message: $e->getMessage());
         }
 
-        if ($this->isAttemptedTooManyTimes()) {
+        if ($fail || $this->isAttemptedTooManyTimes()) {
             $this->fail(exception: $e);
 
             return;
