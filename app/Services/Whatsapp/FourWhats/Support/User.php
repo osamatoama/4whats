@@ -3,10 +3,11 @@
 namespace App\Services\Whatsapp\FourWhats\Support;
 
 use App\Services\Whatsapp\FourWhats\Client;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\User as UserContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
 
-class User
+class User implements UserContract
 {
     protected string $baseUrl = 'https://api.4whats.net';
 
@@ -19,7 +20,7 @@ class User
     /**
      * @throws FourWhatsException
      */
-    public function create(string $name, string $email, string $mobile, string $password)
+    public function create(string $name, string $email, string $mobile, string $password): array
     {
         $response = $this->client->get(
             url: $this->baseUrl.'/createAppUser',
@@ -36,6 +37,11 @@ class User
 
         $this->client->validateResponse(data: $data);
 
-        return $data;
+        return [
+            'id' => $data['user']['id'],
+            'email' => $data['user']['email'],
+            'mobile' => $data['user']['mobile'],
+            'api_key' => $data['user']['apikey'],
+        ];
     }
 }

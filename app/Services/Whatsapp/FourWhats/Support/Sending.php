@@ -3,10 +3,11 @@
 namespace App\Services\Whatsapp\FourWhats\Support;
 
 use App\Services\Whatsapp\FourWhats\Client;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\Sending as SendingContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
 
-class Sending
+class Sending implements SendingContract
 {
     protected string $baseUrl = 'https://api.4whats.net';
 

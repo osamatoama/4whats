@@ -2,6 +2,12 @@
 
 namespace App\Services\Whatsapp\FourWhats;
 
+use App\Services\Whatsapp\FourWhats\Contracts\Support\Instance as InstanceContract;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\Instances as InstancesContract;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\Sending as SendingContract;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\User as UserContract;
+use App\Services\Whatsapp\FourWhats\Fakes\Support\Instances as FakeInstances;
+use App\Services\Whatsapp\FourWhats\Fakes\Support\User as FakeUser;
 use App\Services\Whatsapp\FourWhats\Support\Instance;
 use App\Services\Whatsapp\FourWhats\Support\Instances;
 use App\Services\Whatsapp\FourWhats\Support\Sending;
@@ -16,35 +22,35 @@ readonly class FourWhatsService
         $this->client = new Client();
     }
 
-    public function user(): User
+    public function user(): UserContract
     {
         return resolveSingletonIf(
-            abstract: User::class,
-            concrete: fn (): User => new User(service: $this, client: $this->client),
+            abstract: UserContract::class,
+            concrete: fn (): UserContract => new (app()->isProduction() ? User::class : FakeUser::class)(service: $this, client: $this->client),
         );
     }
 
-    public function instances(string $apiKey): Instances
+    public function instances(string $apiKey): InstancesContract
     {
         return resolveSingletonIf(
-            abstract: Instances::class.':'.$apiKey,
-            concrete: fn (): Instances => new Instances(service: $this, client: $this->client, apiKey: $apiKey),
+            abstract: InstancesContract::class.':'.$apiKey,
+            concrete: fn (): InstancesContract => new (app()->isProduction() ? Instances::class : FakeInstances::class)(service: $this, client: $this->client, apiKey: $apiKey),
         );
     }
 
-    public function instance(int $instanceId, string $instanceToken): Instance
+    public function instance(int $instanceId, string $instanceToken): InstanceContract
     {
         return resolveSingletonIf(
-            abstract: Instance::class.':'.$instanceId.':'.$instanceToken,
-            concrete: fn (): Instance => new Instance(service: $this, client: $this->client, instanceId: $instanceId, instanceToken: $instanceToken),
+            abstract: InstanceContract::class.':'.$instanceId.':'.$instanceToken,
+            concrete: fn (): InstanceContract => new Instance(service: $this, client: $this->client, instanceId: $instanceId, instanceToken: $instanceToken),
         );
     }
 
-    public function sending(int $instanceId, string $instanceToken): Sending
+    public function sending(int $instanceId, string $instanceToken): SendingContract
     {
         return resolveSingletonIf(
-            abstract: Sending::class.':'.$instanceId.':'.$instanceToken,
-            concrete: fn (): Sending => new Sending(service: $this, client: $this->client, instanceId: $instanceId, instanceToken: $instanceToken),
+            abstract: SendingContract::class.':'.$instanceId.':'.$instanceToken,
+            concrete: fn (): SendingContract => new Sending(service: $this, client: $this->client, instanceId: $instanceId, instanceToken: $instanceToken),
         );
     }
 }

@@ -4,10 +4,11 @@ namespace App\Services\Whatsapp\FourWhats\Support;
 
 use App\Enums\Whatsapp\QrCodeStatus;
 use App\Services\Whatsapp\FourWhats\Client;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\Instance as InstanceContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
 
-class Instance
+class Instance implements InstanceContract
 {
     protected string $baseUrl = 'https://api.4whats.net';
 

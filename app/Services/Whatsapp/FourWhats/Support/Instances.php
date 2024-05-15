@@ -4,10 +4,11 @@ namespace App\Services\Whatsapp\FourWhats\Support;
 
 use App\Enums\Settings\SystemSettings;
 use App\Services\Whatsapp\FourWhats\Client;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\Instances as InstancesContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
 
-class Instances
+class Instances implements InstancesContract
 {
     protected string $baseUrl = 'https://api.4whats.net';
 
@@ -37,7 +38,11 @@ class Instances
 
         $this->client->validateResponse(data: $data);
 
-        return $data;
+        return [
+            'success' => $data['success'],
+            'instance_id' => $data['instanceid'],
+            'instance_token' => $data['token'],
+        ];
     }
 
     /**
@@ -60,6 +65,8 @@ class Instances
 
         $this->client->validateResponse(data: $data);
 
-        return $data;
+        return [
+            'success' => $data['success'],
+        ];
     }
 }
