@@ -26,8 +26,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'user_id',
-        'four_whats_id',
-        'four_whats_api_key',
         'name',
         'email',
         'password',
@@ -86,6 +84,11 @@ class User extends Authenticatable
         return $this->hasOne(related: Store::class, foreignKey: 'store_id')->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA);
     }
 
+    public function fourWhatsCredential(): HasOne
+    {
+        return $this->hasOne(related: FourWhatsCredential::class, foreignKey: 'user_id')->latest();
+    }
+
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
         return $this->scopeRole(query: $query, roles: [
@@ -140,7 +143,7 @@ class User extends Authenticatable
     protected function isIntegratedWithFourWhats(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes): bool => $attributes['four_whats_api_key'] !== null,
+            get: fn (mixed $value, array $attributes): bool => $this->fourWhatsCredential !== null,
         );
     }
 }

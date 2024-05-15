@@ -24,7 +24,7 @@ class FourWhatsCreateUserJob implements ShouldQueue
         public string $mobile,
         public string $password,
     ) {
-        $this->maxAttempts = 1;
+        $this->maxAttempts = 5;
     }
 
     /**
@@ -52,9 +52,11 @@ class FourWhatsCreateUserJob implements ShouldQueue
             return;
         }
 
-        $this->user->update([
-            'four_whats_id' => $response['user']['id'],
-            'four_whats_api_key' => $response['user']['apikey'],
+        $this->user->fourWhatsCredential()->create([
+            'provider_id' => $response['id'],
+            'email' => $response['email'],
+            'mobile' => $response['mobile'],
+            'api_key' => $response['api_key'],
         ]);
     }
 }
