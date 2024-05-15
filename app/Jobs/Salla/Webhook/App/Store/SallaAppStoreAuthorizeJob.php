@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Salla\Webhook;
+namespace App\Jobs\Salla\Webhook\App\Store;
 
 use App\Enums\MessageTemplates\SallaMessageTemplate;
 use App\Enums\ProviderType;

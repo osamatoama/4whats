@@ -2,7 +2,7 @@
 
 namespace App\Services\Salla\Webhook;
 
-use App\Services\Salla\Webhook\Events\AppStoreAuthorizeEvent;
+use App\Services\Salla\Webhook\Events\App\Store\AppStoreAuthorizeEvent;
 
 class SallaWebhookHandler
 {
