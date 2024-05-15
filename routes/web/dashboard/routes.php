@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([], base_path(path: 'routes/web/dashboard/auth.php'));
 
-Route::middleware('auth:dashboard')->group(function () {
+Route::middleware(['auth:dashboard'])->group(function () {
     Route::get('/', HomeController::class)->name('home');
 
     Route::resource('employees', EmployeeController::class)->except(['show', 'edit', 'update']);

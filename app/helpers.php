@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Store;
+use App\Models\User;
 use App\Support\Settings;
 
 if (! function_exists('resolveSingletonIf')) {
@@ -18,5 +20,30 @@ if (! function_exists('settings')) {
             abstract: Settings::class.':'.$storeId ?? 'system',
             concrete: fn (): Settings => new Settings(storeId: $storeId),
         );
+    }
+}
+
+if (! function_exists('parentUser')) {
+    function parentUser(?User $user = null): User
+    {
+        $user ??= request()->user();
+        if ($user->is_parent) {
+            return $user;
+        }
+
+        return parentUser(user: $user->parent);
+    }
+}
+
+if (! function_exists('currentStore')) {
+    function currentStore(): Store
+    {
+        $key = 'current_store';
+
+        if (! session()->has(key: $key)) {
+            session()->put(key: $key, value: parentUser()->stores->first());
+        }
+
+        return session()->get(key: $key);
     }
 }
