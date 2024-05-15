@@ -38,6 +38,7 @@ return [
     ],
 
     'four_whats' => [
+        'test_mode' => (bool) env(key: 'FOUR_WHATS_TEST_MODE', default: true),
         'voucher' => env(key: 'FOUR_WHATS_VOUCHER'),
         'support' => [
             'instance_id' => env(key: 'FOUR_WHATS_SUPPORT_INSTANCE_ID'),

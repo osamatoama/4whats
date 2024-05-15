@@ -22,11 +22,16 @@ readonly class FourWhatsService
         $this->client = new Client();
     }
 
+    public function testMode(): bool
+    {
+        return config(key: 'services.four_whats.test_mode');
+    }
+
     public function user(): UserContract
     {
         return resolveSingletonIf(
             abstract: UserContract::class,
-            concrete: fn (): UserContract => new (app()->isProduction() ? User::class : FakeUser::class)(service: $this, client: $this->client),
+            concrete: fn (): UserContract => new ($this->testMode() ? FakeUser::class : User::class)(service: $this, client: $this->client),
         );
     }
 
@@ -34,7 +39,7 @@ readonly class FourWhatsService
     {
         return resolveSingletonIf(
             abstract: InstancesContract::class.':'.$apiKey,
-            concrete: fn (): InstancesContract => new (app()->isProduction() ? Instances::class : FakeInstances::class)(service: $this, client: $this->client, apiKey: $apiKey),
+            concrete: fn (): InstancesContract => new ($this->testMode() ? FakeInstances::class : Instances::class)(service: $this, client: $this->client, apiKey: $apiKey),
         );
     }
 
