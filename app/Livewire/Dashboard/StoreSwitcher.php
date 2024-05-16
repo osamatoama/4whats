@@ -12,8 +12,8 @@ class StoreSwitcher extends Component
     public function switch(int $storeId): Redirector
     {
         session()->put(
-            key: 'current_store',
-            value: parentUser()->stores()->findOr(id: $storeId, callback: fn (): Store => currentStore()),
+            key: 'current_store_id',
+            value: parentUser()->stores()->findOr(id: $storeId, callback: fn (): Store => currentStore())->id,
         );
 
         return redirect(

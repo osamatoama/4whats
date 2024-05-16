@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Notifications\Salla\UserCreatedUsingSallaWebhook;
 use App\Services\Salla\OAuth\SallaOAuthService;
 use Exception;
+use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -174,11 +175,9 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
     protected function pullStoreData(Store $store): void
     {
-        Bus::chain(jobs: [
-            Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.customers:'.$store->id),
-            Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.abandoned-carts:'.$store->id),
-            Bus::batch(jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.order-statuses:'.$store->id),
-            function () use ($store): void {
+        $orderStatuses = Bus::batch(jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], storeId: $store->id))
+            ->name(name: 'salla.pull.order-statuses:'.$store->id)
+            ->finally(callback: function (Batch $batch) use ($store): void {
                 $store->settings()
                     ->where(
                         column: 'key',
@@ -188,7 +187,12 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                     ->update(values: [
                         'value' => $store->orderStatuses()->first()->id,
                     ]);
-            },
+            });
+
+        Bus::chain(jobs: [
+            Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.customers:'.$store->id),
+            Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.abandoned-carts:'.$store->id),
+            $orderStatuses,
         ])->dispatch();
     }
 }
