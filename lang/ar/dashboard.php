@@ -67,10 +67,17 @@ return [
                 'email' => 'البريد الالكتروني',
             ],
         ],
-    ],
-    'messages' => [
-        'model_has_been_successfully_created' => 'تم اضافة :model بنجاح',
-        'model_has_been_successfully_deleted' => 'تم حذف :model بنجاح',
+        'templates' => [
+            'index' => [
+                'title' => 'إعدادات الرسائل التلقائية',
+                'page_title' => 'الرسائل التلقائية (الويب هوك)',
+                'waiting_before_sending' => 'مدة الإنتظار قبل ارسال الرسالة',
+                'in_hours' => 'المدة تحتسب بالساعات',
+                'order_status_to_send_notification' => 'حالة الطلب لإرسال رسالة إشعار طلب التقييم',
+                'employees_mobiles' => 'الأرقام التي سوف تستلم رسالة الطلبات الجديدة',
+                'employees_mobiles_description' => 'يمكنك ادخال اكثر من رقم عن طريق فصلهم بفاصلة, هذه الأرقام سوف تستلم رسالة عند كل طلب جديد في المتجر',
+            ],
+        ],
     ],
     'pagination' => [
         'previous' => '&laquo;',

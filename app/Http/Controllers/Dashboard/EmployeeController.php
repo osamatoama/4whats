@@ -51,7 +51,7 @@ class EmployeeController extends Controller
 
         $employee->notify(instance: new EmployeeCreated(email: $employee->email, password: $password));
 
-        $message = __(key: 'dashboard.messages.model_has_been_successfully_created', replace: ['model' => __(key: 'models.employee')]);
+        $message = __(key: 'alerts.created', replace: ['model' => __(key: 'models.employee')]);
 
         return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: $message);
     }
@@ -62,7 +62,7 @@ class EmployeeController extends Controller
 
         $employee->delete();
 
-        $message = __(key: 'dashboard.messages.model_has_been_successfully_deleted', replace: ['model' => __(key: 'models.employee')]);
+        $message = __(key: 'alerts.deleted', replace: ['model' => __(key: 'models.employee')]);
 
         return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: $message);
     }

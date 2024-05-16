@@ -10,13 +10,37 @@
 <script src="{{ asset(path: 'assets/dashboard/js/app.js') }}"></script>
 
 <script>
+    const toast = (title, icon = 'success') => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-start',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: icon,
+            title: title
+        });
+    }
+
     @session('success')
-    swal.fire({text: '{{ $value }}', icon: 'success'});
+    toast('{{ $value }}');
     @endsession
 
     @session('error')
-    swal.fire({text: '{{ $value }}', icon: 'error'});
+    toast('{{ $value }}', 'error');
     @endsession
+
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('alerts.success', (event) => {
+            toast(event.message);
+        });
+    });
 </script>
 
 @if($scripts !== null)

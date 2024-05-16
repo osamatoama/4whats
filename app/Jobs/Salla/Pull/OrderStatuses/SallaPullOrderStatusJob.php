@@ -2,8 +2,8 @@
 
 namespace App\Jobs\Salla\Pull\OrderStatuses;
 
-use App\Enums\MessageTemplates\SallaMessageTemplate;
 use App\Enums\ProviderType;
+use App\Enums\StoreMessageTemplate;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Models\OrderStatus;
 use App\Models\Store;
@@ -43,7 +43,7 @@ class SallaPullOrderStatusJob implements ShouldQueue
             'name' => $this->data['name'],
         ]);
 
-        $messageTemplateEnum = SallaMessageTemplate::ORDER_STATUSES;
+        $messageTemplateEnum = StoreMessageTemplate::ORDER_STATUSES;
         $store->messageTemplates()->firstOrCreate(attributes: [
             'key' => $messageTemplateEnum->value.'.'.$orderStatus->id,
         ], values: [

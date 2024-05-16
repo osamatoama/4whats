@@ -2,9 +2,9 @@
 
 namespace App\Jobs\Salla\Webhook\App\Store;
 
-use App\Enums\MessageTemplates\SallaMessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\Settings\StoreSettings;
+use App\Enums\StoreMessageTemplate;
 use App\Enums\UserRole;
 use App\Jobs\FourWhats\FourWhatsCreateUserJob;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
@@ -139,24 +139,24 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
     protected function createMessageTemplates(Store $store): void
     {
-        foreach (SallaMessageTemplate::cases() as $messageTemplateEnum) {
-            if ($messageTemplateEnum === SallaMessageTemplate::ORDER_STATUSES) {
+        foreach (StoreMessageTemplate::sallaCases() as $storeMessageTemplate) {
+            if ($storeMessageTemplate === StoreMessageTemplate::ORDER_STATUSES) {
                 continue;
             }
 
             $store->messageTemplates()->create(attributes: [
-                'key' => $messageTemplateEnum->value,
-                'message' => $messageTemplateEnum->defaultMessage(),
-                'delay_in_seconds' => $messageTemplateEnum->delayInSeconds(),
+                'key' => $storeMessageTemplate->value,
+                'message' => $storeMessageTemplate->defaultMessage(),
+                'delay_in_seconds' => $storeMessageTemplate->delayInSeconds(),
             ]);
 
-            if ($messageTemplateEnum === SallaMessageTemplate::REVIEW_ORDER) {
+            if ($storeMessageTemplate === StoreMessageTemplate::SALLA_REVIEW_ORDER) {
                 $store->settings()->create(attributes: [
                     'key' => StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
                 ]);
             }
 
-            if ($messageTemplateEnum === SallaMessageTemplate::NEW_ORDER_FOR_EMPLOYEES) {
+            if ($storeMessageTemplate === StoreMessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES) {
                 $store->settings()->create(attributes: [
                     'key' => StoreSettings::SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES,
                 ]);
@@ -178,6 +178,17 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.customers:'.$store->id),
             Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.abandoned-carts:'.$store->id),
             Bus::batch(jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.order-statuses:'.$store->id),
+            function () use ($store): void {
+                $store->settings()
+                    ->where(
+                        column: 'key',
+                        operator: '=',
+                        value: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
+                    )
+                    ->update(values: [
+                        'value' => $store->orderStatuses()->first()->id,
+                    ]);
+            },
         ])->dispatch();
     }
 }

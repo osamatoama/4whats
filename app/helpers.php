@@ -38,12 +38,14 @@ if (! function_exists('parentUser')) {
 if (! function_exists('currentStore')) {
     function currentStore(): Store
     {
-        $key = 'current_store';
+        $key = 'current_store_id';
 
         if (! session()->has(key: $key)) {
-            session()->put(key: $key, value: parentUser()->stores->first());
+            session()->put(key: $key, value: parentUser()->stores->first()->id);
         }
 
-        return session()->get(key: $key);
+        $storeId = session()->get(key: $key);
+
+        return once(callback: fn (): Store => Store::find(id: $storeId));
     }
 }
