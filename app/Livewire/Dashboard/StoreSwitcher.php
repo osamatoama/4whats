@@ -13,7 +13,7 @@ class StoreSwitcher extends Component
     {
         session()->put(
             key: 'current_store',
-            value: parentUser()->stores()->findOrFail(id: $storeId),
+            value: parentUser()->stores()->findOr(id: $storeId, callback: fn (): Store => currentStore()),
         );
 
         return redirect(
