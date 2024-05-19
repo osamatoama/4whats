@@ -38,7 +38,7 @@ class Card extends Component
             'is_enabled' => $this->isEnabled,
         ]);
 
-        $this->successToast(action: 'updated', model: 'message_template');
+        $this->successToast(action: 'updated', model: 'message_templates.singular');
     }
 
     public function render(): View

@@ -7,9 +7,9 @@ trait InteractsWithToasts
     public function successToast(string $action, string $model): void
     {
         $this->dispatch(
-            event: 'alerts.success',
+            event: 'toasts.success',
             message: __(
-                key: "alerts.{$action}",
+                key: "toasts.{$action}",
                 replace: ['model' => __(key: "models.{$model}")],
             ),
         );

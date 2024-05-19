@@ -37,7 +37,7 @@
     @endsession
 
     document.addEventListener('livewire:init', () => {
-        Livewire.on('alerts.success', (event) => {
+        Livewire.on('toasts.success', (event) => {
             toast(event.message);
         });
     });

@@ -38,7 +38,7 @@ class NewOrderForEmployees extends Component
                 'value' => $this->mobiles,
             ]);
 
-        $this->successToast(action: 'updated', model: 'message_template');
+        $this->successToast(action: 'updated', model: 'message_templates.singular');
     }
 
     public function render(): View

@@ -25,7 +25,7 @@ class ContactList extends Component
             ->contacts()
             ->when(
                 value: $this->keyword !== null,
-                callback: fn(Builder $query): Builder => $query->whereAny(
+                callback: fn (Builder $query): Builder => $query->whereAny(
                     columns: ['first_name', 'last_name', 'email', 'mobile'],
                     operator: 'LIKE',
                     value: "%{$this->keyword}%",

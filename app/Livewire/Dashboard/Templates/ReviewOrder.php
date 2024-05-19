@@ -38,7 +38,7 @@ class ReviewOrder extends Component
                 'value' => $this->orderStatusId,
             ]);
 
-        $this->successToast(action: 'updated', model: 'message_template');
+        $this->successToast(action: 'updated', model: 'message_templates.singular');
     }
 
     public function render(): View
