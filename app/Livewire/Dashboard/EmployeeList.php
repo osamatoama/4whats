@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard;
 
 use App\Livewire\Concerns\InteractsWithToasts;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
@@ -11,7 +12,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class ContactList extends Component
+class EmployeeList extends Component
 {
     use InteractsWithToasts, WithPagination;
 
@@ -19,14 +20,15 @@ class ContactList extends Component
     public ?string $keyword = null;
 
     #[Computed]
-    public function contacts(): LengthAwarePaginator
+    public function employees(): LengthAwarePaginator
     {
-        return currentStore()
-            ->contacts()
+        return auth()
+            ->user()
+            ->children()
             ->when(
                 value: $this->keyword !== null,
                 callback: fn (Builder $query): Builder => $query->whereAny(
-                    columns: ['first_name', 'last_name', 'email', 'mobile'],
+                    columns: ['name', 'email'],
                     operator: 'LIKE',
                     value: "%{$this->keyword}%",
                 )
@@ -35,9 +37,13 @@ class ContactList extends Component
             ->paginate();
     }
 
-    public function export(): void
+    public function destroy(User $employee): void
     {
-        // TODO:Export
+        $this->authorize(ability: 'delete', arguments: $employee);
+
+        $employee->delete();
+
+        $this->successToast(action: 'deleted', model: 'employees.singular');
     }
 
     public function updatedKeyword(): void
@@ -47,6 +53,6 @@ class ContactList extends Component
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.contact-list');
+        return view(view: 'livewire.dashboard.employee-list');
     }
 }

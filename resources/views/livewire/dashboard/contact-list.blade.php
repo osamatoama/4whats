@@ -44,7 +44,7 @@
         </div>
         @if($this->contacts->hasPages())
             <div class="card-footer">
-                {{ $this->contacts->links(view: 'dashboard.partials.pagination.livewire.default') }}
+                {{ $this->contacts->links(view: 'livewire.dashboard.partials.pagination.default') }}
             </div>
         @endif
     </div>

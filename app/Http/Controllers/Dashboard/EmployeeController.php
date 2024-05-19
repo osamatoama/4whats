@@ -19,11 +19,7 @@ class EmployeeController extends Controller
     {
         Gate::authorize(ability: 'viewAny', arguments: User::class);
 
-        $employees = auth()->user()->children()->paginate();
-
-        return view(view: 'dashboard.pages.employees.index', data: [
-            'employees' => $employees,
-        ]);
+        return view(view: 'dashboard.pages.employees.index');
     }
 
     public function create(): View
@@ -52,17 +48,6 @@ class EmployeeController extends Controller
         $employee->notify(instance: new EmployeeCreated(email: $employee->email, password: $password));
 
         $message = __(key: 'toasts.created', replace: ['model' => __(key: 'models.employees.singular')]);
-
-        return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: $message);
-    }
-
-    public function destroy(User $employee): RedirectResponse
-    {
-        Gate::authorize(ability: 'delete', arguments: $employee);
-
-        $employee->delete();
-
-        $message = __(key: 'toasts.deleted', replace: ['model' => __(key: 'models.employees.singular')]);
 
         return to_route(route: 'dashboard.employees.index')->with(key: 'success', value: $message);
     }

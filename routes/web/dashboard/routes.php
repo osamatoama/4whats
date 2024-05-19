@@ -11,7 +11,7 @@ Route::group([], base_path(path: 'routes/web/dashboard/auth.php'));
 Route::middleware(['auth:dashboard'])->group(function () {
     Route::get('/', HomeController::class)->name('home');
 
-    Route::resource('employees', EmployeeController::class)->except(['show', 'edit', 'update']);
+    Route::resource('employees', EmployeeController::class)->only(['index', 'create', 'store']);
 
     Route::resource('templates', TemplateController::class)->only(['index']);
 

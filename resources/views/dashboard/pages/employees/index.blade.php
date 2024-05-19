@@ -4,7 +4,7 @@
     </x-slot:title>
 
     <x-slot:pageTitle>
-        @lang('dashboard.pages.employees.index.title')
+        @lang('dashboard.pages.employees.index.page_title')
     </x-slot:pageTitle>
 
     <x-slot:breadcrumb>

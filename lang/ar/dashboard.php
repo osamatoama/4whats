@@ -56,6 +56,7 @@ return [
         'employees' => [
             'index' => [
                 'title' => 'الموظفين',
+                'page_title' => 'الموظفين',
                 'employees_details' => 'تفاصيل الموظفين',
                 'create_a_new_employee' => 'اضافة موظف جديد',
                 'no_employees' => 'لا يوجد موظفين',
