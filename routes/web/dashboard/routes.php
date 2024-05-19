@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\ContactController;
 use App\Http\Controllers\Dashboard\EmployeeController;
 use App\Http\Controllers\Dashboard\HomeController;
 use App\Http\Controllers\Dashboard\TemplateController;
@@ -13,4 +14,6 @@ Route::middleware(['auth:dashboard'])->group(function () {
     Route::resource('employees', EmployeeController::class)->except(['show', 'edit', 'update']);
 
     Route::resource('templates', TemplateController::class)->only(['index']);
+
+    Route::resource('contacts', ContactController::class)->only(['index']);
 });

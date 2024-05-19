@@ -1,5 +1,6 @@
 @use(\App\Models\User)
 @use(\App\Models\MessageTemplate)
+@use(\App\Models\Contact)
 
 <x-dashboard.layouts.main.nav-link
     :url="route(name: 'dashboard.home')"
@@ -20,6 +21,14 @@
         :url="route(name: 'dashboard.templates.index')"
         :text="__(key: 'dashboard.pages.templates.index.title')"
         :is-active="request()->routeIs(patterns: 'dashboard.templates.*')"
+    />
+@endcan
+
+@can('viewAny', Contact::class)
+    <x-dashboard.layouts.main.nav-link
+        :url="route(name: 'dashboard.contacts.index')"
+        :text="__(key: 'dashboard.pages.contacts.index.title')"
+        :is-active="request()->routeIs(patterns: 'dashboard.contacts.*')"
     />
 @endcan
 
