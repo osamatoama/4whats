@@ -59,24 +59,24 @@ enum StoreMessageTemplate: string
 
     public function defaultMessage(): string
     {
-        return __(key: "message_templates.{$this->name}.default");
+        return __(key: 'enum.'.__CLASS__.'.'.$this->name.'.default');
     }
 
     public function label(): string
     {
-        return __(key: "message_templates.{$this->name}.label");
+        return __(key: 'enum.'.__CLASS__.'.'.$this->name.'.label');
     }
 
     public function description(): string
     {
         $placeholders = implode(' ', $this->placeholders());
 
-        return __(key: "message_templates.{$this->name}.description", replace: ['placeholders' => $placeholders]);
+        return __(key: 'enum.'.__CLASS__.'.'.$this->name.'.description', replace: ['placeholders' => $placeholders]);
     }
 
     public function hint(): ?string
     {
-        $key = "message_templates.{$this->name}.hint";
+        $key = 'enum.'.__CLASS__.'.'.$this->name.'.label';
         $value = __(key: $key);
 
         if ($value === $key) {

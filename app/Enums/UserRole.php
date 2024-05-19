@@ -17,7 +17,7 @@ enum UserRole: string
 
     public function label(): string
     {
-        return __(key: 'roles.'.$this->value);
+        return __(key: 'enum.'.__CLASS__.'.'.$this->value);
     }
 
     public function asModel()
