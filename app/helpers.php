@@ -3,6 +3,7 @@
 use App\Models\Store;
 use App\Models\User;
 use App\Support\Settings;
+use Illuminate\Database\Eloquent\Collection;
 
 if (! function_exists('resolveSingletonIf')) {
     function resolveSingletonIf(string $abstract, ?Closure $concrete = null): mixed
@@ -35,6 +36,13 @@ if (! function_exists('parentUser')) {
     }
 }
 
+if (! function_exists('parentUserStores')) {
+    function parentUserStores(): Collection
+    {
+        return once(callback: fn (): Collection => parentUser()->stores);
+    }
+}
+
 if (! function_exists('currentStore')) {
     function currentStore(): Store
     {
@@ -46,6 +54,6 @@ if (! function_exists('currentStore')) {
 
         $storeId = session()->get(key: $key);
 
-        return once(callback: fn (): Store => Store::find(id: $storeId));
+        return once(callback: fn (): Store => parentUserStores()->firstWhere(key: 'id', operator: '=', value: $storeId));
     }
 }

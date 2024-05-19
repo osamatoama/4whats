@@ -24,11 +24,11 @@ class StoreSwitcher extends Component
     public function render(): View
     {
         $currentStore = currentStore();
-        $stores = parentUser()->stores->reject(callback: fn (Store $store) => $store->is(model: $currentStore));
+        $stores = parentUserStores()->reject(callback: fn (Store $store) => $store->is(model: $currentStore));
 
         return view(view: 'livewire.dashboard.store-switcher', data: [
             'currentStore' => $currentStore,
-            'stores' => parentUser()->stores->reject(callback: fn (Store $store) => $store->is(model: $currentStore)),
+            'stores' => $stores,
             'hasMoreStores' => $stores->isNotEmpty(),
         ]);
     }
