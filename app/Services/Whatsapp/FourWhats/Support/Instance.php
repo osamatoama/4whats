@@ -35,7 +35,9 @@ class Instance implements InstanceContract
 
         $data = $response->json();
 
-        $this->client->validateResponse(data: $data);
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(message: $data['reason']);
+        }
 
         return [
             'status' => $data['accountStatus'] === 'got qr code' ? QrCodeStatus::GOT_QR_CODE : QrCodeStatus::AUTHENTICATED,
@@ -58,7 +60,9 @@ class Instance implements InstanceContract
 
         $data = $response->json();
 
-        $this->client->validateResponse(data: $data);
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(message: $data['reason']);
+        }
 
         return [
             'logged_out' => $data['success'],

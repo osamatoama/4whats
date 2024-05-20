@@ -36,10 +36,11 @@ class Instances implements InstancesContract
 
         $data = $response->json();
 
-        $this->client->validateResponse(data: $data);
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(message: $data['errorCode'].' | '.$data['reason']);
+        }
 
         return [
-            'success' => $data['success'],
             'instance_id' => $data['instanceid'],
             'instance_token' => $data['token'],
         ];
@@ -63,10 +64,12 @@ class Instances implements InstancesContract
 
         $data = $response->json();
 
-        $this->client->validateResponse(data: $data);
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(message: $data['errorCode'].' | '.$data['reason']);
+        }
 
         return [
-            'success' => $data['success'],
+            'instance_id' => $data['instanceid'],
         ];
     }
 }

@@ -36,7 +36,9 @@ class Sending implements SendingContract
 
         $data = $response->json();
 
-        $this->client->validateResponse(data: $data);
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(message: $data['reason'] ?? '');
+        }
 
         return [
             'id' => $data['id'],

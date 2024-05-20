@@ -2,8 +2,8 @@
 
 namespace App\Enums\Whatsapp;
 
-enum QrCodeStatus: string
+enum QrCodeStatus
 {
-    case GOT_QR_CODE = 'got_qr_code';
-    case AUTHENTICATED = 'authenticated';
+    case GOT_QR_CODE;
+    case AUTHENTICATED;
 }

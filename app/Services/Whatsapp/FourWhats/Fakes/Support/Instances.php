@@ -20,7 +20,6 @@ class Instances implements InstancesContract
     public function create(string $email, int $packageId): array
     {
         return [
-            'success' => true,
             'instance_id' => '135940',
             'instance_token' => '58999521-f86e-4bdf-8053-0f7f52604d77',
         ];
@@ -29,7 +28,7 @@ class Instances implements InstancesContract
     public function renew(string $email, int $instanceId, int $packageId): array
     {
         return [
-            'success' => true,
+            'instance_id' => '135940',
         ];
     }
 }

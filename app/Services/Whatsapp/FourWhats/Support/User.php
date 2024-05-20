@@ -35,7 +35,9 @@ class User implements UserContract
 
         $data = $response->json();
 
-        $this->client->validateResponse(data: $data);
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(message: $data['msg']);
+        }
 
         return [
             'id' => $data['user']['id'],
