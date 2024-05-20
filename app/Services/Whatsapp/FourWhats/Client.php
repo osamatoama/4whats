@@ -13,16 +13,6 @@ class Client
         return $this->http()->get(url: $url, query: $data);
     }
 
-    /**
-     * @throws FourWhatsException
-     */
-    public function validateResponse(array $data): void
-    {
-        if (isset($data['success']) && $data['success'] === false) {
-            throw new FourWhatsException(message: $data['reason'] ?? $data['msg']);
-        }
-    }
-
     protected function http(): PendingRequest
     {
         return Http::acceptJson()->asJson();

@@ -21,6 +21,8 @@
 <div class="page-wrapper">
     <div class="page-content-tab">
         <div class="container-fluid">
+            <livewire:dashboard.whatsapp-connection.bar/>
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="page-title-box">
@@ -37,6 +39,7 @@
                     </div>
                 </div>
             </div>
+
             {{ $slot }}
         </div>
         <footer class="footer text-center text-sm-start">

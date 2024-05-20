@@ -9,39 +9,7 @@
 
 <script src="{{ asset(path: 'assets/dashboard/js/app.js') }}"></script>
 
-<script>
-    const toast = (title, icon = 'success') => {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'bottom-start',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        });
-        Toast.fire({
-            icon: icon,
-            title: title
-        });
-    }
-
-    @session('success')
-    toast('{{ $value }}');
-    @endsession
-
-    @session('error')
-    toast('{{ $value }}', 'error');
-    @endsession
-
-    document.addEventListener('livewire:init', () => {
-        Livewire.on('toasts.success', (event) => {
-            toast(event.message);
-        });
-    });
-</script>
+<x-dashboard.layouts.main.scripts.toasts/>
 
 @if($scripts !== null)
     {{ $scripts }}

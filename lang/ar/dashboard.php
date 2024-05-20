@@ -13,6 +13,8 @@ return [
         'back' => 'عودة',
         'actions' => 'الاجراءات',
         'no_data' => 'لا يوجد بيانات',
+        'loading' => 'جاري التحميل ...',
+        'second' => 'ثانية',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',
@@ -22,6 +24,22 @@ return [
     'footer' => [
         'copyrights' => '&copy; :date 4 واتس',
         'made_with_love_by_valinteca' => 'صنع بكل :icon بواسطة فالنتيكا',
+    ],
+    'pagination' => [
+        'previous' => '&laquo;',
+        'next' => '&raquo;',
+        'showing' => 'عرض',
+        'to' => 'الي',
+        'of' => 'من',
+        'results' => 'نتائج',
+    ],
+    'whatsapp' => [
+        'connected' => 'الهاتف متصل بنجاح',
+        'disconnected' => 'الهاتف غير متصل',
+        'disconnect' => 'فصل الهاتف',
+        'cannot_disconnect' => 'لا يمكن فصل الهاتف',
+        'disconnecting' => 'جاري فصل الهاتف',
+        'will_refresh_after' => 'سيتم التحديث بعد',
     ],
     'pages' => [
         'auth' => [
@@ -52,6 +70,7 @@ return [
         ],
         'home' => [
             'title' => 'الصفحة الرئيسية',
+            'scan_qr_code' => 'امسح الكود عن طريق الواتساب لربط رقم الهاتف',
         ],
         'employees' => [
             'index' => [
@@ -95,13 +114,5 @@ return [
                 'created_at' => 'تاريخ الانشاء',
             ],
         ],
-    ],
-    'pagination' => [
-        'previous' => '&laquo;',
-        'next' => '&raquo;',
-        'showing' => 'عرض',
-        'to' => 'الي',
-        'of' => 'من',
-        'results' => 'نتائج',
     ],
 ];

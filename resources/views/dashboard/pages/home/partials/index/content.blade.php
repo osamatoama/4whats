@@ -1,5 +1,3 @@
-<div class="row">
-    <div class="col-12">
-        @lang('dashboard.pages.home.title')
-    </div>
-</div>
+<iv class="row">
+    <livewire:dashboard.whatsapp-connection.qr-code/>
+</iv>

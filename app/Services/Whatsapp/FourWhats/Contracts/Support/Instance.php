@@ -14,5 +14,10 @@ interface Instance
     /**
      * @throws FourWhatsException
      */
+    public function info(): array;
+
+    /**
+     * @throws FourWhatsException
+     */
     public function logout(): array;
 }
