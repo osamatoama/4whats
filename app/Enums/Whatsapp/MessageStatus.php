@@ -7,7 +7,7 @@ enum MessageStatus: string
     case PENDING = 'pending';
     case SENT = 'sent';
     case DELIVERED = 'delivered';
-    case SEEN = 'seen';
+    case VIEWED = 'viewed';
 
     public function label(): string
     {

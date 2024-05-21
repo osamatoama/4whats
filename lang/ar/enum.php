@@ -61,6 +61,6 @@ return [
         MessageStatus::PENDING->name => 'بانتظار المراجعه',
         MessageStatus::SENT->name => 'تم الارسال',
         MessageStatus::DELIVERED->name => 'تم الاستلام',
-        MessageStatus::SEEN->name => 'تم المشاهدة',
+        MessageStatus::VIEWED->name => 'تم المشاهدة',
     ],
 ];
