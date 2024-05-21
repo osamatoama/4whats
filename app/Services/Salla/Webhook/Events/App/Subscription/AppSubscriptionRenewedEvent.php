@@ -7,7 +7,7 @@ use App\Services\Salla\Webhook\Contracts\SallaWebhookEvent;
 
 class AppSubscriptionRenewedEvent implements SallaWebhookEvent
 {
-    public function handle(int $merchantId, array $data): void
+    public function __invoke(string $event, int $merchantId, array $data): void
     {
         SallaAppSubscriptionRenewedJob::dispatch(
             merchantId: $merchantId,

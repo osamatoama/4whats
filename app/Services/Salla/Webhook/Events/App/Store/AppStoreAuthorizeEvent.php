@@ -7,7 +7,7 @@ use App\Services\Salla\Webhook\Contracts\SallaWebhookEvent;
 
 class AppStoreAuthorizeEvent implements SallaWebhookEvent
 {
-    public function handle(int $merchantId, array $data): void
+    public function __invoke(string $event, int $merchantId, array $data): void
     {
         SallaAppStoreAuthorizeJob::dispatch(
             merchantId: $merchantId,
