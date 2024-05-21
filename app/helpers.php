@@ -18,7 +18,7 @@ if (! function_exists('settings')) {
     function settings(?int $storeId = null, bool $eager = true): Settings
     {
         return resolveSingletonIf(
-            abstract: Settings::class.':'.$storeId ?? 'system',
+            abstract: Settings::class.':'.($storeId ?? 'system').':'.($eager ? 'eager' : 'lazy'),
             concrete: fn (): Settings => new Settings(storeId: $storeId, eager: $eager),
         );
     }

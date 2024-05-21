@@ -94,7 +94,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
     {
         $messageTemplate = $store->messageTemplates()->where(column: 'key', operator: '=', value: StoreMessageTemplate::SALLA_REVIEW_ORDER->value)->first();
 
-        $reviewStatusId = settings(storeId: $store->id)->value(key: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER);
+        $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER);
         if ($reviewStatusId != $orderStatus->id) {
             return;
         }

@@ -37,7 +37,7 @@ class ReviewOrder extends Component
             ],
         ]);
 
-        settings(storeId: currentStore()->id)
+        settings(storeId: currentStore()->id, eager: false)
             ->find(
                 key: StoreSettings::from(value: $this->template->key),
             )
