@@ -37,6 +37,11 @@ enum StoreMessageTemplate: string
         ];
     }
 
+    public static function generateOrderStatusKey(int $orderStatusId): string
+    {
+        return self::ORDER_STATUSES->value.'.'.$orderStatusId;
+    }
+
     public function placeholders(): array
     {
         return match ($this) {

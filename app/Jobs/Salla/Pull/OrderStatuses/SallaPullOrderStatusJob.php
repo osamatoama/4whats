@@ -43,12 +43,12 @@ class SallaPullOrderStatusJob implements ShouldQueue
             'name' => $this->data['name'],
         ]);
 
-        $messageTemplateEnum = StoreMessageTemplate::ORDER_STATUSES;
+        $storeMessageTemplate = StoreMessageTemplate::ORDER_STATUSES;
         $store->messageTemplates()->firstOrCreate(attributes: [
-            'key' => $messageTemplateEnum->value.'.'.$orderStatus->id,
+            'key' => StoreMessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id),
         ], values: [
-            'message' => $messageTemplateEnum->defaultMessage(),
-            'delay_in_seconds' => $messageTemplateEnum->delayInSeconds(),
+            'message' => $storeMessageTemplate->defaultMessage(),
+            'delay_in_seconds' => $storeMessageTemplate->delayInSeconds(),
         ]);
     }
 
