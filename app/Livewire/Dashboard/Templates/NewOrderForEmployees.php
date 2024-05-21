@@ -28,7 +28,9 @@ class NewOrderForEmployees extends Component
     {
         $this->authorize(ability: 'update', arguments: $this->template);
 
-        // TODO:Validation
+        $this->validate(rules: [
+            'mobiles' => ['nullable', 'string'],
+        ]);
 
         settings(storeId: currentStore()->id)
             ->find(

@@ -15,13 +15,16 @@
             </div>
         </div>
         <div class="card-body w-75 mx-auto">
-            <select class="form-select" wire:model.live="currentTemplateId">
+            <select @class(['form-select', 'is-invalid' => $errors->has(key: 'currentTemplateId')]) wire:model.live="currentTemplateId">
                 @foreach($templates as $template)
                     <option value="{{ $template->id }}" wire:key="{{ $template->id }}">
                         {{ $template->order_status->name }}
                     </option>
                 @endforeach
             </select>
+            @error('currentTemplateId')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
 
             <livewire:dashboard.templates.card :template="$currentTemplate" wire:key="{{ $currentTemplate->id }}"/>
         </div>

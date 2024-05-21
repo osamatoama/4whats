@@ -10,7 +10,13 @@
 
     <p>{{ $template->enum->description() }}</p>
 
-    <textarea class="form-control mb-3" rows="5" wire:model.live.debounce.500ms="message"></textarea>
+    <div class="form-group mb-3">
+        <textarea @class(['form-control', 'is-invalid' => $errors->has(key: 'message')]) rows="5" wire:model.live.debounce.500ms="message"></textarea>
+        @error('message')
+        <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
     <div>
         <p>@lang('dashboard.pages.templates.index.waiting_before_sending')</p>
         <p>@lang('dashboard.pages.templates.index.in_hours')</p>

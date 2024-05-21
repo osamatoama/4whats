@@ -20,7 +20,12 @@
         <div class="card-body w-75 mx-auto">
             <p>{{ $template->enum->description() }}</p>
 
-            <textarea class="form-control mb-3" rows="5" wire:model.live.debounce.500ms="message"></textarea>
+            <div class="form-group mb-3">
+                <textarea @class(['form-control', 'is-invalid' => $errors->has(key: 'message')]) rows="5" wire:model.live.debounce.500ms="message"></textarea>
+                @error('message')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
             @if($template->is_review_order)
                 <livewire:dashboard.templates.review-order :template="$template"/>

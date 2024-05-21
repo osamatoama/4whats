@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Templates;
 use App\Enums\Settings\StoreSettings;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\MessageTemplate;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -28,7 +29,13 @@ class ReviewOrder extends Component
     {
         $this->authorize(ability: 'update', arguments: $this->template);
 
-        // TODO:Validation
+        $this->validate(rules: [
+            'orderStatusId' => [
+                'required',
+                'integer',
+                Rule::exists(table: 'order_statuses', column: 'id')->where(column: 'store_id', value: currentStore()->id),
+            ],
+        ]);
 
         settings(storeId: currentStore()->id)
             ->find(

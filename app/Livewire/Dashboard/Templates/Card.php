@@ -30,7 +30,10 @@ class Card extends Component
     {
         $this->authorize(ability: 'update', arguments: $this->template);
 
-        // TODO:Validation
+        $this->validate(rules: [
+            'message' => ['required', 'string', 'max:5000'],
+            'delayInHours' => ['required', 'integer', 'min:0', 'max:72'],
+        ]);
 
         $this->template->update(attributes: [
             'message' => $this->message,

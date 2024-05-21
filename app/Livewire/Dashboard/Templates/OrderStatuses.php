@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Templates;
 use App\Enums\StoreMessageTemplate;
 use App\Models\MessageTemplate;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -29,6 +30,15 @@ class OrderStatuses extends Component
 
     public function updated(): void
     {
+        $this->validate(rules: [
+            'currentTemplateId' => [
+                'required',
+                'integer', Rule::in(
+                    values: $this->templates->pluck(value: 'id'),
+                ),
+            ],
+        ]);
+
         $this->currentTemplate = $this->templates->firstWhere(
             key: 'id',
             operator: '=',
