@@ -30,8 +30,6 @@ readonly class Settings
         }
 
         if ($this->eager || $this->settings->contains(key: 'key', operator: '=', value: $key)) {
-            dump('exists');
-
             return $this->settings->firstWhere(key: 'key', operator: '=', value: $key);
         }
 
