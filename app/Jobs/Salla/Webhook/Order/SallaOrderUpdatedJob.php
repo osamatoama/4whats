@@ -60,7 +60,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
         }
 
         $messageTemplateKey = StoreMessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
-        $messageTemplate = $store->messageTemplates()->where(column: 'key', operator: '=', value: $messageTemplateKey)->first();
+        $messageTemplate = $store->messageTemplates()->key(key: $messageTemplateKey)->first();
         if ($messageTemplate === null) {
             $this->handleException(
                 e: new Exception(
@@ -92,7 +92,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
     {
-        $messageTemplate = $store->messageTemplates()->where(column: 'key', operator: '=', value: StoreMessageTemplate::SALLA_REVIEW_ORDER->value)->first();
+        $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_REVIEW_ORDER)->first();
 
         $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER);
         if ($reviewStatusId != $orderStatus->id) {

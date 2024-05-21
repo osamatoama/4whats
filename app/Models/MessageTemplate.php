@@ -40,6 +40,15 @@ class MessageTemplate extends Model
         return $query->where(column: 'is_enabled', operator: '=', value: false);
     }
 
+    public function scopeKey(Builder $query, string|StoreMessageTemplate $key): Builder
+    {
+        if ($key instanceof StoreMessageTemplate) {
+            $key = $key->value;
+        }
+
+        return $query->where(column: 'key', operator: '=', value: $key);
+    }
+
     protected function isDisabled(): Attribute
     {
         return Attribute::make(
