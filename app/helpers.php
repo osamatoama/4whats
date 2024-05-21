@@ -15,11 +15,11 @@ if (! function_exists('resolveSingletonIf')) {
 }
 
 if (! function_exists('settings')) {
-    function settings(?int $storeId = null): Settings
+    function settings(?int $storeId = null, bool $eager = true): Settings
     {
         return resolveSingletonIf(
             abstract: Settings::class.':'.$storeId ?? 'system',
-            concrete: fn (): Settings => new Settings(storeId: $storeId),
+            concrete: fn (): Settings => new Settings(storeId: $storeId, eager: $eager),
         );
     }
 }
