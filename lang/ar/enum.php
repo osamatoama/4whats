@@ -3,12 +3,13 @@
 use App\Enums\ProviderType;
 use App\Enums\StoreMessageTemplate;
 use App\Enums\UserRole;
+use App\Enums\Whatsapp\MessageStatus;
 
 return [
     UserRole::class => [
-        UserRole::ADMIN->value => 'مسؤول',
-        UserRole::MERCHANT->value => 'تاجر',
-        UserRole::EMPLOYEE->value => 'موظف',
+        UserRole::ADMIN->name => 'مسؤول',
+        UserRole::MERCHANT->name => 'تاجر',
+        UserRole::EMPLOYEE->name => 'موظف',
     ],
     ProviderType::class => [
         ProviderType::SALLA->name => 'سلة',
@@ -55,5 +56,11 @@ return [
             'description' => 'من اجل ادراج متغيرات في الرسالة استخدم الإختصارات التالية: :placeholders',
             'hint' => 'رسالة الطلبات الجديدة للموظفين في المتجر',
         ],
+    ],
+    MessageStatus::class => [
+        MessageStatus::PENDING->name => 'بانتظار المراجعه',
+        MessageStatus::SENT->name => 'تم الارسال',
+        MessageStatus::DELIVERED->name => 'تم الاستلام',
+        MessageStatus::SEEN->name => 'تم المشاهدة',
     ],
 ];
