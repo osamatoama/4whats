@@ -72,20 +72,22 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
-        $message = str(string: $messageTemplate->message)
-            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
-            ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
-            ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
-            ->toString();
+        if ($messageTemplate->is_enabled) {
+            $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
+            $message = str(string: $messageTemplate->message)
+                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+                ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
+                ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
+                ->toString();
 
-        WhatsappSendTextMessageJob::dispatch(
-            storeId: $store->id,
-            instanceId: $store->whatsappAccount->instance_id,
-            instanceToken: $store->whatsappAccount->instance_token,
-            mobile: $mobile,
-            message: $message,
-        )->delay(delay: $messageTemplate->delay_in_seconds);
+            WhatsappSendTextMessageJob::dispatch(
+                storeId: $store->id,
+                instanceId: $store->whatsappAccount->instance_id,
+                instanceToken: $store->whatsappAccount->instance_token,
+                mobile: $mobile,
+                message: $message,
+            )->delay(delay: $messageTemplate->delay_in_seconds);
+        }
 
         $this->sendReviewMessage(store: $store, orderStatus: $orderStatus);
         $this->sendCODMessage(store: $store);
@@ -95,6 +97,9 @@ class SallaOrderCreatedJob implements ShouldQueue
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
     {
         $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_REVIEW_ORDER)->first();
+        if ($messageTemplate->is_disabled) {
+            return;
+        }
 
         $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER);
         if ($reviewStatusId != $orderStatus->id) {
@@ -122,11 +127,14 @@ class SallaOrderCreatedJob implements ShouldQueue
 
     protected function sendCODMessage(Store $store): void
     {
-        if ($this->data[''] !== 'cod') {
+        if ($this->data['payment_method'] !== 'cod') {
             return;
         }
 
         $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_COD)->first();
+        if ($messageTemplate->is_disabled) {
+            return;
+        }
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         $message = str(string: $messageTemplate->message)
@@ -149,6 +157,9 @@ class SallaOrderCreatedJob implements ShouldQueue
     protected function sendToEmployees(Store $store): void
     {
         $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES)->first();
+        if ($messageTemplate->is_disabled) {
+            return;
+        }
 
         $mobiles = settings(storeId: $store->id, eager: false)->value(key: StoreSettings::SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES);
         $mobiles = explode(separator: ',', string: $mobiles);

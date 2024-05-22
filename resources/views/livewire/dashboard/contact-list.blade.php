@@ -27,7 +27,7 @@
                         <tr>
                             <td>{{ $contact->provider_id }}</td>
                             <td>{{ $contact->name }}</td>
-                            <td>{{ $contact->email }}</td>
+                            <td>{{ $contact->email ?? '-----' }}</td>
                             <td>{{ $contact->mobile }}</td>
                             <td>{{ $contact->created_at->format(format: 'd-m-Y') }}</td>
                         </tr>

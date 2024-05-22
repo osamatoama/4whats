@@ -61,7 +61,7 @@ class SallaAbandonedCartJob implements ShouldQueue
             storeId: $store->id,
             instanceId: $store->whatsappAccount->instance_id,
             instanceToken: $store->whatsappAccount->instance_token,
-            mobile: '+201551747425',
+            mobile: $mobile,
             message: $message,
         )->delay(delay: $messageTemplate->delay_in_seconds);
     }
