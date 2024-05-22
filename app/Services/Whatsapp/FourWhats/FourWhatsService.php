@@ -6,12 +6,14 @@ use App\Services\Whatsapp\FourWhats\Contracts\Support\Instance as InstanceContra
 use App\Services\Whatsapp\FourWhats\Contracts\Support\Instances as InstancesContract;
 use App\Services\Whatsapp\FourWhats\Contracts\Support\Sending as SendingContract;
 use App\Services\Whatsapp\FourWhats\Contracts\Support\User as UserContract;
+use App\Services\Whatsapp\FourWhats\Contracts\Support\Webhook as WebhookContract;
 use App\Services\Whatsapp\FourWhats\Fakes\Support\Instances as FakeInstances;
 use App\Services\Whatsapp\FourWhats\Fakes\Support\User as FakeUser;
 use App\Services\Whatsapp\FourWhats\Support\Instance;
 use App\Services\Whatsapp\FourWhats\Support\Instances;
 use App\Services\Whatsapp\FourWhats\Support\Sending;
 use App\Services\Whatsapp\FourWhats\Support\User;
+use App\Services\Whatsapp\FourWhats\Support\Webhook;
 
 readonly class FourWhatsService
 {
@@ -56,6 +58,14 @@ readonly class FourWhatsService
         return resolveSingletonIf(
             abstract: SendingContract::class.':'.$instanceId.':'.$instanceToken,
             concrete: fn (): SendingContract => new Sending(service: $this, client: $this->client, instanceId: $instanceId, instanceToken: $instanceToken),
+        );
+    }
+
+    public function webhook(int $instanceId, string $instanceToken): WebhookContract
+    {
+        return resolveSingletonIf(
+            abstract: WebhookContract::class.':'.$instanceId.':'.$instanceToken,
+            concrete: fn (): WebhookContract => new Webhook(service: $this, client: $this->client, instanceId: $instanceId, instanceToken: $instanceToken),
         );
     }
 }

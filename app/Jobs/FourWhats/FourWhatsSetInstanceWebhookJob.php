@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Jobs\FourWhats;
+
+use App\Jobs\Concerns\InteractsWithException;
+use App\Services\Whatsapp\FourWhats\FourWhatsException;
+use App\Services\Whatsapp\FourWhats\FourWhatsService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+
+class FourWhatsSetInstanceWebhookJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(
+        public int $instanceId,
+        public string $instanceToken,
+    ) {
+        //
+    }
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        $service = new FourWhatsService();
+        try {
+            $service->webhook(instanceId: $this->instanceId, instanceToken: $this->instanceToken)->set(
+                url: route(name: 'api.v1.webhooks.four-whats'),
+            );
+        } catch (FourWhatsException $e) {
+            $this->handleException(
+                e: new FourWhatsException(
+                    message: "Exception while setting four whats instance webhook | Id: {$this->instanceId} | Token: {$this->instanceToken}  | Message: {$e->getMessage()}",
+                    code: $e->getCode(),
+                ),
+                fail: true,
+            );
+        }
+    }
+}

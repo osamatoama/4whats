@@ -3,6 +3,7 @@
 namespace App\Jobs\Salla\Webhook\App\Subscription;
 
 use App\Jobs\Concerns\InteractsWithException;
+use App\Jobs\FourWhats\FourWhatsSetInstanceWebhookJob;
 use App\Models\Store;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
@@ -77,6 +78,11 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
 
             return;
         }
+
+        FourWhatsSetInstanceWebhookJob::dispatch(
+            instanceId: $response['instance_id'],
+            instanceToken: $response['instance_token'],
+        );
 
         $whatsappAccount->update(attributes: [
             'instance_id' => $response['instance_id'],
