@@ -36,7 +36,7 @@ class SallaAbandonedCartJob implements ShouldQueue
         if ($store === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla abandoned cart webhook | Message: Store not found | Merchant: {$this->merchantId}",
+                    message: "Error while handling salla abandoned cart webhook | Merchant: {$this->merchantId} | Message: Store not found",
                 ),
                 fail: true,
             );

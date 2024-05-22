@@ -38,7 +38,7 @@ class SallaOrderCreatedJob implements ShouldQueue
         if ($store === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla order created webhook | Message: Store not found | Merchant: {$this->merchantId}",
+                    message: "Error while handling salla order created webhook | Merchant: {$this->merchantId} | Message: Store not found",
                 ),
                 fail: true,
             );
@@ -51,7 +51,7 @@ class SallaOrderCreatedJob implements ShouldQueue
         if ($orderStatus === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla order created webhook | Message: Order status not found | Store: {$store->id} | Status: {$sallaOrderStatusId}",
+                    message: "Error while handling salla order created webhook | Store: {$store->id} | Status: {$sallaOrderStatusId} | Message: Order status not found",
                 ),
                 fail: true,
             );
@@ -64,7 +64,7 @@ class SallaOrderCreatedJob implements ShouldQueue
         if ($messageTemplate === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla order created webhook | Message: Message template not found | Store: {$store->id} | Key: {$messageTemplateKey}",
+                    message: "Error while handling salla order created webhook | Store: {$store->id} | Key: {$messageTemplateKey} | Message: Message template not found",
                 ),
                 fail: true,
             );

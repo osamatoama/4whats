@@ -39,7 +39,7 @@ class SallaCustomerCreatedJob implements ShouldQueue
         if ($store === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla customer created webhook | Message: Store not found | Merchant: {$this->merchantId}",
+                    message: "Error while handling salla customer created webhook | Merchant: {$this->merchantId} | Message: Store not found",
                 ),
                 fail: true,
             );

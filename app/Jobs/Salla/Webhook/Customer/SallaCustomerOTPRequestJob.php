@@ -36,7 +36,7 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
         if ($store === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla customer otp request webhook | Message: Store not found | Merchant: {$this->merchantId}",
+                    message: "Error while handling salla customer otp request webhook | Merchant: {$this->merchantId} | Message: Store not found",
                 ),
                 fail: true,
             );
