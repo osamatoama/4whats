@@ -24,9 +24,9 @@
                     <tbody>
                     @forelse($this->messages as $message)
                         <tr>
-                            <td>{{ $message->to }}</td>
+                            <td>{{ $message->mobile }}</td>
                             <td>
-                                <textarea class="form-control" readonly>{{ $message->message }}</textarea>
+                                <textarea class="form-control" readonly>{{ $message->body }}</textarea>
                             </td>
                             <td>{{ $message->created_at->format(format: 'd-m-Y H:i:s') }}</td>
                             <td>{{ $message->status->label() }}</td>

@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 
-class MessageHistoryPolicy
+class MessagePolicy
 {
     public function viewAny(User $user): bool
     {

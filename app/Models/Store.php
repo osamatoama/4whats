@@ -68,9 +68,9 @@ class Store extends Model
         return $this->hasOne(related: WhatsappAccount::class, foreignKey: 'store_id');
     }
 
-    public function messageHistories(): HasMany
+    public function messages(): HasMany
     {
-        return $this->hasMany(related: MessageHistory::class, foreignKey: 'store_id');
+        return $this->hasMany(related: Message::class, foreignKey: 'store_id');
     }
 
     public function scopeSalla(Builder $query, ?int $providerId = null): Builder

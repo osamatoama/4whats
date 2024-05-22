@@ -12,12 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('message_histories', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
             $table->string('provider_id');
-            $table->text('message');
-            $table->string('to');
+            $table->string('mobile');
+            $table->text('body');
             $table->string('status');
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message_histories');
+        Schema::dropIfExists('messages');
     }
 };

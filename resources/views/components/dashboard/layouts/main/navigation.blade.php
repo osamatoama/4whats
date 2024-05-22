@@ -1,7 +1,7 @@
 @use(\App\Models\User)
 @use(\App\Models\MessageTemplate)
 @use(\App\Models\Contact)
-@use(\App\Models\MessageHistory)
+@use(\App\Models\Message)
 
 <x-dashboard.layouts.main.nav-link
     :url="route(name: 'dashboard.home')"
@@ -33,7 +33,7 @@
     />
 @endcan
 
-@can('viewAny', MessageHistory::class)
+@can('viewAny', Message::class)
     <x-dashboard.layouts.main.nav-link
         :url="route(name: 'dashboard.messages.index')"
         :text="__(key: 'dashboard.pages.messages.index.title')"

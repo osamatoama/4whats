@@ -4,7 +4,7 @@ namespace App\Jobs\Whatsapp;
 
 use App\Enums\Whatsapp\MessageStatus;
 use App\Jobs\Concerns\InteractsWithException;
-use App\Models\MessageHistory;
+use App\Models\Message;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
 use Illuminate\Bus\Queueable;
@@ -49,11 +49,11 @@ class WhatsappSendTextMessageJob implements ShouldQueue
             return;
         }
 
-        MessageHistory::query()->create(attributes: [
+        Message::query()->create(attributes: [
             'store_id' => $this->storeId,
             'provider_id' => $response['id'],
-            'message' => $this->message,
-            'to' => $this->mobile,
+            'mobile' => $this->mobile,
+            'body' => $this->message,
             'status' => MessageStatus::PENDING,
         ]);
     }

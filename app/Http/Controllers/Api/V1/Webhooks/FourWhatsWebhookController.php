@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Webhooks;
 
 use App\Http\Controllers\Controller;
-use App\Models\MessageHistory;
+use App\Models\Message;
 use App\Models\WhatsappAccount;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ class FourWhatsWebhookController extends Controller
             return;
         }
 
-        MessageHistory::query()->where(column: 'provider_id', operator: '=', value: $request->input(key: 'ack.0.id'))->update(values: [
+        Message::query()->where(column: 'provider_id', operator: '=', value: $request->input(key: 'ack.0.id'))->update(values: [
             'status' => $request->input(key: 'ack.0.status'),
         ]);
     }

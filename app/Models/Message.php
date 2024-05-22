@@ -6,13 +6,13 @@ use App\Enums\Whatsapp\MessageStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MessageHistory extends Model
+class Message extends Model
 {
     protected $fillable = [
         'store_id',
         'provider_id',
-        'message',
-        'to',
+        'mobile',
+        'body',
         'status',
         'created_at',
         'updated_at',

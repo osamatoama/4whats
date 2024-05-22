@@ -22,7 +22,7 @@ class MessageList extends Component
     public function messages(): LengthAwarePaginator
     {
         return currentStore()
-            ->messageHistories()
+            ->messages()
             ->when(
                 value: $this->keyword !== null,
                 callback: fn (Builder $query): Builder => $query->where(
