@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Jobs\Salla\Webhook\Customer;
+
+use App\Enums\StoreMessageTemplate;
+use App\Jobs\Concerns\InteractsWithException;
+use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
+use App\Models\Store;
+use Exception;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+
+class SallaCustomerOTPRequestJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(
+        public int $merchantId,
+        public array $data,
+    ) {
+        //
+    }
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        $store = Store::query()->salla(providerId: $this->merchantId)->first();
+        if ($store === null) {
+            $this->handleException(
+                e: new Exception(
+                    message: "Error while handling salla customer otp request webhook | Message: Store not found | Merchant: {$this->merchantId}",
+                ),
+                fail: true,
+            );
+
+            return;
+        }
+
+        $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_OTP)->first();
+        if ($messageTemplate->is_disabled) {
+            return;
+        }
+
+        $mobile = $this->data['contact'];
+        $message = str(string: $messageTemplate->message)
+            ->replace(search: '{OTP}', replace: $this->data['code'])
+            ->toString();
+
+        WhatsappSendTextMessageJob::dispatch(
+            storeId: $store->id,
+            instanceId: $store->whatsappAccount->instance_id,
+            instanceToken: $store->whatsappAccount->instance_token,
+            mobile: $mobile,
+            message: $message,
+        )->delay(delay: $messageTemplate->delay_in_seconds);
+    }
+}

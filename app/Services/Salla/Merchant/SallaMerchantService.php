@@ -6,6 +6,7 @@ use App\Services\Salla\Merchant\Support\AbandonedCarts;
 use App\Services\Salla\Merchant\Support\Customers;
 use App\Services\Salla\Merchant\Support\OrderStatuses;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Carbon;
 
 class SallaMerchantService
 {
@@ -42,6 +43,11 @@ class SallaMerchantService
         app()->singletonIf($abstract, fn (): AbandonedCarts => new AbandonedCarts(service: $this, client: $this->client));
 
         return app($abstract);
+    }
+
+    public static function parseDate(array $data): Carbon
+    {
+        return Carbon::parse(time: $data['date'], timezone: $data['timezone'])->timezone(value: config(key: 'app.timezone'));
     }
 
     /**

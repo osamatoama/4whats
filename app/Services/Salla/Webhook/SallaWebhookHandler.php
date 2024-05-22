@@ -5,6 +5,9 @@ namespace App\Services\Salla\Webhook;
 use App\Services\Salla\Webhook\Events\App\Store\AppStoreAuthorizeEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionRenewedEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionStartedEvent;
+use App\Services\Salla\Webhook\Events\Customer\CustomerCreatedEvent;
+use App\Services\Salla\Webhook\Events\Customer\CustomerOTPRequestEvent;
+use App\Services\Salla\Webhook\Events\Customer\CustomerUpdatedEvent;
 use App\Services\Salla\Webhook\Events\Order\OrderCreatedEvent;
 use App\Services\Salla\Webhook\Events\Order\OrderUpdatedEvent;
 use App\Services\Salla\Webhook\Events\UnknownEvent;
@@ -29,6 +32,9 @@ class SallaWebhookHandler
             'app.subscription.renewed' => new AppSubscriptionRenewedEvent(),
             'order.created' => new OrderCreatedEvent(),
             'order.updated' => new OrderUpdatedEvent(),
+            'customer.created' => new CustomerCreatedEvent(),
+            'customer.updated' => new CustomerUpdatedEvent(),
+            'customer.otp.request' => new CustomerOTPRequestEvent(),
             default => new UnknownEvent(),
         })(event: $event, merchantId: $merchantId, data: $data);
     }

@@ -1,27 +1,28 @@
 <?php
 
-namespace App\Jobs\Salla\Pull\Customers;
+namespace App\Jobs\Salla\Webhook\Customer;
 
 use App\Enums\ContactSource;
 use App\Enums\ProviderType;
-use App\Jobs\Concerns\InteractsWithBatches;
-use App\Models\Contact;
+use App\Jobs\Concerns\InteractsWithException;
+use App\Models\Store;
 use App\Services\Salla\Merchant\SallaMerchantService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SallaPullCustomerJob implements ShouldQueue
+class SallaCustomerUpdatedJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithBatches, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
     public function __construct(
-        public int $storeId,
+        public int $merchantId,
         public array $data,
     ) {
         //
@@ -32,8 +33,19 @@ class SallaPullCustomerJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Contact::query()->updateOrCreate(attributes: [
-            'store_id' => $this->storeId,
+        $store = Store::query()->salla(providerId: $this->merchantId)->first();
+        if ($store === null) {
+            $this->handleException(
+                e: new Exception(
+                    message: "Error while handling salla customer updated webhook | Message: Store not found | Merchant: {$this->merchantId}",
+                ),
+                fail: true,
+            );
+
+            return;
+        }
+
+        $store->contacts()->updateOrCreate(attributes: [
             'provider_type' => ProviderType::SALLA,
             'provider_id' => $this->data['id'],
             'source' => ContactSource::SALLA,

@@ -7,12 +7,12 @@ use App\Enums\ProviderType;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Models\AbandonedCart;
 use App\Models\Contact;
+use App\Services\Salla\Merchant\SallaMerchantService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Carbon;
 
 class SallaPullAbandonedCartJob implements ShouldQueue
 {
@@ -42,8 +42,8 @@ class SallaPullAbandonedCartJob implements ShouldQueue
             'total_amount' => $this->data['total']['amount'] * 100,
             'total_currency' => $this->data['total']['currency'],
             'checkout_url' => $this->data['checkout_url'],
-            'created_at' => $this->parseDate(time: $this->data['created_at']['date'], timezone: $this->data['created_at']['timezone']),
-            'updated_at' => $this->parseDate(time: $this->data['updated_at']['date'], timezone: $this->data['updated_at']['timezone']),
+            'created_at' => SallaMerchantService::parseDate(data: $this->data['created_at']),
+            'updated_at' => SallaMerchantService::parseDate(data: $this->data['updated_at']),
         ]);
     }
 
@@ -64,10 +64,5 @@ class SallaPullAbandonedCartJob implements ShouldQueue
                 'phone' => $this->data['customer']['mobile'],
                 'gender' => null,
             ])->id;
-    }
-
-    protected function parseDate(string $time, string $timezone): Carbon
-    {
-        return Carbon::parse(time: $time, timezone: $timezone)->timezone(value: config(key: 'app.timezone'));
     }
 }
