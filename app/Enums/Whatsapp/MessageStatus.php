@@ -11,6 +11,6 @@ enum MessageStatus: string
 
     public function label(): string
     {
-        return __(key: 'enum.'.__CLASS__.'.'.$this->value);
+        return __(key: 'enum.'.__CLASS__.'.'.$this->name);
     }
 }
