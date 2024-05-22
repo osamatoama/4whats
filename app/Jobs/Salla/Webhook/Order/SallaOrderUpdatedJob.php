@@ -2,8 +2,8 @@
 
 namespace App\Jobs\Salla\Webhook\Order;
 
+use App\Enums\MessageTemplate;
 use App\Enums\Settings\StoreSettings;
-use App\Enums\StoreMessageTemplate;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\OrderStatus;
@@ -59,7 +59,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
             return;
         }
 
-        $messageTemplateKey = StoreMessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
+        $messageTemplateKey = MessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
         $messageTemplate = $store->messageTemplates()->key(key: $messageTemplateKey)->first();
         if ($messageTemplate === null) {
             $this->handleException(
@@ -94,7 +94,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
     {
-        $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_REVIEW_ORDER)->first();
+        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_REVIEW_ORDER)->first();
         if ($messageTemplate->is_disabled) {
             return;
         }

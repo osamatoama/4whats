@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Illuminate\Support\Collection;
 
-enum StoreMessageTemplate: string
+enum MessageTemplate: string
 {
     case ORDER_STATUSES = 'order_statuses';
     case SALLA_ABANDONED_CART = 'salla.event.abandoned.cart';
@@ -17,8 +17,8 @@ enum StoreMessageTemplate: string
     public static function sallaCases(): Collection
     {
         return collect(value: self::cases())
-            ->filter(callback: function (StoreMessageTemplate $storeMessageTemplate) {
-                return $storeMessageTemplate === self::ORDER_STATUSES || str(string: $storeMessageTemplate->name)->startsWith(needles: 'SALLA_');
+            ->filter(callback: function (MessageTemplate $messageTemplate) {
+                return $messageTemplate === self::ORDER_STATUSES || str(string: $messageTemplate->name)->startsWith(needles: 'SALLA_');
             });
 
     }

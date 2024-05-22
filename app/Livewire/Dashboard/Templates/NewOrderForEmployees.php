@@ -4,7 +4,7 @@ namespace App\Livewire\Dashboard\Templates;
 
 use App\Enums\Settings\StoreSettings;
 use App\Livewire\Concerns\InteractsWithToasts;
-use App\Models\MessageTemplate;
+use App\Models\Template;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -12,7 +12,7 @@ class NewOrderForEmployees extends Component
 {
     use InteractsWithToasts;
 
-    public MessageTemplate $template;
+    public Template $template;
 
     public ?string $mobiles;
 
@@ -40,7 +40,7 @@ class NewOrderForEmployees extends Component
                 'value' => $this->mobiles,
             ]);
 
-        $this->successToast(action: 'updated', model: 'message_templates.singular');
+        $this->successToast(action: 'updated', model: 'templates.singular');
     }
 
     public function render(): View

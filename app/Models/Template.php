@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\StoreMessageTemplate;
+use App\Enums\MessageTemplate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MessageTemplate extends Model
+class Template extends Model
 {
     protected $fillable = [
         'store_id',
@@ -40,9 +40,9 @@ class MessageTemplate extends Model
         return $query->where(column: 'is_enabled', operator: '=', value: false);
     }
 
-    public function scopeKey(Builder $query, string|StoreMessageTemplate $key): Builder
+    public function scopeKey(Builder $query, string|MessageTemplate $key): Builder
     {
-        if ($key instanceof StoreMessageTemplate) {
+        if ($key instanceof MessageTemplate) {
             $key = $key->value;
         }
 
@@ -66,12 +66,12 @@ class MessageTemplate extends Model
     protected function enum(): Attribute
     {
         return Attribute::make(
-            get: function (mixed $value, array $attributes): StoreMessageTemplate {
-                if (str(string: $attributes['key'])->startsWith(needles: StoreMessageTemplate::ORDER_STATUSES->value)) {
-                    return StoreMessageTemplate::ORDER_STATUSES;
+            get: function (mixed $value, array $attributes): MessageTemplate {
+                if (str(string: $attributes['key'])->startsWith(needles: MessageTemplate::ORDER_STATUSES->value)) {
+                    return MessageTemplate::ORDER_STATUSES;
                 }
 
-                return StoreMessageTemplate::from(value: $attributes['key']);
+                return MessageTemplate::from(value: $attributes['key']);
             },
         );
     }
@@ -79,21 +79,21 @@ class MessageTemplate extends Model
     protected function isReviewOrder(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes): bool => in_array(needle: $attributes['key'], haystack: StoreMessageTemplate::reviewOrderValues()),
+            get: fn (mixed $value, array $attributes): bool => in_array(needle: $attributes['key'], haystack: MessageTemplate::reviewOrderValues()),
         );
     }
 
     protected function isNewOrderForEmployees(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes): bool => in_array(needle: $attributes['key'], haystack: StoreMessageTemplate::newOrderForEmployeesValues()),
+            get: fn (mixed $value, array $attributes): bool => in_array(needle: $attributes['key'], haystack: MessageTemplate::newOrderForEmployeesValues()),
         );
     }
 
     protected function isOrderStatus(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes): bool => str(string: $attributes['key'])->beforeLast(search: '.')->toString() === StoreMessageTemplate::ORDER_STATUSES->value,
+            get: fn (mixed $value, array $attributes): bool => str(string: $attributes['key'])->beforeLast(search: '.')->toString() === MessageTemplate::ORDER_STATUSES->value,
         );
     }
 

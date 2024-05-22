@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\Cart;
 
-use App\Enums\StoreMessageTemplate;
+use App\Enums\MessageTemplate;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\Store;
@@ -44,7 +44,7 @@ class SallaAbandonedCartJob implements ShouldQueue
             return;
         }
 
-        $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_ABANDONED_CART)->first();
+        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_ABANDONED_CART)->first();
         if ($messageTemplate->is_disabled) {
             return;
         }

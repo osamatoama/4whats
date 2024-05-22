@@ -58,9 +58,9 @@ class Store extends Model
         return $this->hasMany(related: Setting::class, foreignKey: 'store_id');
     }
 
-    public function messageTemplates(): HasMany
+    public function templates(): HasMany
     {
-        return $this->hasMany(related: MessageTemplate::class, foreignKey: 'store_id');
+        return $this->hasMany(related: Template::class, foreignKey: 'store_id');
     }
 
     public function whatsappAccount(): HasOne

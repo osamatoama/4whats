@@ -2,9 +2,9 @@
 
 namespace App\Jobs\Salla\Webhook\App\Store;
 
+use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\Settings\StoreSettings;
-use App\Enums\StoreMessageTemplate;
 use App\Enums\UserRole;
 use App\Jobs\FourWhats\FourWhatsCreateUserJob;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
@@ -63,7 +63,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 $store = $this->createStore(user: $user, resourceOwner: $resourceOwner);
 
                 $this->createWidget(store: $store);
-                $this->createMessageTemplates(store: $store);
+                $this->createTemplates(store: $store);
                 $this->createExpiredWhatsappAccount(store: $store);
 
                 return $store;
@@ -138,26 +138,26 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
         $store->widget()->create();
     }
 
-    protected function createMessageTemplates(Store $store): void
+    protected function createTemplates(Store $store): void
     {
-        foreach (StoreMessageTemplate::sallaCases() as $storeMessageTemplate) {
-            if ($storeMessageTemplate === StoreMessageTemplate::ORDER_STATUSES) {
+        foreach (MessageTemplate::sallaCases() as $messageTemplate) {
+            if ($messageTemplate === MessageTemplate::ORDER_STATUSES) {
                 continue;
             }
 
-            $store->messageTemplates()->create(attributes: [
-                'key' => $storeMessageTemplate->value,
-                'message' => $storeMessageTemplate->defaultMessage(),
-                'delay_in_seconds' => $storeMessageTemplate->delayInSeconds(),
+            $store->templates()->create(attributes: [
+                'key' => $messageTemplate->value,
+                'message' => $messageTemplate->defaultMessage(),
+                'delay_in_seconds' => $messageTemplate->delayInSeconds(),
             ]);
 
-            if ($storeMessageTemplate === StoreMessageTemplate::SALLA_REVIEW_ORDER) {
+            if ($messageTemplate === MessageTemplate::SALLA_REVIEW_ORDER) {
                 $store->settings()->create(attributes: [
                     'key' => StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
                 ]);
             }
 
-            if ($storeMessageTemplate === StoreMessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES) {
+            if ($messageTemplate === MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES) {
                 $store->settings()->create(attributes: [
                     'key' => StoreSettings::SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES,
                 ]);
@@ -169,6 +169,8 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
     {
         $store->whatsappAccount()->create(attributes: [
             'label' => $store->name,
+            'instance_id' => 0,
+            'instance_token' => '',
             'expired_at' => now()->subSecond(),
         ]);
     }

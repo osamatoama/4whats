@@ -3,8 +3,8 @@
 namespace App\Jobs\Salla\Webhook\Customer;
 
 use App\Enums\ContactSource;
+use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
-use App\Enums\StoreMessageTemplate;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\Store;
@@ -60,7 +60,7 @@ class SallaCustomerCreatedJob implements ShouldQueue
             'updated_at' => SallaMerchantService::parseDate(data: $this->data['updated_at']),
         ]);
 
-        $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_CUSTOMER_CREATED)->first();
+        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_CUSTOMER_CREATED)->first();
         if ($messageTemplate->is_disabled) {
             return;
         }

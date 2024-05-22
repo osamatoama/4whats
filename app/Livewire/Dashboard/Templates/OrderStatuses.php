@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Dashboard\Templates;
 
-use App\Enums\StoreMessageTemplate;
-use App\Models\MessageTemplate;
+use App\Enums\MessageTemplate;
+use App\Models\Template;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -15,7 +15,7 @@ class OrderStatuses extends Component
 
     public int $currentTemplateId;
 
-    public MessageTemplate $currentTemplate;
+    public Template $currentTemplate;
 
     public function mount(): void
     {
@@ -48,7 +48,7 @@ class OrderStatuses extends Component
 
     public function render(): View
     {
-        $enum = StoreMessageTemplate::ORDER_STATUSES;
+        $enum = MessageTemplate::ORDER_STATUSES;
 
         return view(view: 'livewire.dashboard.templates.order-statuses', data: [
             'label' => $enum->label(),

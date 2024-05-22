@@ -1,5 +1,5 @@
 @use(\App\Models\User)
-@use(\App\Models\MessageTemplate)
+@use(\App\Models\Template)
 @use(\App\Models\Contact)
 @use(\App\Models\Message)
 
@@ -17,7 +17,7 @@
     />
 @endcan
 
-@can('viewAny', MessageTemplate::class)
+@can('viewAny', Template::class)
     <x-dashboard.layouts.main.nav-link
         :url="route(name: 'dashboard.templates.index')"
         :text="__(key: 'dashboard.pages.templates.index.title')"

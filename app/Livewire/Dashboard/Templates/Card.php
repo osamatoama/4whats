@@ -3,7 +3,7 @@
 namespace App\Livewire\Dashboard\Templates;
 
 use App\Livewire\Concerns\InteractsWithToasts;
-use App\Models\MessageTemplate;
+use App\Models\Template;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -11,7 +11,7 @@ class Card extends Component
 {
     use InteractsWithToasts;
 
-    public MessageTemplate $template;
+    public Template $template;
 
     public string $message;
 
@@ -41,7 +41,7 @@ class Card extends Component
             'is_enabled' => $this->isEnabled,
         ]);
 
-        $this->successToast(action: 'updated', model: 'message_templates.singular');
+        $this->successToast(action: 'updated', model: 'templates.singular');
     }
 
     public function render(): View

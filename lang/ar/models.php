@@ -5,7 +5,7 @@ return [
         'singular' => 'الموظف',
         'plural' => 'الموظفين',
     ],
-    'message_templates' => [
+    'templates' => [
         'singular' => 'قالب الرسالة',
         'plural' => 'قوالب الرسائل',
     ],

@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\Customer;
 
-use App\Enums\StoreMessageTemplate;
+use App\Enums\MessageTemplate;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\Store;
@@ -44,7 +44,7 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
             return;
         }
 
-        $messageTemplate = $store->messageTemplates()->key(key: StoreMessageTemplate::SALLA_OTP)->first();
+        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_OTP)->first();
         if ($messageTemplate->is_disabled) {
             return;
         }
