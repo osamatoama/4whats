@@ -9,6 +9,9 @@ class HomeController extends Controller
 {
     public function __invoke(): View
     {
-        return view(view: 'dashboard.pages.home.index');
+        return view(view: 'dashboard.pages.home.index', data: [
+            'contactsCount' => currentStore()->contacts()->count(),
+            'messagesCount' => currentStore()->messages()->count(),
+        ]);
     }
 }
