@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\App\Store;
 
+use App\Enums\Jobs\JobBatchName;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\Settings\StoreSettings;
@@ -177,24 +178,38 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
     protected function pullStoreData(Store $store): void
     {
-        $orderStatuses = Bus::batch(jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], storeId: $store->id))
-            ->name(name: 'salla.pull.order-statuses:'.$store->id)
-            ->finally(callback: function (Batch $batch) use ($store): void {
-                $store->settings()
-                    ->where(
-                        column: 'key',
-                        operator: '=',
-                        value: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
-                    )
-                    ->update(values: [
-                        'value' => $store->orderStatuses()->first()->id,
-                    ]);
-            });
+        $customersBatch = Bus::batch(
+            jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id),
+        )->name(
+            name: JobBatchName::SALLA_PULL_CUSTOMERS->generate(storeId: $store->id),
+        );
+
+        $abandonedCartsBatch = Bus::batch(
+            jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id),
+        )->name(
+            name: JobBatchName::SALLA_PULL_ABANDONED_CARTS->generate(storeId: $store->id),
+        );
+
+        $orderStatusesBatch = Bus::batch(
+            jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], storeId: $store->id),
+        )->name(
+            name: JobBatchName::SALLA_PULL_ORDER_STATUSES->generate(storeId: $store->id),
+        )->finally(callback: function (Batch $batch) use ($store): void {
+            $store->settings()
+                ->where(
+                    column: 'key',
+                    operator: '=',
+                    value: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
+                )
+                ->update(values: [
+                    'value' => $store->orderStatuses()->first()->id,
+                ]);
+        });
 
         Bus::chain(jobs: [
-            Bus::batch(jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.customers:'.$store->id),
-            Bus::batch(jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id))->name(name: 'salla.pull.abandoned-carts:'.$store->id),
-            $orderStatuses,
+            $customersBatch,
+            $abandonedCartsBatch,
+            $orderStatusesBatch,
         ])->dispatch();
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
+use App\Enums\Jobs\JobBatchName;
 use App\Models\Store;
 use App\Models\User;
 use App\Support\Settings;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 if (! function_exists('resolveSingletonIf')) {
     function resolveSingletonIf(string $abstract, ?Closure $concrete = null): mixed
@@ -55,5 +57,20 @@ if (! function_exists('currentStore')) {
         $storeId = session()->get(key: $key);
 
         return once(callback: fn (): Store => parentUserStores()->firstWhere(key: 'id', operator: '=', value: $storeId));
+    }
+}
+
+if (! function_exists('hasRunningBatches')) {
+    function hasRunningBatches(JobBatchName $jobBatchName, int $storeId): bool
+    {
+        return once(callback: function () use ($jobBatchName, $storeId): bool {
+            $batchesTableName = config(key: 'queue.batching.table');
+            $name = $jobBatchName->generate(storeId: $storeId);
+
+            return DB::table(table: $batchesTableName)
+                ->where(column: 'name', operator: '=', value: $name)
+                ->whereNull(columns: ['cancelled_at', 'finished_at'])
+                ->exists();
+        });
     }
 }
