@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ProviderType;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -78,6 +79,13 @@ class Store extends Model
         return $query->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA)->when(
             value: $providerId !== null,
             callback: fn (Builder $query): Builder => $query->where(column: 'provider_id', operator: '=', value: $providerId),
+        );
+    }
+
+    protected function isExpired(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $this->whatsappAccount->is_expired,
         );
     }
 }

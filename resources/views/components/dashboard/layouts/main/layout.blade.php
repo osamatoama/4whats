@@ -22,6 +22,8 @@
     <div class="page-content-tab">
         <div class="container-fluid">
             @if(!auth()->user()->is_admin)
+                <x-dashboard.layouts.main.expiration-warning/>
+            
                 <livewire:dashboard.whatsapp-connection.bar/>
             @endif
 
