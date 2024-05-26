@@ -60,13 +60,17 @@ class SallaCustomerCreatedJob implements ShouldQueue
             'updated_at' => SallaMerchantService::parseDate(data: $this->data['updated_at']),
         ]);
 
-        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_CUSTOMER_CREATED)->first();
-        if ($messageTemplate->is_disabled) {
+        if ($store->is_expired) {
+            return;
+        }
+
+        $template = $store->templates()->key(key: MessageTemplate::SALLA_CUSTOMER_CREATED)->first();
+        if ($template->is_disabled) {
             return;
         }
 
         $mobile = $this->data['mobile_code'].$this->data['mobile'];
-        $message = str(string: $messageTemplate->message)
+        $message = str(string: $template->message)
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['first_name'].' '.$this->data['first_name'])
             ->toString();
 
@@ -76,6 +80,6 @@ class SallaCustomerCreatedJob implements ShouldQueue
             instanceToken: $store->whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
-        )->delay(delay: $messageTemplate->delay_in_seconds);
+        )->delay(delay: $template->delay_in_seconds);
     }
 }

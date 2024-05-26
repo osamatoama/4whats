@@ -44,13 +44,13 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
             return;
         }
 
-        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_OTP)->first();
-        if ($messageTemplate->is_disabled) {
+        $template = $store->templates()->key(key: MessageTemplate::SALLA_OTP)->first();
+        if ($template->is_disabled) {
             return;
         }
 
         $mobile = $this->data['contact'];
-        $message = str(string: $messageTemplate->message)
+        $message = str(string: $template->message)
             ->replace(search: '{OTP}', replace: $this->data['code'])
             ->toString();
 
@@ -60,6 +60,6 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
             instanceToken: $store->whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
-        )->delay(delay: $messageTemplate->delay_in_seconds);
+        )->delay(delay: $template->delay_in_seconds);
     }
 }

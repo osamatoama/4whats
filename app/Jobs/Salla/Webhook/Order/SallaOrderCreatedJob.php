@@ -46,6 +46,10 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
+        if ($store->is_expired) {
+            return;
+        }
+
         $sallaOrderStatusId = $this->data['status']['customized']['id'];
         $orderStatus = $store->orderStatuses()->where(column: 'provider_id', operator: '=', value: $sallaOrderStatusId)->first();
         if ($orderStatus === null) {
@@ -59,12 +63,12 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $messageTemplateKey = MessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
-        $messageTemplate = $store->messageTemplates()->key(key: $messageTemplateKey)->first();
-        if ($messageTemplate === null) {
+        $templateKey = MessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
+        $template = $store->templates()->key(key: $templateKey)->first();
+        if ($template === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla order created webhook | Store: {$store->id} | Key: {$messageTemplateKey} | Message: Message template not found",
+                    message: "Error while handling salla order created webhook | Store: {$store->id} | Key: {$templateKey} | Message: Message template not found",
                 ),
                 fail: true,
             );
@@ -72,9 +76,9 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        if ($messageTemplate->is_enabled) {
+        if ($template->is_enabled) {
             $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
-            $message = str(string: $messageTemplate->message)
+            $message = str(string: $template->message)
                 ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
                 ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
@@ -86,7 +90,7 @@ class SallaOrderCreatedJob implements ShouldQueue
                 instanceToken: $store->whatsappAccount->instance_token,
                 mobile: $mobile,
                 message: $message,
-            )->delay(delay: $messageTemplate->delay_in_seconds);
+            )->delay(delay: $template->delay_in_seconds);
         }
 
         $this->sendReviewMessage(store: $store, orderStatus: $orderStatus);
@@ -96,8 +100,8 @@ class SallaOrderCreatedJob implements ShouldQueue
 
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
     {
-        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_REVIEW_ORDER)->first();
-        if ($messageTemplate->is_disabled) {
+        $template = $store->templates()->key(key: MessageTemplate::SALLA_REVIEW_ORDER)->first();
+        if ($template->is_disabled) {
             return;
         }
 
@@ -107,7 +111,7 @@ class SallaOrderCreatedJob implements ShouldQueue
         }
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
-        $message = str(string: $messageTemplate->message)
+        $message = str(string: $template->message)
             ->replace(search: '{REVIEW_URL}', replace: $this->data['rating_link'] ?? $this->data['urls']['customer'])
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
@@ -122,7 +126,7 @@ class SallaOrderCreatedJob implements ShouldQueue
             instanceToken: $store->whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
-        )->delay(delay: $messageTemplate->delay_in_seconds);
+        )->delay(delay: $template->delay_in_seconds);
     }
 
     protected function sendCODMessage(Store $store): void
@@ -131,13 +135,13 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_COD)->first();
-        if ($messageTemplate->is_disabled) {
+        $template = $store->templates()->key(key: MessageTemplate::SALLA_COD)->first();
+        if ($template->is_disabled) {
             return;
         }
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
-        $message = str(string: $messageTemplate->message)
+        $message = str(string: $template->message)
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
             ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
@@ -151,13 +155,13 @@ class SallaOrderCreatedJob implements ShouldQueue
             instanceToken: $store->whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
-        )->delay(delay: $messageTemplate->delay_in_seconds);
+        )->delay(delay: $template->delay_in_seconds);
     }
 
     protected function sendToEmployees(Store $store): void
     {
-        $messageTemplate = $store->messageTemplates()->key(key: MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES)->first();
-        if ($messageTemplate->is_disabled) {
+        $template = $store->templates()->key(key: MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES)->first();
+        if ($template->is_disabled) {
             return;
         }
 
@@ -166,7 +170,7 @@ class SallaOrderCreatedJob implements ShouldQueue
 
         foreach ($mobiles as $mobile) {
             $mobile = trim(string: $mobile);
-            $message = str(string: $messageTemplate->message)
+            $message = str(string: $template->message)
                 ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
                 ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
@@ -180,7 +184,7 @@ class SallaOrderCreatedJob implements ShouldQueue
                 instanceToken: $store->whatsappAccount->instance_token,
                 mobile: $mobile,
                 message: $message,
-            )->delay(delay: $messageTemplate->delay_in_seconds);
+            )->delay(delay: $template->delay_in_seconds);
         }
     }
 }
