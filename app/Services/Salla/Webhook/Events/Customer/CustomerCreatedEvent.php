@@ -10,6 +10,7 @@ class CustomerCreatedEvent implements SallaWebhookEvent
     public function __invoke(string $event, int $merchantId, array $data): void
     {
         SallaCustomerCreatedJob::dispatch(
+            event: $event,
             merchantId: $merchantId,
             data: $data,
         );

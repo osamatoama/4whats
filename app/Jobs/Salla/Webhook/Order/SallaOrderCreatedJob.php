@@ -23,6 +23,7 @@ class SallaOrderCreatedJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
+        public string $event,
         public int $merchantId,
         public array $data,
     ) {

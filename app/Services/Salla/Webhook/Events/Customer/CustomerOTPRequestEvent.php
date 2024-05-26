@@ -10,6 +10,7 @@ class CustomerOTPRequestEvent implements SallaWebhookEvent
     public function __invoke(string $event, int $merchantId, array $data): void
     {
         SallaCustomerOTPRequestJob::dispatch(
+            event: $event,
             merchantId: $merchantId,
             data: $data,
         );
