@@ -71,7 +71,9 @@ class User extends Authenticatable
 
     public function sallaToken(): HasOne
     {
-        return $this->hasOne(related: Token::class, foreignKey: 'user_id')->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA)->latest();
+        return $this->hasOne(related: Token::class, foreignKey: 'user_id')
+            ->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA)
+            ->ofMany();
     }
 
     public function stores(): HasMany
