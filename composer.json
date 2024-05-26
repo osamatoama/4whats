@@ -13,6 +13,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.4",
+        "maatwebsite/excel": "^3.1",
         "salla/ouath2-merchant": "^1.4",
         "spatie/laravel-backup": "^8.6",
         "spatie/laravel-permission": "^6.7"

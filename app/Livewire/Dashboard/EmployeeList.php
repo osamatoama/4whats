@@ -31,7 +31,7 @@ class EmployeeList extends Component
                     columns: ['name', 'email'],
                     operator: 'LIKE',
                     value: "%{$this->keyword}%",
-                )
+                ),
             )
             ->latest()
             ->paginate();

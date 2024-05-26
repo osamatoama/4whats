@@ -6,7 +6,12 @@
                     <input type="text" class="form-control" placeholder="@lang('dashboard.common.search')" wire:model.live.debounce.250ms="keyword">
                 </div>
                 <div>
-                    <button class="btn btn-primary" wire:click="export">@lang('dashboard.common.export')</button>
+                    <button class="btn btn-primary" wire:click="export" wire:loading.remove>
+                        @lang('dashboard.common.export')
+                    </button>
+                    <button class="btn btn-primary" wire:loading wire:target="export" disabled>
+                        @lang('dashboard.common.exporting')
+                    </button>
                 </div>
             </div>
         </div>

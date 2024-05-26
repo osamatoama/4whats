@@ -10,4 +10,9 @@ class ContactPolicy
     {
         return $user->is_merchant || $user->is_employee;
     }
+
+    public function export(User $user): bool
+    {
+        return $user->is_merchant || $user->is_employee;
+    }
 }
