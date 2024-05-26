@@ -21,7 +21,9 @@
 <div class="page-wrapper">
     <div class="page-content-tab">
         <div class="container-fluid">
-            <livewire:dashboard.whatsapp-connection.bar/>
+            @if(!auth()->user()->is_admin)
+                <livewire:dashboard.whatsapp-connection.bar/>
+            @endif
 
             <div class="row">
                 <div class="col-sm-12">

@@ -1,3 +1,4 @@
+@use(\App\Models\Store)
 @use(\App\Models\User)
 @use(\App\Models\Template)
 @use(\App\Models\Contact)
@@ -9,11 +10,11 @@
     :is-active="request()->routeIs(patterns: 'dashboard.home')"
 />
 
-@can('viewAny', User::class)
+@can('viewAny', Store::class)
     <x-dashboard.layouts.main.nav-link
-        :url="route(name: 'dashboard.employees.index')"
-        :text="__(key: 'dashboard.pages.employees.index.title')"
-        :is-active="request()->routeIs(patterns: 'dashboard.employees.*')"
+        :url="route(name: 'dashboard.stores.index')"
+        :text="__(key: 'dashboard.pages.stores.index.title')"
+        :is-active="request()->routeIs(patterns: 'dashboard.stores.*')"
     />
 @endcan
 

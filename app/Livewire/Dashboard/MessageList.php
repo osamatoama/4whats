@@ -31,7 +31,7 @@ class MessageList extends Component
             ->when(
                 value: $this->keyword !== null,
                 callback: fn (Builder $query): Builder => $query->where(
-                    column: 'to',
+                    column: 'mobile',
                     operator: 'LIKE',
                     value: "%{$this->keyword}%",
                 ),

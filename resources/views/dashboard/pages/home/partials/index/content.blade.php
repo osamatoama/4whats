@@ -36,4 +36,6 @@
     </div>
 </div>
 
-<livewire:dashboard.whatsapp-connection.qr-code/>
+@if(!auth()->user()->is_admin)
+    <livewire:dashboard.whatsapp-connection.qr-code/>
+@endif

@@ -75,6 +75,21 @@ return [
             'messages' => 'الرسائل المرسلة',
             'scan_qr_code' => 'امسح الكود عن طريق الواتساب لربط رقم الهاتف',
         ],
+        'stores' => [
+            'index' => [
+                'title' => 'المتاجر',
+                'page_title' => 'المتاجر',
+            ],
+            'columns' => [
+                'id' => '#',
+                'type' => 'النوع',
+                'email' => 'البريد الالكتروني',
+                'four_whats_provider_id' => 'ID',
+                'four_whats_api_key' => 'API Key',
+                'whatsapp_instance_id' => 'Instance ID',
+                'whatsapp_instance_token' => 'Instance Token',
+            ],
+        ],
         'employees' => [
             'index' => [
                 'title' => 'الموظفين',
@@ -85,6 +100,7 @@ return [
             ],
             'create' => [
                 'title' => 'اضافة موظف جديد',
+                'page_title' => 'اضافة موظف جديد',
                 'employee_details' => 'تفاصيل الموظف',
             ],
             'columns' => [

@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'stores' => [
+        'singular' => 'المتجر',
+        'plural' => 'المتاجر',
+    ],
     'employees' => [
         'singular' => 'الموظف',
         'plural' => 'الموظفين',

@@ -27,7 +27,7 @@ class EmployeeList extends Component
             ->children()
             ->when(
                 value: $this->keyword !== null,
-                callback: fn(Builder $query): Builder => $query->whereAny(
+                callback: fn (Builder $query): Builder => $query->whereAny(
                     columns: ['name', 'email'],
                     operator: 'LIKE',
                     value: "%{$this->keyword}%",
