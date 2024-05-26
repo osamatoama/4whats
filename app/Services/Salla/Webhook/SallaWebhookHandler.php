@@ -2,6 +2,7 @@
 
 namespace App\Services\Salla\Webhook;
 
+use App\Services\Salla\Webhook\Events\App\AppUninstalledEvent;
 use App\Services\Salla\Webhook\Events\App\Store\AppStoreAuthorizeEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionRenewedEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionStartedEvent;
@@ -29,6 +30,7 @@ class SallaWebhookHandler
     {
         (match ($event) {
             'app.store.authorize' => new AppStoreAuthorizeEvent(),
+            'app.uninstalled' => new AppUninstalledEvent(),
             'app.subscription.started' => new AppSubscriptionStartedEvent(),
             'app.subscription.renewed' => new AppSubscriptionRenewedEvent(),
             'order.created' => new OrderCreatedEvent(),
