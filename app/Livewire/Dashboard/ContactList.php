@@ -40,11 +40,18 @@ class ContactList extends Component
             ->paginate();
     }
 
-    public function export(): Response|BinaryFileResponse
+    public function export(): null|Response|BinaryFileResponse
     {
         Gate::authorize(ability: 'export', arguments: Contact::class);
 
         $store = currentStore();
+        if ($store->is_expired) {
+            $this->customErrorToast(
+                message: __(key: 'dashboard.common.store_expired_message'),
+            );
+
+            return null;
+        }
 
         return (new ContactsExport(
             store: $store,
