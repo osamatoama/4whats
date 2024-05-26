@@ -17,14 +17,14 @@ class EmployeeController extends Controller
 {
     public function index(): View
     {
-        Gate::authorize(ability: 'viewAny', arguments: User::class);
+        Gate::authorize(ability: 'viewAnyEmployee', arguments: User::class);
 
         return view(view: 'dashboard.pages.employees.index');
     }
 
     public function create(): View
     {
-        Gate::authorize(ability: 'create', arguments: User::class);
+        Gate::authorize(ability: 'createEmployee', arguments: User::class);
 
         return view(view: 'dashboard.pages.employees.create');
     }

@@ -13,7 +13,7 @@ class StoreEmployeeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can(abilities: 'create', arguments: User::class);
+        return $this->user()->can(abilities: 'createEmployee', arguments: User::class);
     }
 
     /**

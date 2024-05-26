@@ -8,7 +8,7 @@
                     <input type="text" class="form-control" placeholder="@lang('dashboard.common.search')" wire:model.live.debounce.250ms="keyword">
                 </div>
                 <div>
-                    @can('create', User::class)
+                    @can('createEmployee', User::class)
                         <a href="{{ route(name: 'dashboard.employees.create') }}" class="btn btn-primary">
                             @lang('dashboard.pages.employees.index.create_a_new_employee')
                         </a>

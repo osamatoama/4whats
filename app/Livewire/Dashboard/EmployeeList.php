@@ -27,7 +27,7 @@ class EmployeeList extends Component
             ->children()
             ->when(
                 value: $this->keyword !== null,
-                callback: fn (Builder $query): Builder => $query->whereAny(
+                callback: fn(Builder $query): Builder => $query->whereAny(
                     columns: ['name', 'email'],
                     operator: 'LIKE',
                     value: "%{$this->keyword}%",
@@ -39,7 +39,7 @@ class EmployeeList extends Component
 
     public function destroy(User $employee): void
     {
-        $this->authorize(ability: 'delete', arguments: $employee);
+        $this->authorize(ability: 'deleteEmployee', arguments: $employee);
 
         $employee->delete();
 

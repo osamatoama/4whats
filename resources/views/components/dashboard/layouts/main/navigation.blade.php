@@ -17,6 +17,14 @@
     />
 @endcan
 
+@can('viewAnyEmployee', User::class)
+    <x-dashboard.layouts.main.nav-link
+        :url="route(name: 'dashboard.employees.index')"
+        :text="__(key: 'dashboard.pages.employees.index.title')"
+        :is-active="request()->routeIs(patterns: 'dashboard.employees.*')"
+    />
+@endcan
+
 @can('viewAny', Template::class)
     <x-dashboard.layouts.main.nav-link
         :url="route(name: 'dashboard.templates.index')"
