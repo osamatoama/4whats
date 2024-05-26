@@ -46,7 +46,10 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
      */
     public function handle(): void
     {
-        if (Store::query()->salla(providerId: $this->merchantId)->exists()) {
+        $store = Store::query()->salla(providerId: $this->merchantId)->first();
+        if ($store !== null) {
+            $this->syncToken(user: $store->user);
+
             return;
         }
 
@@ -59,7 +62,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             );
 
             $store = DB::transaction(callback: function () use ($resourceOwner, $user): Store {
-                $this->createToken(user: $user);
+                $this->syncToken(user: $user);
 
                 $store = $this->createStore(user: $user, resourceOwner: $resourceOwner);
 
@@ -107,10 +110,11 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
         return $user;
     }
 
-    protected function createToken(User $user): void
+    protected function syncToken(User $user): void
     {
-        $user->providerTokens()->create(attributes: [
+        $user->providerTokens()->updateOrCreate(attributes: [
             'provider_type' => ProviderType::SALLA,
+        ], values: [
             'access_token' => $this->data['access_token'],
             'refresh_token' => $this->data['refresh_token'],
             'expired_at' => $this->data['expires'],
