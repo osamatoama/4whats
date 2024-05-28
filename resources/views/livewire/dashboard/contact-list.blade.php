@@ -25,6 +25,7 @@
                         <th>@lang('dashboard.pages.contacts.columns.email')</th>
                         <th>@lang('dashboard.pages.contacts.columns.mobile')</th>
                         <th>@lang('dashboard.pages.contacts.columns.created_at')</th>
+                        <th>@lang('dashboard.common.actions')</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -35,10 +36,27 @@
                             <td>{{ $contact->email ?? '-----' }}</td>
                             <td>{{ $contact->mobile }}</td>
                             <td>{{ $contact->created_at->format(format: 'd-m-Y') }}</td>
+                            <td>
+                                @if(isNotInBlacklistedMobiles(mobile: $contact->mobile))
+                                    @can('addToBlacklist', $contact)
+                                        <button class="btn btn-danger" wire:click="addToBlacklist({{ $contact->id }})" wire:confirm="@lang('dashboard.common.are_you_sure')">
+                                            @lang('dashboard.pages.contacts.actions.add_to_blacklist')
+                                        </button>
+                                    @endcan
+                                @endif
+
+                                @if(isInBlacklistedMobiles(mobile: $contact->mobile))
+                                    @can('removeFromBlacklist', $contact)
+                                        <button class="btn btn-danger" wire:click="removeFromBlacklist({{ $contact->id }})" wire:confirm="@lang('dashboard.common.are_you_sure')">
+                                            @lang('dashboard.pages.contacts.actions.remove_from_blacklist')
+                                        </button>
+                                    @endcan
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td class="text-center" colspan="5">
+                            <td class="text-center" colspan="6">
                                 @lang('dashboard.common.no_data')
                             </td>
                         </tr>

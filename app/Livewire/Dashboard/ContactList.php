@@ -61,6 +61,26 @@ class ContactList extends Component
         );
     }
 
+    public function addToBlacklist(Contact $contact): void
+    {
+        Gate::authorize(ability: 'addToBlacklist', arguments: $contact);
+
+        currentStore()->blacklistedMobiles()->create(attributes: [
+            'mobile' => $contact->mobile,
+        ]);
+
+        $this->successToast(action: 'updated', model: 'contacts.singular');
+    }
+
+    public function removeFromBlacklist(Contact $contact): void
+    {
+        Gate::authorize(ability: 'removeFromBlacklist', arguments: $contact);
+
+        currentStore()->blacklistedMobiles()->mobile(mobile: $contact->mobile)->delete();
+
+        $this->successToast(action: 'updated', model: 'contacts.singular');
+    }
+
     public function updatedKeyword(): void
     {
         $this->resetPage();
@@ -68,6 +88,8 @@ class ContactList extends Component
 
     public function render(): View
     {
+        currentStore()->load(relations: ['blacklistedMobiles']);
+
         return view(view: 'livewire.dashboard.contact-list');
     }
 }

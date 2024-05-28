@@ -17,6 +17,8 @@ return [
         'loading' => 'جاري التحميل ...',
         'second' => 'ثانية',
         'store_expired_message' => 'المتجر الخاص بك منتهي الصلاحية برجاء تجديد الاشتراك',
+        'yes' => 'نعم',
+        'no' => 'لا',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',
@@ -132,6 +134,11 @@ return [
                 'email' => 'البريد الالكتروني',
                 'mobile' => 'رقم الهاتف',
                 'created_at' => 'تاريخ الانشاء',
+                'is_blacklisted' => 'في القائمة المحظورة',
+            ],
+            'actions' => [
+                'add_to_blacklist' => 'اضف للقائمة المحظورة',
+                'remove_from_blacklist' => 'حذف من القائمة المحظورة',
             ],
         ],
         'messages' => [

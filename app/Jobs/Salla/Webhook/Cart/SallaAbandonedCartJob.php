@@ -70,6 +70,10 @@ class SallaAbandonedCartJob implements ShouldQueue
         }
 
         $mobile = $this->data['mobile_code'].$this->data['mobile'];
+        if (isInBlacklistedMobiles(mobile: $mobile, store: $store)) {
+            return;
+        }
+
         $message = str(string: $template->message)
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['name'])
             ->replace(search: '{AMOUNT}', replace: $this->data['total']['amount'])

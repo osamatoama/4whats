@@ -77,8 +77,14 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
+        $this->sendToEmployees(store: $store);
+
+        $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
+        if (isInBlacklistedMobiles(mobile: $mobile, store: $store)) {
+            return;
+        }
+
         if ($template->is_enabled) {
-            $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
             $message = str(string: $template->message)
                 ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
@@ -96,7 +102,6 @@ class SallaOrderCreatedJob implements ShouldQueue
 
         $this->sendReviewMessage(store: $store, orderStatus: $orderStatus);
         $this->sendCODMessage(store: $store);
-        $this->sendToEmployees(store: $store);
     }
 
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void

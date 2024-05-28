@@ -74,3 +74,21 @@ if (! function_exists('hasRunningBatches')) {
         });
     }
 }
+
+if (! function_exists('isInBlacklistedMobiles')) {
+    function isInBlacklistedMobiles(string $mobile, ?Store $store = null): bool
+    {
+        $store ??= currentStore();
+
+        return $store->relationLoaded(key: 'blacklistedMobiles')
+            ? $store->blacklistedMobiles->contains(key: 'mobile', value: $mobile)
+            : $store->blacklistedMobiles()->mobile(mobile: $mobile)->exists();
+    }
+}
+
+if (! function_exists('isNotInBlacklistedMobiles')) {
+    function isNotInBlacklistedMobiles(string $mobile, ?Store $store = null): bool
+    {
+        return ! isInBlacklistedMobiles(mobile: $mobile, store: $store);
+    }
+}

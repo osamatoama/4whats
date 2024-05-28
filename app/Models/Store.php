@@ -74,6 +74,11 @@ class Store extends Model
         return $this->hasMany(related: Message::class, foreignKey: 'store_id');
     }
 
+    public function blacklistedMobiles(): HasMany
+    {
+        return $this->hasMany(related: BlacklistedMobile::class, foreignKey: 'store_id');
+    }
+
     public function scopeSalla(Builder $query, ?int $providerId = null): Builder
     {
         return $query->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA)->when(

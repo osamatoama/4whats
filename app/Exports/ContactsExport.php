@@ -69,6 +69,7 @@ class ContactsExport extends DefaultValueBinder implements FromCollection, Shoul
             $row->email ?? '-----',
             $row->mobile,
             Date::dateTimeToExcel(dateValue: $row->created_at),
+            isInBlacklistedMobiles(mobile: $row->mobile, store: $this->store) ? __(key: 'dashboard.common.yes') : __(key: 'dashboard.common.no'),
         ];
     }
 
@@ -80,6 +81,7 @@ class ContactsExport extends DefaultValueBinder implements FromCollection, Shoul
             __(key: 'dashboard.pages.contacts.columns.email'),
             __(key: 'dashboard.pages.contacts.columns.mobile'),
             __(key: 'dashboard.pages.contacts.columns.created_at'),
+            __(key: 'dashboard.pages.contacts.columns.is_blacklisted'),
         ];
     }
 

@@ -71,6 +71,10 @@ class SallaCustomerCreatedJob implements ShouldQueue
         }
 
         $mobile = $this->data['mobile_code'].$this->data['mobile'];
+        if (isInBlacklistedMobiles(mobile: $mobile, store: $store)) {
+            return;
+        }
+
         $message = str(string: $template->message)
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['first_name'].' '.$this->data['first_name'])
             ->toString();

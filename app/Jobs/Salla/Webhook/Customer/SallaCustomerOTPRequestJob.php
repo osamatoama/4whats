@@ -51,6 +51,10 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
         }
 
         $mobile = $this->data['contact'];
+        if (isInBlacklistedMobiles(mobile: $mobile, store: $store)) {
+            return;
+        }
+
         $message = str(string: $template->message)
             ->replace(search: '{OTP}', replace: $this->data['code'])
             ->toString();
