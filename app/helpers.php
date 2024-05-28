@@ -92,3 +92,19 @@ if (! function_exists('isNotInBlacklistedMobiles')) {
         return ! isInBlacklistedMobiles(mobile: $mobile, store: $store);
     }
 }
+
+if (! function_exists('generateMessageUsingSeparatedLines')) {
+    function generateMessageUsingSeparatedLines(array $lines): string
+    {
+        $message = '';
+        foreach ($lines as $key => $line) {
+            if ($key !== 0) {
+                $message .= PHP_EOL;
+            }
+
+            $message .= $line;
+        }
+
+        return $message;
+    }
+}

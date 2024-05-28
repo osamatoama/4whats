@@ -32,6 +32,7 @@ return [
     ],
 
     'salla' => [
+        'app_id' => env(key: 'SALLA_APP_ID'),
         'client_id' => env(key: 'SALLA_CLIENT_ID'),
         'client_secret' => env(key: 'SALLA_CLIENT_SECRET'),
         'webhook_token' => env(key: 'SALLA_WEBHOOK_TOKEN'),

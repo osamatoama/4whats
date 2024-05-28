@@ -2,8 +2,11 @@
 
 namespace App\Livewire\Dashboard\Settings;
 
+use App\Enums\ProviderType;
+use App\Jobs\Salla\Push\Settings\SallaPushSettingsJob;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Widget;
+use App\Services\Salla\Partner\Dto\SettingsDto;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -34,6 +37,18 @@ class WidgetCard extends Component
             'color' => $this->color,
             'is_enabled' => $this->isEnabled,
         ]);
+
+        if (currentStore()->provider_type === ProviderType::SALLA) { // TODO:refactor
+            SallaPushSettingsJob::dispatch(
+                accessToken: currentStore()->user->sallaToken->access_token,
+                storeId: currentStore()->id,
+                settingsDto: new SettingsDto(
+                    widgetMessage: $this->widget->message,
+                    widgetColor: $this->widget->color,
+                    widgetIsEnabled: $this->widget->is_enabled,
+                ),
+            );
+        }
 
         $this->successToast(action: 'updated', model: 'widgets.singular');
     }
