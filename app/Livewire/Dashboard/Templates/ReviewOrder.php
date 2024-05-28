@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Dashboard\Templates;
 
-use App\Enums\Settings\StoreSettings;
+use App\Enums\SettingKey;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Template;
 use Illuminate\Validation\Rule;
@@ -21,7 +21,7 @@ class ReviewOrder extends Component
     {
         $this->orderStatusId = settings(storeId: currentStore()->id)
             ->value(
-                key: StoreSettings::from(value: $this->template->key),
+                key: SettingKey::from(value: $this->template->key),
             );
     }
 
@@ -39,7 +39,7 @@ class ReviewOrder extends Component
 
         settings(storeId: currentStore()->id, eager: false)
             ->find(
-                key: StoreSettings::from(value: $this->template->key),
+                key: SettingKey::from(value: $this->template->key),
             )
             ->update(attributes: [
                 'value' => $this->orderStatusId,

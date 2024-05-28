@@ -3,7 +3,7 @@
 namespace App\Jobs\Salla\Webhook\Order;
 
 use App\Enums\MessageTemplate;
-use App\Enums\Settings\StoreSettings;
+use App\Enums\SettingKey;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\OrderStatus;
@@ -108,7 +108,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
             return;
         }
 
-        $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER);
+        $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER);
         if ($reviewStatusId != $orderStatus->id) {
             return;
         }

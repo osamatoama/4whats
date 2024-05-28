@@ -3,6 +3,7 @@
 @use(\App\Models\Template)
 @use(\App\Models\Contact)
 @use(\App\Models\Message)
+@use(\App\Models\Setting)
 
 <x-dashboard.layouts.main.nav-link
     :url="route(name: 'dashboard.home')"
@@ -47,6 +48,14 @@
         :url="route(name: 'dashboard.messages.index')"
         :text="__(key: 'dashboard.pages.messages.index.title')"
         :is-active="request()->routeIs(patterns: 'dashboard.messages.*')"
+    />
+@endcan
+
+@can('viewAny', Setting::class)
+    <x-dashboard.layouts.main.nav-link
+        :url="route(name: 'dashboard.settings.index')"
+        :text="__(key: 'dashboard.pages.settings.index.title')"
+        :is-active="request()->routeIs(patterns: 'dashboard.settings.*')"
     />
 @endcan
 

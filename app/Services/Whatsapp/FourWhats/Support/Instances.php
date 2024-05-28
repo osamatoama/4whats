@@ -2,7 +2,7 @@
 
 namespace App\Services\Whatsapp\FourWhats\Support;
 
-use App\Enums\Settings\SystemSettings;
+use App\Enums\SettingKey;
 use App\Services\Whatsapp\FourWhats\Client;
 use App\Services\Whatsapp\FourWhats\Contracts\Support\Instances as InstancesContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
@@ -30,7 +30,7 @@ class Instances implements InstancesContract
                 'email' => $email,
                 'apikey' => $this->apiKey,
                 'packageid' => $packageId,
-                'voucher' => settings()->value(key: SystemSettings::FOUR_WHATS_VOUCHER),
+                'voucher' => settings()->value(key: SettingKey::SYSTEM_FOUR_WHATS_VOUCHER),
             ],
         );
 
@@ -58,7 +58,7 @@ class Instances implements InstancesContract
                 'apikey' => $this->apiKey,
                 'instanceid' => $instanceId,
                 'packageid' => $packageId,
-                'voucher' => settings()->value(key: SystemSettings::FOUR_WHATS_VOUCHER),
+                'voucher' => settings()->value(key: SettingKey::SYSTEM_FOUR_WHATS_VOUCHER),
             ],
         );
 

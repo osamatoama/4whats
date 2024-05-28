@@ -2,9 +2,8 @@
 
 namespace App\Support;
 
-use App\Enums\Settings\SettingsEnum;
+use App\Enums\SettingKey;
 use App\Models\Setting;
-use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -23,12 +22,8 @@ readonly class Settings
         }
     }
 
-    public function find(string|SettingsEnum $key): ?Setting
+    public function find(SettingKey $key): Setting
     {
-        if ($key instanceof BackedEnum) {
-            $key = $key->value;
-        }
-
         if ($this->eager || $this->settings->contains(key: 'key', operator: '=', value: $key)) {
             return $this->settings->firstWhere(key: 'key', operator: '=', value: $key);
         }
@@ -41,7 +36,7 @@ readonly class Settings
         return $setting;
     }
 
-    public function value(string|SettingsEnum $key, mixed $default = null): mixed
+    public function value(SettingKey $key, mixed $default = null): mixed
     {
         return $this->find(key: $key)->value ?? $default;
     }

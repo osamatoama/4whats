@@ -2,6 +2,7 @@
 
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
+use App\Enums\SettingKey;
 use App\Enums\UserRole;
 use App\Enums\Whatsapp\MessageStatus;
 
@@ -62,5 +63,8 @@ return [
         MessageStatus::SENT->name => 'تم الارسال',
         MessageStatus::DELIVERED->name => 'تم الاستلام',
         MessageStatus::VIEWED->name => 'تم المشاهدة',
+    ],
+    SettingKey::class => [
+        SettingKey::SYSTEM_FOUR_WHATS_VOUCHER->name => 'Voucher',
     ],
 ];

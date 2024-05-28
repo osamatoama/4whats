@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\ContactController;
 use App\Http\Controllers\Dashboard\EmployeeController;
 use App\Http\Controllers\Dashboard\HomeController;
 use App\Http\Controllers\Dashboard\MessageController;
+use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\StoreController;
 use App\Http\Controllers\Dashboard\TemplateController;
 use Illuminate\Support\Facades\Route;
@@ -22,4 +23,6 @@ Route::middleware(['auth:dashboard'])->group(function () {
     Route::resource('contacts', ContactController::class)->only(['index']);
 
     Route::resource('messages', MessageController::class)->only(['index']);
+
+    Route::resource('settings', SettingController::class)->only(['index']);
 });

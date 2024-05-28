@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SettingKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,6 +13,13 @@ class Setting extends Model
         'key',
         'value',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'key' => SettingKey::class,
+        ];
+    }
 
     public function store(): BelongsTo
     {

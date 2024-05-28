@@ -5,7 +5,7 @@ namespace App\Jobs\Salla\Webhook\App\Store;
 use App\Enums\Jobs\JobBatchName;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
-use App\Enums\Settings\StoreSettings;
+use App\Enums\SettingKey;
 use App\Enums\UserRole;
 use App\Jobs\FourWhats\FourWhatsCreateUserJob;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
@@ -159,13 +159,13 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
 
             if ($messageTemplate === MessageTemplate::SALLA_REVIEW_ORDER) {
                 $store->settings()->create(attributes: [
-                    'key' => StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
+                    'key' => SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER,
                 ]);
             }
 
             if ($messageTemplate === MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES) {
                 $store->settings()->create(attributes: [
-                    'key' => StoreSettings::SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES,
+                    'key' => SettingKey::STORE_SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES,
                 ]);
             }
         }
@@ -204,7 +204,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 ->where(
                     column: 'key',
                     operator: '=',
-                    value: StoreSettings::SALLA_CUSTOM_REVIEW_ORDER,
+                    value: SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER,
                 )
                 ->update(values: [
                     'value' => $store->orderStatuses()->first()->id,
