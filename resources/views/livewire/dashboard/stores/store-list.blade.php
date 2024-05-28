@@ -25,7 +25,7 @@
                         </thead>
                         <tbody>
                         @forelse($this->stores as $store)
-                            <livewire:dashboard.stores.store-row :store="$store" :wire:key="$store->id"/>
+                            <livewire:dashboard.stores.store-table-row :store="$store" :wire:key="$store->id"/>
                         @empty
                             <tr>
                                 <td class="text-center" colspan="8">

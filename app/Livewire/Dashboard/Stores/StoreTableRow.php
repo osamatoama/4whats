@@ -7,20 +7,26 @@ use App\Models\Store;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class StoreRow extends Component
+class StoreTableRow extends Component
 {
     use InteractsWithToasts;
 
     public Store $store;
 
-    public ?string $fourWhatsApiKey;
+    public ?int $fourWhatsProviderId = null;
+
+    public ?string $fourWhatsApiKey = null;
+
+    public ?int $instanceId;
 
     public ?string $instanceToken;
 
     public function updateStore(): void
     {
         $this->validate(rules: [
+            'fourWhatsProviderId' => ['required', 'integer'],
             'fourWhatsApiKey' => ['required', 'string'],
+            'instanceId' => ['required', 'integer'],
             'instanceToken' => ['required', 'string'],
         ]);
 
@@ -37,12 +43,14 @@ class StoreRow extends Component
 
     public function mount(): void
     {
+        $this->fourWhatsProviderId = $this->store->user->fourWhatsCredential?->provider_id;
         $this->fourWhatsApiKey = $this->store->user->fourWhatsCredential?->api_key;
+        $this->instanceId = $this->store->whatsappAccount->instance_id;
         $this->instanceToken = $this->store->whatsappAccount->instance_token;
     }
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.stores.store-row');
+        return view(view: 'livewire.dashboard.stores.store-table-row');
     }
 }

@@ -1,8 +1,23 @@
 <tr>
-    <td>{{ $this->store->provider_id }}</td>
-    <td>{{ $this->store->provider_type->label() }}</td>
-    <td>{{ $this->store->email }}</td>
-    <td>{{ $this->store->user->fourWhatsCredential->provider_id }}</td>
+    <td>
+        {{ $this->store->provider_id }}
+    </td>
+    <td>
+        {{ $this->store->provider_type->label() }}
+    </td>
+    <td>
+        {{ $this->store->email }}
+    </td>
+    <td>
+        <div class="form-group">
+            <input type="text" @class(['form-control', 'is-invalid'=> $errors->has(key: 'fourWhatsProviderId')]) wire:model="fourWhatsProviderId">
+            @error('fourWhatsProviderId')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+            @enderror
+        </div>
+    </td>
     <td>
         <div class="form-group">
             <input type="text" @class(['form-control', 'is-invalid'=> $errors->has(key: 'fourWhatsApiKey')]) wire:model="fourWhatsApiKey">
@@ -13,7 +28,16 @@
             @enderror
         </div>
     </td>
-    <td>{{ $this->store->user->id }}</td>
+    <td>
+        <div class="form-group">
+            <input type="text" @class(['form-control', 'is-invalid'=> $errors->has(key: 'instanceId')]) wire:model="instanceId">
+            @error('instanceId')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+            @enderror
+        </div>
+    </td>
     <td>
         <div class="form-group">
             <input type="text" @class(['form-control', 'is-invalid'=> $errors->has(key: 'instanceToken')]) wire:model="instanceToken">
