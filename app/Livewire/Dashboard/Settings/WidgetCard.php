@@ -38,16 +38,8 @@ class WidgetCard extends Component
             'is_enabled' => $this->isEnabled,
         ]);
 
-        if (currentStore()->provider_type === ProviderType::SALLA) { // TODO:refactor
-            SallaPushSettingsJob::dispatch(
-                accessToken: currentStore()->user->sallaToken->access_token,
-                storeId: currentStore()->id,
-                settingsDto: new SettingsDto(
-                    widgetMessage: $this->widget->message,
-                    widgetColor: $this->widget->color,
-                    widgetIsEnabled: $this->widget->is_enabled,
-                ),
-            );
+        if (currentStore()->provider_type === ProviderType::SALLA) {
+            $this->updateSallaSettings();
         }
 
         $this->successToast(action: 'updated', model: 'widgets.singular');
@@ -63,5 +55,18 @@ class WidgetCard extends Component
     public function render(): View
     {
         return view(view: 'livewire.dashboard.settings.widget-card');
+    }
+
+    protected function updateSallaSettings(): void
+    {
+        SallaPushSettingsJob::dispatch(
+            accessToken: currentStore()->user->sallaToken->access_token,
+            storeId: currentStore()->id,
+            settingsDto: new SettingsDto(
+                widgetMessage: $this->widget->message,
+                widgetColor: $this->widget->color,
+                widgetIsEnabled: $this->widget->is_enabled,
+            ),
+        );
     }
 }
