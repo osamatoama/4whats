@@ -51,6 +51,11 @@ return [
             'label' => 'رسالة الدفع عند الاستلام',
             'description' => 'من اجل ادراج متغيرات في الرسالة استخدم الإختصارات التالية: :placeholders',
         ],
+        MessageTemplate::SALLA_DIGITAL_PRODUCT->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسالة تسليم المنتج الرقمي',
+            'description' => 'من اجل ادراج متغيرات في الرسالة استخدم الإختصارات التالية: :placeholders',
+        ],
         MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES->name => [
             'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
             'label' => 'رسالة الطلبات الجديدة للموظفين في المتجر',

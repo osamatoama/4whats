@@ -12,6 +12,7 @@ enum MessageTemplate: string
     case SALLA_CUSTOMER_CREATED = 'salla.event.customer.created';
     case SALLA_REVIEW_ORDER = 'salla.custom.review_order';
     case SALLA_COD = 'salla.custom.cod';
+    case SALLA_DIGITAL_PRODUCT = 'salla.custom.digital_product';
     case SALLA_NEW_ORDER_FOR_EMPLOYEES = 'salla.custom.new_order_for_employees';
 
     public static function sallaCases(): Collection
@@ -51,13 +52,14 @@ enum MessageTemplate: string
             self::SALLA_CUSTOMER_CREATED => ['{CUSTOMER_NAME}'],
             self::SALLA_REVIEW_ORDER => ['{REVIEW_URL}', '{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
             self::SALLA_COD, self::SALLA_NEW_ORDER_FOR_EMPLOYEES => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
+            self::SALLA_DIGITAL_PRODUCT => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{PRODUCTS}'],
         };
     }
 
     public function delayInSeconds(): int
     {
         return match ($this) {
-            self::SALLA_ABANDONED_CART, self::SALLA_REVIEW_ORDER, self::ORDER_STATUSES => 60 * 60 * 2,
+            self::ORDER_STATUSES, self::SALLA_ABANDONED_CART, self::SALLA_REVIEW_ORDER => 60 * 60 * 2,
             default => 0,
         };
     }
@@ -97,6 +99,7 @@ enum MessageTemplate: string
             self::SALLA_OTP,
             self::SALLA_CUSTOMER_CREATED,
             self::SALLA_COD,
+            self::SALLA_DIGITAL_PRODUCT,
             self::SALLA_NEW_ORDER_FOR_EMPLOYEES,
         ]);
     }

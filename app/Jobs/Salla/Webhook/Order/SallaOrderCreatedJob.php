@@ -126,6 +126,37 @@ class SallaOrderCreatedJob implements ShouldQueue
 
         $this->sendReviewMessage(store: $store, orderStatus: $orderStatus);
         $this->sendCODMessage(store: $store);
+        $this->sendDigitalMessage(store: $store);
+    }
+
+    protected function sendToEmployees(Store $store): void
+    {
+        $template = $store->templates()->key(key: MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES)->first();
+        if ($template->is_disabled) {
+            return;
+        }
+
+        $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES);
+        $mobiles = explode(separator: ',', string: $mobiles);
+
+        foreach ($mobiles as $mobile) {
+            $mobile = trim(string: $mobile);
+            $message = str(string: $template->message)
+                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+                ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
+                ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
+                ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
+                ->replace(search: '{CURRENCY}', replace: $this->data['amounts']['total']['currency'])
+                ->toString();
+
+            WhatsappSendTextMessageJob::dispatch(
+                storeId: $store->id,
+                instanceId: $store->whatsappAccount->instance_id,
+                instanceToken: $store->whatsappAccount->instance_token,
+                mobile: $mobile,
+                message: $message,
+            )->delay(delay: $template->delay_in_seconds);
+        }
     }
 
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
@@ -188,33 +219,59 @@ class SallaOrderCreatedJob implements ShouldQueue
         )->delay(delay: $template->delay_in_seconds);
     }
 
-    protected function sendToEmployees(Store $store): void
+    protected function sendDigitalMessage(Store $store): void
     {
-        $template = $store->templates()->key(key: MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES)->first();
+        $template = $store->templates()->key(key: MessageTemplate::SALLA_DIGITAL_PRODUCT)->first();
         if ($template->is_disabled) {
             return;
         }
 
-        $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES);
-        $mobiles = explode(separator: ',', string: $mobiles);
+        $products = str(string: '');
+        foreach ($this->data['items'] as $item) {
+            $type = $item['product']['type'];
+            if ($type !== 'digital' && $type !== 'codes') {
+                continue;
+            }
 
-        foreach ($mobiles as $mobile) {
-            $mobile = trim(string: $mobile);
-            $message = str(string: $template->message)
-                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
-                ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
-                ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
-                ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
-                ->replace(search: '{CURRENCY}', replace: $this->data['amounts']['total']['currency'])
-                ->toString();
+            if (empty($item['files']) && empty($item['codes'])) {
+                continue;
+            }
 
-            WhatsappSendTextMessageJob::dispatch(
-                storeId: $store->id,
-                instanceId: $store->whatsappAccount->instance_id,
-                instanceToken: $store->whatsappAccount->instance_token,
-                mobile: $mobile,
-                message: $message,
-            )->delay(delay: $template->delay_in_seconds);
+            $products = $products->append(values: "*{$item['name']}*")->newLine();
+
+            if ($type === 'digital') {
+                foreach ($item['files'] as $file) {
+                    $products = $products->append(values: $file['name'])->newLine()->append(values: $file['url'])->newLine();
+                }
+            }
+
+            if ($type === 'codes') {
+                foreach ($item['codes'] as $code) {
+                    $products = $products->append(values: $code['code'])->newLine();
+                }
+            }
+
+            $products = $products->newLine();
         }
+        $products = $products->trim(characters: PHP_EOL);
+
+        if ($products->isEmpty()) {
+            return;
+        }
+
+        $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
+        $message = str(string: $template->message)
+            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+            ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
+            ->replace(search: '{PRODUCTS}', replace: $products->toString())
+            ->toString();
+
+        WhatsappSendTextMessageJob::dispatch(
+            storeId: $store->id,
+            instanceId: $store->whatsappAccount->instance_id,
+            instanceToken: $store->whatsappAccount->instance_token,
+            mobile: $mobile,
+            message: $message,
+        )->delay(delay: $template->delay_in_seconds);
     }
 }
