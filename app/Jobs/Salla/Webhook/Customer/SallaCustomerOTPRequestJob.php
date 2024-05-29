@@ -52,6 +52,11 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
             return;
         }
 
+        $whatsappAccount = $store->whatsappAccount;
+        if ($whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
+            return;
+        }
+
         $template = $store->templates()->key(key: MessageTemplate::SALLA_OTP)->first();
         if ($template->is_disabled) {
             return;
@@ -68,8 +73,8 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
 
         WhatsappSendTextMessageJob::dispatch(
             storeId: $store->id,
-            instanceId: $store->whatsappAccount->instance_id,
-            instanceToken: $store->whatsappAccount->instance_token,
+            instanceId: $whatsappAccount->instance_id,
+            instanceToken: $whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
         )->delay(delay: $template->delay_in_seconds);

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('connected_mobile')->nullable();
             $table->unsignedBigInteger('instance_id');
             $table->string('instance_token');
+            $table->boolean('is_sending_enabled')->default(true);
             $table->timestamp('expired_at')->nullable();
             $table->timestamps();
         });

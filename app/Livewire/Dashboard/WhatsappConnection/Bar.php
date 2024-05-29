@@ -86,6 +86,32 @@ class Bar extends Component
         );
     }
 
+    public function disableSending(): void
+    {
+        $this->whatsappAccount->update(attributes: [
+            'is_sending_enabled' => false,
+        ]);
+
+        $this->customSuccessToast(
+            message: __(
+                key: 'dashboard.whatsapp.sending_disabled',
+            ),
+        );
+    }
+
+    public function enableSending(): void
+    {
+        $this->whatsappAccount->update(attributes: [
+            'is_sending_enabled' => true,
+        ]);
+
+        $this->customSuccessToast(
+            message: __(
+                key: 'dashboard.whatsapp.sending_enabled',
+            ),
+        );
+    }
+
     public function placeholder(): View
     {
         return view(view: 'livewire.dashboard.whatsapp-connection.bar-placeholder');

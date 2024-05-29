@@ -46,6 +46,10 @@ return [
         'cannot_disconnect' => 'لا يمكن فصل الهاتف',
         'disconnecting' => 'جاري فصل الهاتف',
         'will_refresh_after' => 'سيتم التحديث بعد',
+        'disable_sending' => 'ايقاف الارسال',
+        'enable_sending' => 'تشغيل الارسال',
+        'sending_disabled' => 'تم ايقاف الارسال',
+        'sending_enabled' => 'تم تشغيل الارسال',
     ],
     'pages' => [
         'auth' => [

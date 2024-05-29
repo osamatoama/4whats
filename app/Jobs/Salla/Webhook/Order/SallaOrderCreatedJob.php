@@ -4,7 +4,6 @@ namespace App\Jobs\Salla\Webhook\Order;
 
 use App\Enums\MessageTemplate;
 use App\Enums\SettingKey;
-use App\Enums\Settings\StoreSettings;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\OrderStatus;
@@ -55,9 +54,12 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        if ($store->is_expired) {
+        $whatsappAccount = $store->whatsappAccount;
+        if ($whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
             return;
         }
+
+        $this->sendToEmployees(store: $store);
 
         $sallaOrderStatusId = $this->data['status']['customized']['id'];
         $orderStatus = $store->orderStatuses()->where(column: 'provider_id', operator: '=', value: $sallaOrderStatusId)->first();
@@ -101,8 +103,6 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $this->sendToEmployees(store: $store);
-
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         if (isInBlacklistedMobiles(mobile: $mobile, store: $store)) {
             return;
@@ -117,8 +117,8 @@ class SallaOrderCreatedJob implements ShouldQueue
 
             WhatsappSendTextMessageJob::dispatch(
                 storeId: $store->id,
-                instanceId: $store->whatsappAccount->instance_id,
-                instanceToken: $store->whatsappAccount->instance_token,
+                instanceId: $whatsappAccount->instance_id,
+                instanceToken: $whatsappAccount->instance_token,
                 mobile: $mobile,
                 message: $message,
             )->delay(delay: $template->delay_in_seconds);
@@ -195,7 +195,7 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $mobiles = settings(storeId: $store->id, eager: false)->value(key: StoreSettings::SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES);
+        $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES);
         $mobiles = explode(separator: ',', string: $mobiles);
 
         foreach ($mobiles as $mobile) {

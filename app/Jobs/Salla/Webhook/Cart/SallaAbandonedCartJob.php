@@ -67,7 +67,8 @@ class SallaAbandonedCartJob implements ShouldQueue
             'updated_at' => SallaMerchantService::parseDate(data: $this->data['updated_at']),
         ]);
 
-        if ($store->is_expired) {
+        $whatsappAccount = $store->whatsappAccount;
+        if ($whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
             return;
         }
 
@@ -90,8 +91,8 @@ class SallaAbandonedCartJob implements ShouldQueue
 
         WhatsappSendTextMessageJob::dispatch(
             storeId: $store->id,
-            instanceId: $store->whatsappAccount->instance_id,
-            instanceToken: $store->whatsappAccount->instance_token,
+            instanceId: $whatsappAccount->instance_id,
+            instanceToken: $whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
         )->delay(delay: $template->delay_in_seconds);

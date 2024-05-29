@@ -14,6 +14,7 @@ class WhatsappAccount extends Model
         'connected_mobile',
         'instance_id',
         'instance_token',
+        'is_sending_enabled',
         'expired_at',
     ];
 
@@ -27,6 +28,13 @@ class WhatsappAccount extends Model
     public function store(): BelongsTo
     {
         return $this->belongsTo(related: Store::class);
+    }
+
+    protected function isSendingDisabled(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): bool => ! $this->is_sending_enabled,
+        );
     }
 
     protected function isExpired(): Attribute

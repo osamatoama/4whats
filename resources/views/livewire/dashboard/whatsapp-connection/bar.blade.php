@@ -9,13 +9,25 @@
     <div>
         @if($this->isConnected)
             @if($this->isDisconnecting)
-                <button class="btn btn-danger btn-sm" wire:poll.keep-alive.5s disabled>
+                <button class="btn btn-sm btn-danger" wire:poll.keep-alive.5s disabled>
                     @lang('dashboard.whatsapp.disconnecting')
                 </button>
             @else
-                <button class="btn btn-danger btn-sm" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="disconnect" wire:loading.attr="disabled">
+                <button class="btn btn-sm btn-danger" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="disconnect" wire:loading.attr="disabled">
                     @lang('dashboard.whatsapp.disconnect')
                 </button>
+
+                @if($this->whatsappAccount->is_sending_enabled)
+                    <button class="btn btn-sm btn-danger" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="disableSending" wire:loading.attr="disabled">
+                        @lang('dashboard.whatsapp.disable_sending')
+                    </button>
+                @endif
+
+                @if($this->whatsappAccount->is_sending_disabled)
+                    <button class="btn btn-sm btn-success" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="enableSending" wire:loading.attr="disabled">
+                        @lang('dashboard.whatsapp.enable_sending')
+                    </button>
+                @endif
             @endif
         @endif
     </div>
