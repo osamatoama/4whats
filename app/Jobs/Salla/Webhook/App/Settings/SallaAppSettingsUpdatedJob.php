@@ -23,7 +23,7 @@ class SallaAppSettingsUpdatedJob implements ShouldQueue
         public int $merchantId,
         public array $data,
     ) {
-        //
+        $this->maxAttempts = 5;
     }
 
     /**

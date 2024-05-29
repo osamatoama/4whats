@@ -12,19 +12,29 @@ trait InteractsWithException
 
     public bool $shouldLog = true;
 
-    protected function handleException(Exception $e, bool $fail = false): void
+    public bool $onlyLogWhenFail = true;
+
+    protected function handleException(Exception $e, bool $fail = false, ?int $delay = null): void
     {
-        if ($this->shouldLog) {
-            logger()->error(message: $e->getMessage());
+        if ($this->shouldLog && ! $this->onlyLogWhenFail) {
+            $this->logException(e: $e);
         }
 
         if ($fail || $this->isAttemptedTooManyTimes()) {
+            if ($this->shouldLog && $this->onlyLogWhenFail) {
+                $this->logException(e: $e);
+            }
+
             $this->fail(exception: $e);
 
             return;
         }
 
-        $this->release(delay: $this->getDelayInSeconds(code: $e->getCode()));
+        $delay ??= $this->getDelayInSeconds(code: $e->getCode());
+
+        $this->release(
+            delay: $delay,
+        );
     }
 
     protected function isAttemptedTooManyTimes(): bool
@@ -38,5 +48,15 @@ trait InteractsWithException
             429 => 60,
             default => 0,
         };
+    }
+
+    protected function logException(Exception $e): void
+    {
+        logger()->error(
+            message: $e->getMessage(),
+            context: [
+                'code' => $e->getCode(),
+            ],
+        );
     }
 }

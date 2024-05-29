@@ -13,7 +13,7 @@ class SallaOAuthService
 
     public function __construct()
     {
-        $this->provider = new Salla([
+        $this->provider = new Salla(options: [
             'clientId' => config(key: 'services.salla.client_id'),
             'clientSecret' => config(key: 'services.salla.client_secret'),
             'redirectUri' => null,
@@ -26,20 +26,26 @@ class SallaOAuthService
     public function getNewToken(string $refreshToken): AccessToken
     {
         try {
-            return $this->provider->getAccessToken(grant: 'refresh_token', options: ['refresh_token' => $refreshToken]);
+            return $this->provider->getAccessToken(
+                grant: 'refresh_token',
+                options: ['refresh_token' => $refreshToken],
+            );
         } catch (IdentityProviderException $e) {
-            throw new SallaOAuthException($e->getMessage());
+            throw new SallaOAuthException(
+                message: $e->getMessage(),
+                code: $e->getCode(),
+            );
         }
     }
 
     public function getResourceOwner(AccessToken|string $accessToken): SallaUser
     {
-        if (is_string($accessToken)) {
-            $accessToken = new AccessToken([
+        if (is_string(value: $accessToken)) {
+            $accessToken = new AccessToken(options: [
                 'access_token' => $accessToken,
             ]);
         }
 
-        return $this->provider->getResourceOwner($accessToken);
+        return $this->provider->getResourceOwner(token: $accessToken);
     }
 }

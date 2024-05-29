@@ -38,7 +38,14 @@ class SallaAppSubscriptionRenewedJob implements ShouldQueue
         if ($store === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Exception while renewing salla subscription | Merchant: {$this->merchantId} | Message: Store not found",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Exception while renewing salla subscription',
+                            "Merchant: {$this->merchantId}",
+                            'Reason: Store not found',
+                        ],
+                    ),
+                    code: 404,
                 ),
                 fail: true,
             );
@@ -50,9 +57,16 @@ class SallaAppSubscriptionRenewedJob implements ShouldQueue
         if ($user->is_not_integrated_with_four_whats) {
             $this->handleException(
                 e: new Exception(
-                    message: "Exception while renewing salla subscription | Merchant: {$this->merchantId} | Message: User is not integrated with four whats",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Exception while renewing salla subscription',
+                            "Merchant: {$this->merchantId}",
+                            'Reason: User is not integrated with four whats',
+                        ],
+                    ),
+                    code: 401,
                 ),
-                fail: true,
+                delay: 60,
             );
 
             return;
@@ -74,7 +88,14 @@ class SallaAppSubscriptionRenewedJob implements ShouldQueue
         } catch (FourWhatsException $e) {
             $this->handleException(
                 e: new FourWhatsException(
-                    message: "Exception while renewing four whats instance | Whatsapp Account: {$whatsappAccount->id} | Message: {$e->getMessage()}",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Exception while renewing four whats instance',
+                            "Merchant: {$this->merchantId}",
+                            "Whatsapp Account: {$whatsappAccount->id}",
+                            "Reason: {$e->getMessage()}",
+                        ],
+                    ),
                     code: $e->getCode(),
                 ),
             );

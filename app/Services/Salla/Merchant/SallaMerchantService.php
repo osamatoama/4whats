@@ -5,49 +5,32 @@ namespace App\Services\Salla\Merchant;
 use App\Services\Salla\Merchant\Support\AbandonedCarts;
 use App\Services\Salla\Merchant\Support\Customers;
 use App\Services\Salla\Merchant\Support\OrderStatuses;
+use App\Services\Salla\SallaService;
 use Illuminate\Http\Client\Response;
-use Illuminate\Support\Carbon;
 
-class SallaMerchantService
+final readonly class SallaMerchantService extends SallaService
 {
-    public readonly Client $client;
+    public SallaMerchantClient $client;
 
     public function __construct(
         protected string $accessToken,
     ) {
-        $this->client = new Client(accessToken: $this->accessToken);
+        $this->client = new SallaMerchantClient(accessToken: $this->accessToken);
     }
 
     public function orderStatuses(): OrderStatuses
     {
-        $abstract = OrderStatuses::class.':'.$this->accessToken;
-
-        app()->singletonIf($abstract, fn (): OrderStatuses => new OrderStatuses(service: $this, client: $this->client));
-
-        return app($abstract);
+        return $this->resolve(name: OrderStatuses::class);
     }
 
     public function customers(): Customers
     {
-        $abstract = Customers::class.':'.$this->accessToken;
-
-        app()->singletonIf($abstract, fn (): Customers => new Customers(service: $this, client: $this->client));
-
-        return app($abstract);
+        return $this->resolve(name: Customers::class);
     }
 
     public function abandonedCarts(): AbandonedCarts
     {
-        $abstract = AbandonedCarts::class.':'.$this->accessToken;
-
-        app()->singletonIf($abstract, fn (): AbandonedCarts => new AbandonedCarts(service: $this, client: $this->client));
-
-        return app($abstract);
-    }
-
-    public static function parseDate(array $data): Carbon
-    {
-        return Carbon::parse(time: $data['date'], timezone: $data['timezone'])->timezone(value: config(key: 'app.timezone'));
+        return $this->resolve(name: AbandonedCarts::class);
     }
 
     /**
@@ -56,7 +39,7 @@ class SallaMerchantService
     public function validateResponse(Response $response, array $data): void
     {
         if ($response->failed()) {
-            throw new SallaMerchantException(message: "{$data['error']['code']} | {$data['error']['message']}");
+            throw SallaMerchantException::fromResponse(data: $data);
         }
     }
 }

@@ -24,7 +24,7 @@ class SallaPushSettingsJob implements ShouldQueue
         public int $storeId,
         public SettingsDto $settingsDto,
     ) {
-        $this->maxAttempts = 1;
+        $this->maxAttempts = 5;
     }
 
     /**

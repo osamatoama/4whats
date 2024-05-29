@@ -28,7 +28,7 @@ class SallaAbandonedCartJob implements ShouldQueue
         public int $merchantId,
         public array $data,
     ) {
-        //
+        $this->maxAttempts = 5;
     }
 
     /**
@@ -40,7 +40,14 @@ class SallaAbandonedCartJob implements ShouldQueue
         if ($store === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla abandoned cart webhook | Merchant: {$this->merchantId} | Message: Store not found",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Error while handling salla abandoned cart webhook',
+                            "Merchant: {$this->merchantId}",
+                            'Reason: Store not found',
+                        ],
+                    ),
+                    code: 404,
                 ),
                 fail: true,
             );

@@ -27,7 +27,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
         public int $merchantId,
         public array $data,
     ) {
-        //
+        $this->maxAttempts = 5;
     }
 
     /**
@@ -39,7 +39,14 @@ class SallaOrderUpdatedJob implements ShouldQueue
         if ($store === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla order updated webhook | Merchant: {$this->merchantId} | Message: Store not found",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Error while handling salla order updated webhook',
+                            "Merchant: {$this->merchantId}",
+                            'Reason: Store not found',
+                        ],
+                    ),
+                    code: 404,
                 ),
                 fail: true,
             );
@@ -56,7 +63,15 @@ class SallaOrderUpdatedJob implements ShouldQueue
         if ($orderStatus === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla order updated webhook | Store: {$store->id} | Status: {$sallaOrderStatusId} | Message: Order status not found",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Error while handling salla order updated webhook',
+                            "Store: {$store->id}",
+                            "Status: {$sallaOrderStatusId}",
+                            'Reason: Order status not found',
+                        ],
+                    ),
+                    code: 404,
                 ),
                 fail: true,
             );
@@ -69,7 +84,15 @@ class SallaOrderUpdatedJob implements ShouldQueue
         if ($template === null) {
             $this->handleException(
                 e: new Exception(
-                    message: "Error while handling salla order updated webhook | Store: {$store->id} | Key: {$templateKey} | Message: Message template not found",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Error while handling salla order updated webhook',
+                            "Store: {$store->id}",
+                            "Template: {$templateKey}",
+                            'Reason: Template not found',
+                        ],
+                    ),
+                    code: 404,
                 ),
                 fail: true,
             );

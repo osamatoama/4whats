@@ -44,7 +44,13 @@ class FourWhatsCreateUserJob implements ShouldQueue
         } catch (FourWhatsException $e) {
             $this->handleException(
                 e: new FourWhatsException(
-                    message: "Exception while creating four whats user | User: {$this->user->id} | Message: {$e->getMessage()}",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Exception while creating four whats user',
+                            "User: {$this->user->id}",
+                            "Reason: {$e->getMessage()}",
+                        ],
+                    ),
                     code: $e->getCode(),
                 ),
             );

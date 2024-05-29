@@ -38,11 +38,25 @@ class WhatsappSendTextMessageJob implements ShouldQueue
         $service = new FourWhatsService();
 
         try {
-            $response = $service->sending(instanceId: $this->instanceId, instanceToken: $this->instanceToken)->text(mobile: $this->mobile, message: $this->message);
+            $response = $service->sending(
+                instanceId: $this->instanceId,
+                instanceToken: $this->instanceToken,
+            )->text(
+                mobile: $this->mobile,
+                message: $this->message,
+            );
         } catch (FourWhatsException $e) {
             $this->handleException(
                 e: new FourWhatsException(
-                    message: "Error while sending whatsapp text message | Message {$e->getMessage()} | InstanceID: {$this->instanceId} | InstanceToken: {$this->instanceToken}",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Error while sending whatsapp text message',
+                            "Message {$e->getMessage()}",
+                            "Instance ID: {$this->instanceId}",
+                            "Instance Token: {$this->instanceToken}",
+                        ],
+                    ),
+                    code: $e->getCode(),
                 )
             );
 

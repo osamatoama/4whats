@@ -27,10 +27,7 @@ final readonly class SallaPartnerService extends SallaService
     public function validateResponse(Response $response, array $data): void
     {
         if ($response->failed()) {
-            throw new SallaPartnerException(
-                message: "{$data['error']['code']} | {$data['error']['message']}",
-                code: $data['status'],
-            );
+            throw SallaPartnerException::fromResponse(data: $data);
         }
     }
 }

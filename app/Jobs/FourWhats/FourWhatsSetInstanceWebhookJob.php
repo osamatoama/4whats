@@ -22,7 +22,7 @@ class FourWhatsSetInstanceWebhookJob implements ShouldQueue
         public int $instanceId,
         public string $instanceToken,
     ) {
-        //
+        $this->maxAttempts = 5;
     }
 
     /**
@@ -38,7 +38,14 @@ class FourWhatsSetInstanceWebhookJob implements ShouldQueue
         } catch (FourWhatsException $e) {
             $this->handleException(
                 e: new FourWhatsException(
-                    message: "Exception while setting four whats instance webhook | Id: {$this->instanceId} | Token: {$this->instanceToken}  | Message: {$e->getMessage()}",
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Exception while setting four whats instance webhook',
+                            "Id: {$this->instanceId}",
+                            "Token: {$this->instanceToken}",
+                            "Reason: {$e->getMessage()}",
+                        ],
+                    ),
                     code: $e->getCode(),
                 ),
                 fail: true,

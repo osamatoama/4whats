@@ -2,18 +2,19 @@
 
 namespace App\Services\Salla\Merchant\Support;
 
-use App\Services\Salla\Merchant\Client;
+use App\Services\Salla\Merchant\SallaMerchantClient;
 use App\Services\Salla\Merchant\SallaMerchantException;
 use App\Services\Salla\Merchant\SallaMerchantService;
 
-class Customers
+final readonly class Customers
 {
-    protected string $baseUrl = 'https://api.salla.dev/admin/v2/customers';
+    protected string $baseUrl;
 
     public function __construct(
         protected SallaMerchantService $service,
-        protected Client $client,
+        protected SallaMerchantClient $client,
     ) {
+        $this->baseUrl = 'https://api.salla.dev/admin/v2/customers';
     }
 
     /**

@@ -26,7 +26,10 @@ class SettingsValidatorController extends Controller
                 'success' => false,
                 'code' => 'error',
                 'message' => 'خطأ في التحقق، يرجى مراجعة البيانات المدخلة.',
-                'fields' => Arr::mapWithKeys(array: $validator->messages()->toArray(), callback: fn(array $messages, string $field): array => [$field => $messages[0]]),
+                'fields' => Arr::mapWithKeys(
+                    array: $validator->messages()->toArray(),
+                    callback: fn (array $messages, string $field): array => [$field => $messages[0]],
+                ),
             ], status: 422);
         }
 

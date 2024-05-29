@@ -2,18 +2,19 @@
 
 namespace App\Services\Salla\Merchant\Support;
 
-use App\Services\Salla\Merchant\Client;
+use App\Services\Salla\Merchant\SallaMerchantClient;
 use App\Services\Salla\Merchant\SallaMerchantException;
 use App\Services\Salla\Merchant\SallaMerchantService;
 
-class AbandonedCarts
+final readonly class AbandonedCarts
 {
-    protected string $baseUrl = 'https://api.salla.dev/admin/v2/carts/abandoned';
+    protected string $baseUrl;
 
     public function __construct(
         protected SallaMerchantService $service,
-        protected Client $client,
+        protected SallaMerchantClient $client,
     ) {
+        $this->baseUrl = 'https://api.salla.dev/admin/v2/carts/abandoned';
     }
 
     /**
@@ -21,9 +22,12 @@ class AbandonedCarts
      */
     public function get(int $page = 1): array
     {
-        $response = $this->client->get(url: $this->baseUrl, data: [
-            'page' => $page,
-        ]);
+        $response = $this->client->get(
+            url: $this->baseUrl,
+            data: [
+                'page' => $page,
+            ],
+        );
 
         $data = $response->json();
 
