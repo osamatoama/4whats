@@ -5,12 +5,15 @@
                 <h4 class="card-title">
                     {{ $label }}
                 </h4>
-                <div class="card-tools">
+                <div class="card-tools d-flex align-items-center gap-1">
                     <div style="width: 25px;">
                         @if($hint !== null)
                             <i class="ti ti-alert-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ $hint }}"></i>
                         @endif
                     </div>
+                    <button class="btn btn-sm btn-primary" wire:click="syncOrderStatuses" wire:loading.attr="disabled">
+                        @lang('dashboard.common.sync')
+                    </button>
                 </div>
             </div>
         </div>

@@ -20,6 +20,7 @@ return [
         'yes' => 'نعم',
         'no' => 'لا',
         'is_enabled' => 'مفعل',
+        'sync' => 'مزامنه',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',
@@ -122,6 +123,8 @@ return [
                 'order_status_to_send_notification' => 'حالة الطلب لإرسال رسالة إشعار طلب التقييم',
                 'employees_mobiles' => 'الأرقام التي سوف تستلم رسالة الطلبات الجديدة',
                 'employees_mobiles_description' => 'يمكنك ادخال اكثر من رقم عن طريق فصلهم بفاصلة, هذه الأرقام سوف تستلم رسالة عند كل طلب جديد في المتجر',
+                'syncing_order_statuses' => 'جاري مزامنه حالات الطلب',
+                'syncing_order_statuses_please_wait' => 'جاري مزامنه حالات الطلب. من فضلك انتظر',
             ],
         ],
         'contacts' => [

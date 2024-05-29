@@ -30,6 +30,10 @@
             toast(event.message);
         });
 
+        Livewire.on('toasts.warning', (event) => {
+            toast(event.message, 'warning');
+        });
+
         Livewire.on('toasts.error', (event) => {
             toast(event.message, 'error');
         });

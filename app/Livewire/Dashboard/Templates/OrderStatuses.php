@@ -2,20 +2,37 @@
 
 namespace App\Livewire\Dashboard\Templates;
 
+use App\Enums\Jobs\JobBatchName;
 use App\Enums\MessageTemplate;
+use App\Enums\ProviderType;
+use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
+use App\Livewire\Concerns\InteractsWithToasts;
+use App\Models\Store;
 use App\Models\Template;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Component;
 
 class OrderStatuses extends Component
 {
+    use InteractsWithToasts;
+
     public Collection $templates;
 
     public int $currentTemplateId;
 
     public Template $currentTemplate;
+
+    public function syncOrderStatuses(): void
+    {
+        $store = currentStore();
+
+        if ($store->provider_type === ProviderType::SALLA) {
+            $this->syncSallaOrderStatuses(store: $store);
+        }
+    }
 
     public function mount(): void
     {
@@ -55,5 +72,35 @@ class OrderStatuses extends Component
             'hint' => $enum->hint(),
             'orderStatuses' => currentStore()->orderStatuses,
         ]);
+    }
+
+    protected function syncSallaOrderStatuses(Store $store): void
+    {
+        $jobBatchName = JobBatchName::SALLA_PULL_ORDER_STATUSES;
+        if (hasRunningBatches(jobBatchName: $jobBatchName, storeId: $store->id)) {
+            $this->customWarningToast(
+                message: __(
+                    key: 'dashboard.pages.templates.index.syncing_order_statuses_please_wait',
+                ),
+            );
+
+            return;
+        }
+
+        $accessToken = $store->user->sallaToken->access_token;
+        Bus::batch(
+            jobs: new SallaPullOrderStatusesJob(
+                accessToken: $accessToken,
+                storeId: $store->id,
+            ),
+        )->name(
+            name: $jobBatchName->generate(storeId: $store->id),
+        )->dispatch();
+
+        $this->customSuccessToast(
+            message: __(
+                key: 'dashboard.pages.templates.index.syncing_order_statuses',
+            ),
+        );
     }
 }
