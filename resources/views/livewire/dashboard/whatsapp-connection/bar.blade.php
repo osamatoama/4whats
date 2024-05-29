@@ -13,21 +13,27 @@
                     @lang('dashboard.whatsapp.disconnecting')
                 </button>
             @else
-                <button class="btn btn-sm btn-danger" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="disconnect" wire:loading.attr="disabled">
-                    @lang('dashboard.whatsapp.disconnect')
-                </button>
-
-                @if($this->whatsappAccount->is_sending_enabled)
-                    <button class="btn btn-sm btn-danger" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="disableSending" wire:loading.attr="disabled">
-                        @lang('dashboard.whatsapp.disable_sending')
+                @can('disconnect', $this->whatsappAccount)
+                    <button class="btn btn-sm btn-danger" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="disconnect" wire:loading.attr="disabled">
+                        @lang('dashboard.whatsapp.disconnect')
                     </button>
-                @endif
+                @endcan
 
-                @if($this->whatsappAccount->is_sending_disabled)
-                    <button class="btn btn-sm btn-success" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="enableSending" wire:loading.attr="disabled">
-                        @lang('dashboard.whatsapp.enable_sending')
-                    </button>
-                @endif
+                @can('disableSending', $this->whatsappAccount)
+                    @if($this->whatsappAccount->is_sending_enabled)
+                        <button class="btn btn-sm btn-danger" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="disableSending" wire:loading.attr="disabled">
+                            @lang('dashboard.whatsapp.disable_sending')
+                        </button>
+                    @endif
+                @endcan
+
+                @can('enableSending', $this->whatsappAccount)
+                    @if($this->whatsappAccount->is_sending_disabled)
+                        <button class="btn btn-sm btn-success" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="enableSending" wire:loading.attr="disabled">
+                            @lang('dashboard.whatsapp.enable_sending')
+                        </button>
+                    @endif
+                @endcan
             @endif
         @endif
     </div>

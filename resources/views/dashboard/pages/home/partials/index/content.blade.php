@@ -37,5 +37,7 @@
 </div>
 
 @if(!auth()->user()->is_admin)
-    <livewire:dashboard.whatsapp-connection.qr-code/>
+    @can('connect', currentStore()->whatsappAccount)
+        <livewire:dashboard.whatsapp-connection.qr-code/>
+    @endcan
 @endif
