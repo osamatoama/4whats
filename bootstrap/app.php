@@ -3,16 +3,31 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web/routes.php',
         api: __DIR__.'/../routes/api/routes.php',
         commands: __DIR__.'/../routes/console/routes.php',
-        health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->redirectTo(
+            guests: function (Request $request) {
+                if ($request->routeIs(patterns: 'dashboard.*')) {
+                    return route(name: 'dashboard.login');
+                }
+
+                return url(path: '/');
+            },
+            users: function (Request $request) {
+                if ($request->routeIs(patterns: 'dashboard.*')) {
+                    return route(name: 'dashboard.home');
+                }
+
+                return url(path: '/');
+            },
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
