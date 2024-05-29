@@ -13,14 +13,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectTo(
-            guests: function (Request $request) {
+            guests: function (Request $request): string {
                 if ($request->routeIs(patterns: 'dashboard.*')) {
                     return route(name: 'dashboard.login');
                 }
 
                 return url(path: '/');
             },
-            users: function (Request $request) {
+            users: function (Request $request): string {
                 if ($request->routeIs(patterns: 'dashboard.*')) {
                     return route(name: 'dashboard.home');
                 }
