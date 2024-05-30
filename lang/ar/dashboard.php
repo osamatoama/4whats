@@ -171,6 +171,13 @@ return [
                     'message' => 'الرسالة',
                     'color' => 'اللون',
                 ],
+                'password' => [
+                    'title' => 'كلمة السر',
+                    'current_password' => 'كلمة السر الحالية',
+                    'new_password' => 'كلمة السر الجديدة',
+                    'new_password_confirmation' => 'تآكيد كلمة السر الجديدة',
+                    'updated' => 'تم تعديل كلمة السر بنجاح',
+                ],
             ],
             'columns' => [
                 'key' => 'الاسم',

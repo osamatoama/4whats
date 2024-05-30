@@ -56,6 +56,7 @@
                 <div class="card-footer">
                     <button class="btn btn-warning" wire:click="updateWidget" wire:loading.attr="disabled">
                         @lang('dashboard.common.edit')
+                        @lang('dashboard.pages.settings.index.widget.title')
                     </button>
                 </div>
             @endcan

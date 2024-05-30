@@ -3,3 +3,5 @@
 @else
     @include('dashboard.pages.settings.partials.index.content.merchant')
 @endif
+
+<livewire:dashboard.update-password-form/>
