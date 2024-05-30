@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Dashboard\Templates;
 
-use App\Enums\Jobs\JobBatchName;
+use App\Enums\Jobs\BatchName;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
@@ -76,8 +76,11 @@ class OrderStatuses extends Component
 
     protected function syncSallaOrderStatuses(Store $store): void
     {
-        $jobBatchName = JobBatchName::SALLA_PULL_ORDER_STATUSES;
-        if (hasRunningBatches(jobBatchName: $jobBatchName, storeId: $store->id)) {
+        $batchName = BatchName::SALLA_PULL_ORDER_STATUSES;
+        if (hasRunningBatches(
+            jobBatchName: $batchName,
+            storeId: $store->id,
+        )) {
             $this->customWarningToast(
                 message: __(
                     key: 'dashboard.pages.templates.index.syncing_order_statuses_please_wait',
@@ -94,7 +97,9 @@ class OrderStatuses extends Component
                 storeId: $store->id,
             ),
         )->name(
-            name: $jobBatchName->generate(storeId: $store->id),
+            name: $batchName->generate(
+                storeId: $store->id,
+            ),
         )->dispatch();
 
         $this->customSuccessToast(

@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\App\Store;
 
-use App\Enums\Jobs\JobBatchName;
+use App\Enums\Jobs\BatchName;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\SettingKey;
@@ -186,19 +186,19 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
         $customersBatch = Bus::batch(
             jobs: new SallaPullCustomersJob(accessToken: $this->data['access_token'], storeId: $store->id),
         )->name(
-            name: JobBatchName::SALLA_PULL_CUSTOMERS->generate(storeId: $store->id),
+            name: BatchName::SALLA_PULL_CUSTOMERS->generate(storeId: $store->id),
         );
 
         $abandonedCartsBatch = Bus::batch(
             jobs: new SallaPullAbandonedCartsJob(accessToken: $this->data['access_token'], storeId: $store->id),
         )->name(
-            name: JobBatchName::SALLA_PULL_ABANDONED_CARTS->generate(storeId: $store->id),
+            name: BatchName::SALLA_PULL_ABANDONED_CARTS->generate(storeId: $store->id),
         );
 
         $orderStatusesBatch = Bus::batch(
             jobs: new SallaPullOrderStatusesJob(accessToken: $this->data['access_token'], storeId: $store->id),
         )->name(
-            name: JobBatchName::SALLA_PULL_ORDER_STATUSES->generate(storeId: $store->id),
+            name: BatchName::SALLA_PULL_ORDER_STATUSES->generate(storeId: $store->id),
         )->finally(callback: function (Batch $batch) use ($store): void {
             $store->settings()
                 ->where(

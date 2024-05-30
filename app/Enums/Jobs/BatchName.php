@@ -2,7 +2,7 @@
 
 namespace App\Enums\Jobs;
 
-enum JobBatchName: string
+enum BatchName: string
 {
     case SALLA_PULL_CUSTOMERS = 'salla.pull.customers';
     case SALLA_PULL_ABANDONED_CARTS = 'salla.pull.abandoned-carts';
@@ -11,5 +11,16 @@ enum JobBatchName: string
     public function generate(int $storeId): string
     {
         return $this->value.':'.$storeId;
+    }
+
+    public static function fromBatchName(string $batchName): self
+    {
+        return self::from(
+            value: str(
+                string: $batchName,
+            )->before(
+                search: ':',
+            )->toString(),
+        );
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\Jobs\JobBatchName;
+use App\Enums\Jobs\BatchName;
 use App\Models\Store;
 use App\Models\User;
 use App\Support\Settings;
@@ -61,7 +61,7 @@ if (! function_exists('currentStore')) {
 }
 
 if (! function_exists('hasRunningBatches')) {
-    function hasRunningBatches(JobBatchName $jobBatchName, int $storeId): bool
+    function hasRunningBatches(BatchName $jobBatchName, int $storeId): bool
     {
         return once(callback: function () use ($jobBatchName, $storeId): bool {
             $batchesTableName = config(key: 'queue.batching.table');

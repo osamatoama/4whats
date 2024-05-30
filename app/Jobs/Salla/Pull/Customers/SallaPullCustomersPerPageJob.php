@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Salla\Pull\Customers;
 
-use App\Enums\Jobs\JobBatchName;
+use App\Enums\Jobs\BatchName;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Services\Salla\Merchant\SallaMerchantException;
@@ -65,7 +65,7 @@ class SallaPullCustomersPerPageJob implements ShouldQueue
 
         $this->addOrCreateBatch(
             jobs: $jobs,
-            name: JobBatchName::SALLA_PULL_CUSTOMERS->generate(storeId: $this->storeId),
+            name: BatchName::SALLA_PULL_CUSTOMERS->generate(storeId: $this->storeId),
         );
     }
 }
