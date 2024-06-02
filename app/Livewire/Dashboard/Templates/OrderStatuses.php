@@ -7,6 +7,7 @@ use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
 use App\Livewire\Concerns\InteractsWithToasts;
+use App\Models\QueuedJobBatch;
 use App\Models\Store;
 use App\Models\Template;
 use Illuminate\Database\Eloquent\Collection;
@@ -77,7 +78,7 @@ class OrderStatuses extends Component
     protected function syncSallaOrderStatuses(Store $store): void
     {
         $batchName = BatchName::SALLA_PULL_ORDER_STATUSES;
-        if (hasRunningBatches(
+        if (QueuedJobBatch::hasRunningBatches(
             batchName: $batchName,
             storeId: $store->id,
         )) {

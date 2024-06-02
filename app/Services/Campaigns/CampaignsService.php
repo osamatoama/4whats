@@ -6,9 +6,9 @@ use App\Enums\CampaignType;
 use App\Enums\Jobs\BatchName;
 use App\Jobs\Campaigns\AbandonedCarts\SendAbandonedCartsCampaignJob;
 use App\Jobs\Campaigns\Contacts\SendContactsCampaignJob;
+use App\Models\QueuedJobBatch;
 use App\Models\Store;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\DB;
 
 readonly class CampaignsService
 {
@@ -19,23 +19,12 @@ readonly class CampaignsService
 
     public function getRunningCampaignsCount(): int
     {
-        return once(
-            callback: function (): int {
-                $batchesTableName = config(key: 'queue.batching.table');
-                $batchNames = [
-                    BatchName::CAMPAIGNS_CONTACTS->generate(
-                        storeId: $this->store->id,
-                    ),
-                    BatchName::CAMPAIGNS_ABANDONED_CARTS->generate(
-                        storeId: $this->store->id,
-                    ),
-                ];
-
-                return DB::table(table: $batchesTableName)
-                    ->whereIn(column: 'name', values: $batchNames)
-                    ->whereNull(columns: ['cancelled_at', 'finished_at'])
-                    ->count();
-            },
+        return QueuedJobBatch::getRunningBatchesCount(
+            batchName: [
+                BatchName::CAMPAIGNS_CONTACTS,
+                BatchName::CAMPAIGNS_ABANDONED_CARTS,
+            ],
+            storeId: $this->store->id,
         );
     }
 
