@@ -3,11 +3,24 @@
 namespace App\Models;
 
 use App\Enums\Jobs\BatchName;
+use Illuminate\Bus\Batch;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Bus;
 
 class QueuedJobBatch extends Model
 {
+    use HasUuids;
+
+    protected function casts(): array
+    {
+        return [
+            'canceled_at' => 'datetime',
+            'finished_at' => 'datetime',
+        ];
+    }
+
     public function getTable(): string
     {
         return config(
@@ -86,5 +99,12 @@ class QueuedJobBatch extends Model
                     columns: ['cancelled_at', 'finished_at'],
                 ),
             );
+    }
+
+    public function toBatch(): Batch
+    {
+        return Bus::findBatch(
+            batchId: $this->id,
+        );
     }
 }

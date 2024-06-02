@@ -6,7 +6,7 @@
             <div class="card-body">
                 <div class="form-group mb-3">
                     <label class="form-label">
-                        @lang('dashboard.pages.campaigns.send.columns.type')
+                        @lang('dashboard.pages.campaigns.columns.type.label')
                     </label>
                     <select @class(['form-select', 'is-invalid' => $errors->has(key: 'currentType')]) wire:model.live="currentType">
                         @foreach($types as $type)
@@ -21,14 +21,14 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">
-                        @lang('dashboard.pages.campaigns.send.columns.message.label')
+                        @lang('dashboard.pages.campaigns.columns.message.label')
                     </label>
                     <textarea @class(['form-control', 'is-invalid' => $errors->has(key: 'message')]) wire:model="message"></textarea>
                     @error('message')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                     <small class="form-text text-muted">
-                        @lang('dashboard.pages.campaigns.send.columns.message.description', ['placeholders' => $currentType->placeholdersAsString()])
+                        @lang('dashboard.pages.campaigns.columns.message.description', ['placeholders' => $currentType->placeholdersAsString()])
                     </small>
                 </div>
             </div>

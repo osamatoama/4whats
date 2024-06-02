@@ -8,6 +8,7 @@ use App\Jobs\Campaigns\AbandonedCarts\SendAbandonedCartsCampaignJob;
 use App\Jobs\Campaigns\Contacts\SendContactsCampaignJob;
 use App\Models\QueuedJobBatch;
 use App\Models\Store;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Bus;
 
 readonly class CampaignsService
@@ -17,20 +18,25 @@ readonly class CampaignsService
     ) {
     }
 
+    public function getRunningCampaigns(): Collection
+    {
+        return QueuedJobBatch::getRunningBatchesQuery(
+            batchName: $this->getBatchNames(),
+            storeId: $this->store->id,
+        )->get();
+    }
+
     public function getRunningCampaignsCount(): int
     {
         return QueuedJobBatch::getRunningBatchesCount(
-            batchName: [
-                BatchName::CAMPAIGNS_CONTACTS,
-                BatchName::CAMPAIGNS_ABANDONED_CARTS,
-            ],
+            batchName: $this->getBatchNames(),
             storeId: $this->store->id,
         );
     }
 
     public function send(CampaignType $campaignType, string $message): void
     {
-        $batchName = $this->getBatchName(
+        $batchName = $this->generateBatchNameFromCampaignType(
             campaignType: $campaignType,
         );
 
@@ -48,7 +54,15 @@ readonly class CampaignsService
         )->allowFailures()->dispatch();
     }
 
-    protected function getBatchName(CampaignType $campaignType): string
+    protected function getBatchNames(): array
+    {
+        return [
+            BatchName::CAMPAIGNS_CONTACTS,
+            BatchName::CAMPAIGNS_ABANDONED_CARTS,
+        ];
+    }
+
+    protected function generateBatchNameFromCampaignType(CampaignType $campaignType): string
     {
         $batchName = match ($campaignType) {
             CampaignType::CONTACTS => BatchName::CAMPAIGNS_CONTACTS,

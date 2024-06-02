@@ -2,10 +2,27 @@
 
 namespace App\Enums;
 
+use App\Models\QueuedJobBatch;
+
 enum CampaignType: string
 {
     case CONTACTS = 'contacts';
     case ABANDONED_CARTS = 'abandoned_carts';
+
+    public static function fromQueuedJobBatch(QueuedJobBatch $queuedJobBatch): self
+    {
+        $name = str(
+            string: $queuedJobBatch->name,
+        )->after(
+            search: '.',
+        )->before(
+            search: ':',
+        )->toString();
+
+        return self::from(
+            value: $name,
+        );
+    }
 
     public function label(): string
     {

@@ -10,6 +10,7 @@ use Livewire\Component;
 
 #[Lazy]
 #[On('campaign-started')]
+#[On('campaign-canceled')]
 class Alert extends Component
 {
     public function render(): View
