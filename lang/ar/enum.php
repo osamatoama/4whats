@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\CampaignType;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\SettingKey;
@@ -71,5 +72,9 @@ return [
     ],
     SettingKey::class => [
         SettingKey::SYSTEM_FOUR_WHATS_VOUCHER->name => 'Voucher',
+    ],
+    CampaignType::class => [
+        CampaignType::CONTACTS->name => 'أرقام العملاء',
+        CampaignType::ABANDONED_CARTS->name => 'السلات المتروكة',
     ],
 ];

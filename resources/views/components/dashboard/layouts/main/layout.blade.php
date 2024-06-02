@@ -23,7 +23,9 @@
         <div class="container-fluid">
             @if(!auth()->user()->is_admin)
                 <x-dashboard.layouts.main.expiration-warning/>
-            
+
+                <livewire:dashboard.campaigns.alert/>
+
                 <livewire:dashboard.whatsapp-connection.bar/>
             @endif
 

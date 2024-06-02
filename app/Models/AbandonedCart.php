@@ -32,7 +32,7 @@ class AbandonedCart extends Model
     protected function totalAmount(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes): string => Number::currency(number: $value / 100, in: $attributes['total_currency'], locale: app()->getLocale()),
+            get: fn (mixed $value, array $attributes): string => Number::format(number: $value / 100, locale: app()->getLocale()),
         );
     }
 

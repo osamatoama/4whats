@@ -78,7 +78,7 @@ class OrderStatuses extends Component
     {
         $batchName = BatchName::SALLA_PULL_ORDER_STATUSES;
         if (hasRunningBatches(
-            jobBatchName: $batchName,
+            batchName: $batchName,
             storeId: $store->id,
         )) {
             $this->customWarningToast(

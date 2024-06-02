@@ -3,6 +3,7 @@
 namespace App\Jobs\Whatsapp;
 
 use App\Enums\Whatsapp\MessageStatus;
+use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Models\Message;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
@@ -15,7 +16,7 @@ use Illuminate\Queue\SerializesModels;
 
 class WhatsappSendTextMessageJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithBatches, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.

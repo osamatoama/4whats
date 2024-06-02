@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Dashboard\Campaign\CampaignCurrentController;
+use App\Http\Controllers\Dashboard\Campaign\CampaignSendController;
 use App\Http\Controllers\Dashboard\ContactController;
 use App\Http\Controllers\Dashboard\EmployeeController;
 use App\Http\Controllers\Dashboard\HomeController;
@@ -21,6 +23,11 @@ Route::middleware(['auth:dashboard'])->group(function () {
     Route::resource('templates', TemplateController::class)->only(['index']);
 
     Route::resource('contacts', ContactController::class)->only(['index']);
+
+    Route::prefix('campaigns')->name('campaigns.')->group(function () {
+        Route::get('send', CampaignSendController::class)->name('send');
+        Route::get('current', CampaignCurrentController::class)->name('current');
+    });
 
     Route::resource('messages', MessageController::class)->only(['index']);
 

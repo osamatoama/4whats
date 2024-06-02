@@ -61,11 +61,11 @@ if (! function_exists('currentStore')) {
 }
 
 if (! function_exists('hasRunningBatches')) {
-    function hasRunningBatches(BatchName $jobBatchName, int $storeId): bool
+    function hasRunningBatches(BatchName $batchName, int $storeId): bool
     {
-        return once(callback: function () use ($jobBatchName, $storeId): bool {
+        return once(callback: function () use ($batchName, $storeId): bool {
             $batchesTableName = config(key: 'queue.batching.table');
-            $name = $jobBatchName->generate(storeId: $storeId);
+            $name = $batchName->generate(storeId: $storeId);
 
             return DB::table(table: $batchesTableName)
                 ->where(column: 'name', operator: '=', value: $name)

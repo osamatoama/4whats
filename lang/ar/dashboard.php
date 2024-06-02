@@ -21,6 +21,7 @@ return [
         'no' => 'لا',
         'is_enabled' => 'مفعل',
         'sync' => 'مزامنه',
+        'send' => 'ارسال',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',
@@ -149,6 +150,29 @@ return [
                 'remove_from_blacklist' => 'حذف من القائمة المحظورة',
             ],
         ],
+        'campaigns' => [
+            'title' => 'رسائل الحملات',
+            'sending_campaigns' => 'جاري ارسال (:count) حملات حاليا',
+            'click_here_to_stop_sending' => 'اضغط هنا لايقاف الحملات',
+            'send' => [
+                'title' => 'ارسال الحملات',
+                'page_title' => 'ارسال الحملات',
+                'columns' => [
+                    'type' => 'النوع',
+                    'message' => [
+                        'label' => 'الرسالة',
+                        'description' => 'نص الرسالة الذي سوف يرسل للعميل، يمكنك استخدام الاختصارات التالية: :placeholders',
+                    ],
+                ],
+                'messages' => [
+                    'sending' => 'جاري ارسال الحملة',
+                ],
+            ],
+            'current' => [
+                'title' => 'الحملات الجاري ارسالها',
+                'page_title' => 'الحملات الجاري ارسالها',
+            ],
+        ],
         'messages' => [
             'index' => [
                 'title' => 'سجل الارسال',
@@ -161,7 +185,6 @@ return [
                 'status' => 'حالة الارسال',
             ],
         ],
-
         'settings' => [
             'index' => [
                 'title' => 'الاعدادات',

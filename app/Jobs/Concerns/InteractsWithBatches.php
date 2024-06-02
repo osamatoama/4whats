@@ -9,12 +9,12 @@ trait InteractsWithBatches
 {
     use Batchable;
 
-    protected function addOrCreateBatch(array $jobs, string $name): void
+    protected function addOrCreateBatch(array|object $jobs, string $name): void
     {
         if ($this->batchId !== null) {
             $this->batch()->add(jobs: $jobs);
         } else {
-            Bus::batch(jobs: [$jobs])->name(name: $name)->dispatch();
+            Bus::batch(jobs: $jobs)->name(name: $name)->dispatch();
         }
     }
 }

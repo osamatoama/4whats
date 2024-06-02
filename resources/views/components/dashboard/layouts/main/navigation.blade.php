@@ -43,6 +43,22 @@
     />
 @endcan
 
+@can('sendCampaigns', User::class)
+    <x-dashboard.layouts.main.nav-link
+        :url="route(name: 'dashboard.campaigns.send')"
+        :text="__(key: 'dashboard.pages.campaigns.send.title')"
+        :is-active="request()->routeIs(patterns: 'dashboard.campaigns.send')"
+    />
+@endcan
+
+@can('viewCampaigns', User::class)
+    <x-dashboard.layouts.main.nav-link
+        :url="route(name: 'dashboard.campaigns.current')"
+        :text="__(key: 'dashboard.pages.campaigns.current.title')"
+        :is-active="request()->routeIs(patterns: 'dashboard.campaigns.current')"
+    />
+@endcan
+
 @can('viewAny', Message::class)
     <x-dashboard.layouts.main.nav-link
         :url="route(name: 'dashboard.messages.index')"
