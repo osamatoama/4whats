@@ -5,6 +5,7 @@ namespace App\Enums;
 enum ProviderType: string
 {
     case SALLA = 'salla';
+    case ZID = 'zid';
 
     public function label(): string
     {

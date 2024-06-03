@@ -15,6 +15,7 @@ return [
     ],
     ProviderType::class => [
         ProviderType::SALLA->name => 'سلة',
+        ProviderType::ZID->name => 'زد',
     ],
     MessageTemplate::class => [
         MessageTemplate::ORDER_STATUSES->name => [

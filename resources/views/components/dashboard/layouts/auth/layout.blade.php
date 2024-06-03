@@ -44,6 +44,10 @@
                                 <div class="alert alert-success mt-4">{{ $value }}</div>
                                 @endsession
 
+                                @session('error')
+                                <div class="alert alert-danger mt-4">{{ $value }}</div>
+                                @endsession
+
                                 {{ $slot }}
                             </div>
                         </div>

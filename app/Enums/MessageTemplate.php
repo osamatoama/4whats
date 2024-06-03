@@ -21,7 +21,14 @@ enum MessageTemplate: string
             ->filter(callback: function (MessageTemplate $messageTemplate) {
                 return $messageTemplate === self::ORDER_STATUSES || str(string: $messageTemplate->name)->startsWith(needles: 'SALLA_');
             });
+    }
 
+    public static function zidCases(): Collection
+    {
+        return collect(value: self::cases())
+            ->filter(callback: function (MessageTemplate $messageTemplate) {
+                return $messageTemplate === self::ORDER_STATUSES || str(string: $messageTemplate->name)->startsWith(needles: 'ZID_');
+            });
     }
 
     public static function reviewOrderValues(): array

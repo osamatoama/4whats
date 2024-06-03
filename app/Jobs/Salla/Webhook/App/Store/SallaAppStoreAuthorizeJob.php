@@ -2,19 +2,28 @@
 
 namespace App\Jobs\Salla\Webhook\App\Store;
 
+use App\Dto\StoreDto;
+use App\Dto\TokenDto;
+use App\Dto\UserDto;
+use App\Dto\WhatsappAccountDto;
+use App\Dto\WidgetDto;
 use App\Enums\Jobs\BatchName;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\SettingKey;
 use App\Enums\UserRole;
-use App\Jobs\FourWhats\FourWhatsCreateUserJob;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
 use App\Jobs\Salla\Pull\Customers\SallaPullCustomersJob;
 use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
 use App\Models\Store;
-use App\Models\User;
-use App\Notifications\Salla\UserCreatedUsingSallaWebhook;
+use App\Services\OAuth\OAuthService;
 use App\Services\Salla\OAuth\SallaOAuthService;
+use App\Services\Setting\SettingService;
+use App\Services\Store\StoreService;
+use App\Services\Template\TemplateService;
+use App\Services\Token\TokenService;
+use App\Services\WhatsappAccount\WhatsappAccountService;
+use App\Services\Widget\WidgetService;
 use Exception;
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
@@ -24,8 +33,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Salla\OAuth2\Client\Provider\SallaUser;
 
 class SallaAppStoreAuthorizeJob implements ShouldQueue
 {
@@ -49,27 +56,70 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
     {
         $store = Store::query()->salla(providerId: $this->merchantId)->first();
         if ($store !== null) {
-            $this->syncToken(user: $store->user);
+            (new TokenService())->syncToken(
+                user: $store->user,
+                tokenDto: TokenDto::fromSalla(
+                    sallaToken: $this->data,
+                ),
+            );
 
             return;
         }
 
         try {
-            $resourceOwner = (new SallaOAuthService())->getResourceOwner(accessToken: $this->data['access_token']);
-            $email = $resourceOwner->getEmail();
+            $sallaOAuthService = new SallaOAuthService();
+            $resourceOwner = $sallaOAuthService->getResourceOwner(
+                accessToken: $this->data['access_token'],
+            );
 
-            $user = User::where(column: 'email', operator: '=', value: $email)->firstOr(
-                callback: fn (): User => $this->createUser(resourceOwner: $resourceOwner, email: $email),
+            $oauthService = new OAuthService();
+            $password = $oauthService->generatePassword();
+            $user = $oauthService->getOrCreateUser(
+                userDto: UserDto::fromSalla(
+                    sallaUser: $resourceOwner,
+                    password: $password,
+                ),
+                role: UserRole::MERCHANT,
+                password: $password,
             );
 
             $store = DB::transaction(callback: function () use ($resourceOwner, $user): Store {
-                $this->syncToken(user: $user);
+                (new TokenService())->syncToken(
+                    user: $user,
+                    tokenDto: TokenDto::fromSalla(
+                        sallaToken: $this->data,
+                    ),
+                );
 
-                $store = $this->createStore(user: $user, resourceOwner: $resourceOwner);
+                $store = (new StoreService())->create(
+                    storeDto: StoreDto::fromSalla(
+                        userId: $user->id,
+                        sallaStore: $resourceOwner->toArray(),
+                    ),
+                );
 
-                $this->createWidget(store: $store);
-                $this->createTemplates(store: $store);
-                $this->createExpiredWhatsappAccount(store: $store);
+                (new WidgetService())->create(
+                    widgetDto: WidgetDto::fromDefault(
+                        storeId: $store->id,
+                    ),
+                );
+
+                (new TemplateService())->bulkCreate(
+                    storeId: $store->id,
+                    messageTemplates: MessageTemplate::sallaCases()->toArray(),
+                );
+
+                (new SettingService())->createDefaultSettings(
+                    storeId: $store->id,
+                    providerType: ProviderType::SALLA,
+                );
+
+                (new WhatsappAccountService())->create(
+                    whatsappAccountDto: WhatsappAccountDto::fromExpired(
+                        storeId: $store->id,
+                        label: $store->name,
+                    ),
+                );
 
                 return $store;
             });
@@ -78,107 +128,6 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
         } catch (Exception $e) {
             logger()->error(message: $e);
         }
-    }
-
-    protected function createUser(SallaUser $resourceOwner, string $email): User
-    {
-        $userData = DB::transaction(callback: function () use ($resourceOwner, $email): array {
-            $password = Str::password();
-
-            $user = User::query()->create(attributes: [
-                'name' => $resourceOwner->getName(),
-                'email' => $email,
-                'password' => $password,
-            ]);
-
-            $user->assignRole(UserRole::MERCHANT->asModel());
-
-            FourWhatsCreateUserJob::dispatch(user: $user, mobile: $resourceOwner->getMobile(), password: $password);
-
-            return [
-                'user' => $user,
-                'password' => $password,
-            ];
-        });
-
-        $user = $userData['user'];
-
-        $user->notify(instance: new UserCreatedUsingSallaWebhook(
-            email: $email,
-            password: $userData['password'],
-        ));
-
-        return $user;
-    }
-
-    protected function syncToken(User $user): void
-    {
-        $user->providerTokens()->updateOrCreate(attributes: [
-            'provider_type' => ProviderType::SALLA,
-        ], values: [
-            'access_token' => $this->data['access_token'],
-            'refresh_token' => $this->data['refresh_token'],
-            'expired_at' => $this->data['expires'],
-        ]);
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function createStore(User $user, SallaUser $resourceOwner): Store
-    {
-        $data = $resourceOwner->toArray();
-
-        return $user->stores()->create(attributes: [
-            'provider_type' => ProviderType::SALLA,
-            'provider_id' => $data['merchant']['id'],
-            'name' => $data['merchant']['name'],
-            'mobile' => $data['mobile'],
-            'email' => $data['email'],
-            'domain' => $data['merchant']['domain'],
-        ]);
-    }
-
-    protected function createWidget(Store $store): void
-    {
-        $store->widget()->create();
-    }
-
-    protected function createTemplates(Store $store): void
-    {
-        foreach (MessageTemplate::sallaCases() as $messageTemplate) {
-            if ($messageTemplate === MessageTemplate::ORDER_STATUSES) {
-                continue;
-            }
-
-            $store->templates()->create(attributes: [
-                'key' => $messageTemplate->value,
-                'message' => $messageTemplate->defaultMessage(),
-                'delay_in_seconds' => $messageTemplate->delayInSeconds(),
-            ]);
-
-            if ($messageTemplate === MessageTemplate::SALLA_REVIEW_ORDER) {
-                $store->settings()->create(attributes: [
-                    'key' => SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER,
-                ]);
-            }
-
-            if ($messageTemplate === MessageTemplate::SALLA_NEW_ORDER_FOR_EMPLOYEES) {
-                $store->settings()->create(attributes: [
-                    'key' => SettingKey::STORE_SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES,
-                ]);
-            }
-        }
-    }
-
-    protected function createExpiredWhatsappAccount(Store $store): void
-    {
-        $store->whatsappAccount()->create(attributes: [
-            'label' => $store->name,
-            'instance_id' => 0,
-            'instance_token' => '',
-            'expired_at' => now()->subSecond(),
-        ]);
     }
 
     protected function pullStoreData(Store $store): void

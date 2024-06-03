@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Notifications\Salla;
+namespace App\Notifications\User;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UserCreatedUsingSallaWebhook extends Notification implements ShouldQueue
+class SendCredentialsToUser extends Notification
 {
     use Queueable;
 
@@ -37,11 +36,26 @@ class UserCreatedUsingSallaWebhook extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(subject: 'Welcome to '.config(key: 'app.name'))
-            ->line(line: 'This is your credentials!')
-            ->line(line: 'Email: '.$this->email)
-            ->line(line: 'Password: '.$this->password)
-            ->action(text: 'Click here to login', url: route(name: 'dashboard.login'));
+            ->subject(
+                subject: 'Welcome to '.config(
+                    key: 'app.name',
+                ),
+            )
+            ->line(
+                line: 'This is your credentials!',
+            )
+            ->line(
+                line: 'Email: '.$this->email,
+            )
+            ->line(
+                line: 'Password: '.$this->password,
+            )
+            ->action(
+                text: 'Click here to login',
+                url: route(
+                    name: 'dashboard.login',
+                ),
+            );
     }
 
     /**

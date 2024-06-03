@@ -51,6 +51,12 @@
                     <i class="fas fa-sign-in-alt ms-1"></i>
                 </button>
             </div>
+            <div class="d-grid mt-3">
+                <a href="{{ route(name: 'dashboard.oauth.zid.redirect') }}" class="btn btn-primary">
+                    @lang('dashboard.pages.auth.login.login_using_zid')
+                    <i class="fas fa-sign-in-alt ms-1"></i>
+                </a>
+            </div>
         </div>
     </div>
 </form>

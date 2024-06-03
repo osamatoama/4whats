@@ -38,6 +38,11 @@ return [
         'webhook_token' => env(key: 'SALLA_WEBHOOK_TOKEN'),
     ],
 
+    'zid' => [
+        'client_id' => env(key: 'ZID_CLIENT_ID'),
+        'client_secret' => env(key: 'ZID_CLIENT_SECRET'),
+    ],
+
     'four_whats' => [
         'test_mode' => (bool) env(key: 'FOUR_WHATS_TEST_MODE', default: true),
         'voucher' => env(key: 'FOUR_WHATS_VOUCHER'),

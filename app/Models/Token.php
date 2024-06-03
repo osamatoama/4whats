@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ProviderType;
-use App\Services\Salla\OAuth\SallaOAuthService;
+use App\Services\Token\TokenService;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +16,7 @@ class Token extends Model
         'access_token',
         'refresh_token',
         'expired_at',
+        'manager_token',
     ];
 
     protected function casts(): array
@@ -23,7 +24,6 @@ class Token extends Model
         return [
             'provider_type' => ProviderType::class,
             'expired_at' => 'datetime',
-            'scopes' => 'array',
         ];
     }
 
@@ -37,16 +37,9 @@ class Token extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes): string {
                 if (Carbon::parse(time: $attributes['expired_at'])->lessThanOrEqualTo(date: now())) {
-                    $token = (new SallaOAuthService())->getNewToken(refreshToken: $attributes['refresh_token']);
-                    $accessToken = $token->getToken();
-
-                    $this->update(attributes: [
-                        'access_token' => $accessToken,
-                        'refresh_token' => $token->getRefreshToken(),
-                        'expired_at' => $token->getExpires(),
-                    ]);
-
-                    $value = $accessToken;
+                    $value = (new TokenService())->updateToken(
+                        token: $this,
+                    );
                 }
 
                 return $value;

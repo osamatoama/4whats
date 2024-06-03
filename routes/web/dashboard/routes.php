@@ -11,7 +11,13 @@ use App\Http\Controllers\Dashboard\StoreController;
 use App\Http\Controllers\Dashboard\TemplateController;
 use Illuminate\Support\Facades\Route;
 
-Route::group([], base_path(path: 'routes/web/dashboard/auth.php'));
+Route::group([], base_path(
+    path: 'routes/web/dashboard/auth.php',
+));
+
+Route::prefix('oauth')->name('oauth.')->middleware(['guest:dashboard'])->group(base_path(
+    path: 'routes/web/dashboard/oauth.php',
+));
 
 Route::middleware(['auth:dashboard'])->group(function () {
     Route::get('/', HomeController::class)->name('home');

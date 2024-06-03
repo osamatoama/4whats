@@ -22,6 +22,7 @@ return [
         'is_enabled' => 'مفعل',
         'sync' => 'مزامنه',
         'send' => 'ارسال',
+        'something_went_wrong' => 'حدث خطا ما. برجاء المحاولة مرة اخري لاحقا',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',
@@ -62,6 +63,7 @@ return [
                 'remember_me' => 'تذكرني',
                 'forgot_password' => 'نسيت كلمة السر؟',
                 'login' => 'تسجيل دخول',
+                'login_using_zid' => 'تسجيل دخول باستخدام زد',
             ],
             'forgot_password' => [
                 'title' => 'نسيت كلمة السر',

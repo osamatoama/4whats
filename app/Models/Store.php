@@ -87,6 +87,14 @@ class Store extends Model
         );
     }
 
+    public function scopeZid(Builder $query, ?int $providerId = null): Builder
+    {
+        return $query->where(column: 'provider_type', operator: '=', value: ProviderType::ZID)->when(
+            value: $providerId !== null,
+            callback: fn (Builder $query): Builder => $query->where(column: 'provider_id', operator: '=', value: $providerId),
+        );
+    }
+
     protected function isExpired(): Attribute
     {
         return Attribute::make(

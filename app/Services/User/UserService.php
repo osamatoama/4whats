@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Services\User;
+
+use App\Dto\UserDto;
+use App\Enums\UserRole;
+use App\Jobs\FourWhats\FourWhatsCreateUserJob;
+use App\Models\User;
+use App\Notifications\User\SendCredentialsToUser;
+use Illuminate\Support\Facades\DB;
+
+class UserService
+{
+    public function create(UserDto $userDto, UserRole $role, bool $createFourWhatsUser = true): User
+    {
+        $user = DB::transaction(
+            callback: function () use ($userDto, $role): User {
+                $user = User::query()
+                    ->create(
+                        attributes: [
+                            'name' => $userDto->name,
+                            'email' => $userDto->email,
+                            'password' => $userDto->password,
+                        ],
+                    );
+
+                $user->assignRole(
+                    roles: $role->asModel(),
+                );
+
+                return $user;
+            }
+        );
+
+        if ($createFourWhatsUser) {
+            FourWhatsCreateUserJob::dispatch(
+                user: $user,
+                mobile: $userDto->mobile,
+                password: $userDto->password,
+            );
+        }
+
+        return $user;
+    }
+
+    public function sendCredentials(User $user, string $password): void
+    {
+        $user->notify(
+            instance: new SendCredentialsToUser(
+                email: $user->email,
+                password: $password,
+            ),
+        );
+    }
+}
