@@ -37,7 +37,7 @@ class Token extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes): string {
                 if (Carbon::parse(time: $attributes['expired_at'])->lessThanOrEqualTo(date: now())) {
-                    $value = (new TokenService())->updateToken(
+                    $value = (new TokenService())->getNewAccessToken(
                         token: $this,
                     );
                 }

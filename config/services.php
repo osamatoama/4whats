@@ -39,8 +39,10 @@ return [
     ],
 
     'zid' => [
+        'app_id' => env(key: 'ZID_APP_ID'),
         'client_id' => env(key: 'ZID_CLIENT_ID'),
         'client_secret' => env(key: 'ZID_CLIENT_SECRET'),
+        'webhook_token' => env(key: 'ZID_WEBHOOK_TOKEN'),
     ],
 
     'four_whats' => [
