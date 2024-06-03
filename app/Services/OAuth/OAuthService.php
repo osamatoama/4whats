@@ -29,19 +29,10 @@ class OAuthService
             return $user;
         }
 
-        $userService = new UserService();
-
-        $user = $userService->create(
+        return (new UserService())->create(
             userDto: $userDto,
             role: $role,
             createFourWhatsUser: $createFourWhatsUser,
         );
-
-        $userService->sendCredentials(
-            user: $user,
-            password: $password,
-        );
-
-        return $user;
     }
 }

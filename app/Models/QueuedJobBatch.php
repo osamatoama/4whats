@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use App\Enums\Jobs\BatchName;
+use Closure;
 use Illuminate\Bus\Batch;
+use Illuminate\Bus\PendingBatch;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -29,7 +32,7 @@ class QueuedJobBatch extends Model
     }
 
     /**
-     * @param  BatchName|array<int, BatchName>  $batchName
+     * @param  BatchName|BatchName[]  $batchName
      */
     public static function hasRunningBatches(BatchName|array $batchName, int $storeId, bool $onlyProcessing = true): bool
     {
@@ -45,7 +48,19 @@ class QueuedJobBatch extends Model
     }
 
     /**
-     * @param  BatchName|array<int, BatchName>  $batchName
+     * @param  BatchName|BatchName[]  $batchName
+     */
+    public static function doesntHaveRunningBatches(BatchName|array $batchName, int $storeId, bool $onlyProcessing = true): bool
+    {
+        return ! static::hasRunningBatches(
+            batchName: $batchName,
+            storeId: $storeId,
+            onlyProcessing: $onlyProcessing,
+        );
+    }
+
+    /**
+     * @param  BatchName|BatchName[]  $batchName
      */
     public static function getRunningBatchesCount(BatchName|array $batchName, int $storeId, bool $onlyProcessing = true): bool
     {
@@ -61,7 +76,7 @@ class QueuedJobBatch extends Model
     }
 
     /**
-     * @param  BatchName|BatchName[]|array<int, string>  $batchName
+     * @param  BatchName|BatchName[]|array<string>  $batchName
      */
     public static function getRunningBatchesQuery(BatchName|array $batchName, int $storeId, bool $onlyProcessing = true): Builder
     {
@@ -99,6 +114,41 @@ class QueuedJobBatch extends Model
                     columns: ['cancelled_at', 'finished_at'],
                 ),
             );
+    }
+
+    /**
+     * @param  ShouldQueue|ShouldQueue[]  $jobs
+     */
+    public static function createPendingBatch(
+        ShouldQueue|array $jobs,
+        BatchName $batchName,
+        int $storeId,
+        ?Closure $finallyCallback = null,
+        bool $deleteWhenFinished = false,
+    ): PendingBatch {
+        $pendingBatch = Bus::batch(
+            jobs: $jobs,
+        )->name(
+            name: $batchName->generate(
+                storeId: $storeId,
+            ),
+        );
+
+        if ($finallyCallback !== null || $deleteWhenFinished) {
+            $pendingBatch->finally(
+                callback: function (Batch $batch) use ($finallyCallback, $deleteWhenFinished): void {
+                    if ($finallyCallback !== null) {
+                        $finallyCallback(batch: $batch);
+                    }
+
+                    if ($deleteWhenFinished) {
+                        $batch->delete();
+                    }
+                },
+            );
+        }
+
+        return $pendingBatch;
     }
 
     public function toBatch(): Batch
