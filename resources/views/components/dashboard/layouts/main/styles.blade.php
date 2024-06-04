@@ -8,6 +8,12 @@
 <link href="{{ asset(path: 'assets/dashboard/css/icons.min.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset(path: 'assets/dashboard/css/app-rtl.min.css') }}" rel="stylesheet" type="text/css"/>
 
+<style>
+    .swal2-popup.swal2-toast .swal2-title {
+        line-height: 20px;
+    }
+</style>
+
 @if($styles !== null)
     {{ $styles }}
 @endif
