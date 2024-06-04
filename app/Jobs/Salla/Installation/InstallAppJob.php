@@ -9,8 +9,6 @@ use App\Dto\WhatsappAccountDto;
 use App\Dto\WidgetDto;
 use App\Enums\Jobs\BatchName;
 use App\Enums\MessageTemplate;
-use App\Enums\ProviderType;
-use App\Enums\SettingKey;
 use App\Enums\UserRole;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
@@ -99,7 +97,6 @@ class InstallAppJob implements ShouldQueue
 
                 (new SettingService())->createDefaultSettings(
                     storeId: $store->id,
-                    providerType: ProviderType::SALLA,
                 );
 
                 (new WhatsappAccountService())->create(
@@ -159,15 +156,10 @@ class InstallAppJob implements ShouldQueue
                 batchName: BatchName::SALLA_PULL_ORDER_STATUSES,
                 storeId: $store->id,
                 finallyCallback: function (Batch $batch) use ($store): void {
-                    $store->settings()
-                        ->where(
-                            column: 'key',
-                            operator: '=',
-                            value: SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER,
-                        )
-                        ->update(values: [
-                            'value' => $store->orderStatuses()->first()->id,
-                        ]);
+                    SettingService::updateOrderStatusId(
+                        store: $store,
+                        orderStatuesId: $store->orderStatuses()->first()->id,
+                    );
                 },
             ),
         ];

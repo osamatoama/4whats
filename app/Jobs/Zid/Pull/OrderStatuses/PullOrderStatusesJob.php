@@ -65,9 +65,8 @@ class PullOrderStatusesJob implements ShouldQueue
 
         $this->addOrCreateBatch(
             jobs: $jobs,
-            name: BatchName::ZID_PULL_ORDER_STATUSES->generate(
-                storeId: $this->storeId,
-            ),
+            batchName: BatchName::ZID_PULL_ORDER_STATUSES,
+            storeId: $this->storeId,
         );
     }
 }

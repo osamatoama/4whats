@@ -3,9 +3,9 @@
 namespace App\Services\Setting;
 
 use App\Dto\SettingDto;
-use App\Enums\ProviderType;
 use App\Enums\SettingKey;
 use App\Models\Setting;
+use App\Models\Store;
 
 class SettingService
 {
@@ -21,48 +21,55 @@ class SettingService
     }
 
     /**
-     * @return array<Setting>
+     * @return Setting[]
      */
-    public function createDefaultSettings(int $storeId, ProviderType $providerType): array
-    {
-        return match ($providerType) {
-            ProviderType::SALLA => $this->createDefaultSettingsForSalla(
-                storeId: $storeId,
-            ),
-            ProviderType::ZID => $this->createDefaultSettingsForZid(
-                storeId: $storeId,
-            ),
-        };
-    }
-
-    /**
-     * @return array<Setting>
-     */
-    protected function createDefaultSettingsForSalla(int $storeId): array
+    public function createDefaultSettings(int $storeId): array
     {
         return [
             $this->create(
                 settingDto: new SettingDto(
                     storeId: $storeId,
-                    settingKey: SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER,
+                    settingKey: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_EVENT,
                     value: null,
                 ),
             ),
             $this->create(
                 settingDto: new SettingDto(
                     storeId: $storeId,
-                    settingKey: SettingKey::STORE_SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES,
+                    settingKey: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_EVENT,
                     value: null,
                 ),
             ),
         ];
     }
 
-    /**
-     * @return array<Setting>
-     */
-    protected function createDefaultSettingsForZid(int $storeId): array
+    public static function updateOrderStatusId(Store $store, int $orderStatuesId): void
     {
-        return []; // TODO:createDefaultSettingsForZid
+        $store->settings()
+            ->where(
+                column: 'key',
+                operator: '=',
+                value: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_EVENT,
+            )
+            ->update(
+                values: [
+                    'value' => $orderStatuesId,
+                ],
+            );
+    }
+
+    public static function updateEmployeesMobiles(Store $store, ?string $mobiles): void
+    {
+        $store->settings()
+            ->where(
+                column: 'key',
+                operator: '=',
+                value: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_EVENT,
+            )
+            ->update(
+                values: [
+                    'value' => $mobiles,
+                ],
+            );
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 enum MessageTemplate: string
 {
     case ORDER_STATUSES = 'order_statuses';
+
     case SALLA_ABANDONED_CART = 'salla.event.abandoned.cart';
     case SALLA_OTP = 'salla.event.customer.otp.request';
     case SALLA_CUSTOMER_CREATED = 'salla.event.customer.created';
@@ -14,6 +15,14 @@ enum MessageTemplate: string
     case SALLA_COD = 'salla.custom.cod';
     case SALLA_DIGITAL_PRODUCT = 'salla.custom.digital_product';
     case SALLA_NEW_ORDER_FOR_EMPLOYEES = 'salla.custom.new_order_for_employees';
+
+    case ZID_ABANDONED_CART = 'zid.event.abandoned_cart'; // TODO:fix
+    case ZID_OTP = 'zid.event.customer.otp'; // TODO:fix
+    case ZID_CUSTOMER_CREATED = 'zid.event.customer_created'; // TODO:fix
+    case ZID_REVIEW_ORDER = 'zid.custom.review_order';
+    case ZID_COD = 'zid.custom.cod';
+    case ZID_DIGITAL_PRODUCT = 'zid.custom.digital_product';
+    case ZID_NEW_ORDER_FOR_EMPLOYEES = 'zid.custom.new_order_for_employees';
 
     public static function sallaCases(): Collection
     {
@@ -31,10 +40,16 @@ enum MessageTemplate: string
             });
     }
 
+    public static function generateOrderStatusKey(int $orderStatusId): string
+    {
+        return self::ORDER_STATUSES->value.'.'.$orderStatusId;
+    }
+
     public static function reviewOrderValues(): array
     {
         return [
             self::SALLA_REVIEW_ORDER->value,
+            self::ZID_REVIEW_ORDER->value,
         ];
     }
 
@@ -42,31 +57,27 @@ enum MessageTemplate: string
     {
         return [
             self::SALLA_NEW_ORDER_FOR_EMPLOYEES->value,
+            self::ZID_NEW_ORDER_FOR_EMPLOYEES->value,
         ];
-    }
-
-    public static function generateOrderStatusKey(int $orderStatusId): string
-    {
-        return self::ORDER_STATUSES->value.'.'.$orderStatusId;
     }
 
     public function placeholders(): array
     {
         return match ($this) {
             self::ORDER_STATUSES => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{STATUS}'],
-            self::SALLA_ABANDONED_CART => ['{CUSTOMER_NAME}', '{AMOUNT}', '{CURRENCY}', '{CHECKOUT_URL}'],
-            self::SALLA_OTP => ['{OTP}'],
-            self::SALLA_CUSTOMER_CREATED => ['{CUSTOMER_NAME}'],
-            self::SALLA_REVIEW_ORDER => ['{REVIEW_URL}', '{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
-            self::SALLA_COD, self::SALLA_NEW_ORDER_FOR_EMPLOYEES => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
-            self::SALLA_DIGITAL_PRODUCT => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{PRODUCTS}'],
+            self::SALLA_ABANDONED_CART, self::ZID_ABANDONED_CART => ['{CUSTOMER_NAME}', '{AMOUNT}', '{CURRENCY}', '{CHECKOUT_URL}'],
+            self::SALLA_OTP, self::ZID_OTP => ['{OTP}'],
+            self::SALLA_CUSTOMER_CREATED, self::ZID_CUSTOMER_CREATED => ['{CUSTOMER_NAME}'],
+            self::SALLA_REVIEW_ORDER, self::ZID_REVIEW_ORDER => ['{REVIEW_URL}', '{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
+            self::SALLA_COD, self::ZID_COD, self::SALLA_NEW_ORDER_FOR_EMPLOYEES, self::ZID_NEW_ORDER_FOR_EMPLOYEES => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
+            self::SALLA_DIGITAL_PRODUCT, self::ZID_DIGITAL_PRODUCT => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{PRODUCTS}'],
         };
     }
 
     public function delayInSeconds(): int
     {
         return match ($this) {
-            self::ORDER_STATUSES, self::SALLA_ABANDONED_CART, self::SALLA_REVIEW_ORDER => 60 * 60 * 2,
+            self::ORDER_STATUSES, self::SALLA_ABANDONED_CART, self::ZID_ABANDONED_CART, self::SALLA_REVIEW_ORDER, self::ZID_REVIEW_ORDER => 60 * 60 * 2,
             default => 0,
         };
     }
@@ -102,12 +113,21 @@ enum MessageTemplate: string
 
     public function shouldShowDelay(): bool
     {
-        return ! in_array(needle: $this, haystack: [
-            self::SALLA_OTP,
-            self::SALLA_CUSTOMER_CREATED,
-            self::SALLA_COD,
-            self::SALLA_DIGITAL_PRODUCT,
-            self::SALLA_NEW_ORDER_FOR_EMPLOYEES,
-        ]);
+        return ! in_array(
+            needle: $this,
+            haystack: [
+                self::SALLA_OTP,
+                self::SALLA_CUSTOMER_CREATED,
+                self::SALLA_COD,
+                self::SALLA_DIGITAL_PRODUCT,
+                self::SALLA_NEW_ORDER_FOR_EMPLOYEES,
+
+                self::ZID_OTP,
+                self::ZID_CUSTOMER_CREATED,
+                self::ZID_COD,
+                self::ZID_DIGITAL_PRODUCT,
+                self::ZID_NEW_ORDER_FOR_EMPLOYEES,
+            ],
+        );
     }
 }

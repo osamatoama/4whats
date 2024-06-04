@@ -9,7 +9,6 @@ use App\Dto\WhatsappAccountDto;
 use App\Dto\WidgetDto;
 use App\Enums\Jobs\BatchName;
 use App\Enums\MessageTemplate;
-use App\Enums\ProviderType;
 use App\Enums\UserRole;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Zid\Pull\AbandonedCarts\PullAbandonedCartsJob;
@@ -94,7 +93,6 @@ class InstallAppJob implements ShouldQueue
 
                 (new SettingService())->createDefaultSettings(
                     storeId: $store->id,
-                    providerType: ProviderType::ZID,
                 );
 
                 (new WhatsappAccountService())->create(
@@ -148,8 +146,11 @@ class InstallAppJob implements ShouldQueue
                 ),
                 batchName: BatchName::ZID_PULL_ORDER_STATUSES,
                 storeId: $store->id,
-                finallyCallback: function (Batch $batch): void {
-                    // TODO:update settings
+                finallyCallback: function (Batch $batch) use ($store): void {
+                    SettingService::updateOrderStatusId(
+                        store: $store,
+                        orderStatuesId: $store->orderStatuses()->first()->id,
+                    );
                 }
             ),
         ];

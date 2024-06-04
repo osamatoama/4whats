@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Templates;
 use App\Enums\SettingKey;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Template;
+use App\Services\Setting\SettingService;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -21,7 +22,7 @@ class ReviewOrder extends Component
     {
         $this->orderStatusId = settings(storeId: currentStore()->id)
             ->value(
-                key: SettingKey::from(value: $this->template->key),
+                key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_EVENT,
             );
     }
 
@@ -37,13 +38,10 @@ class ReviewOrder extends Component
             ],
         ]);
 
-        settings(storeId: currentStore()->id, eager: false)
-            ->find(
-                key: SettingKey::from(value: $this->template->key),
-            )
-            ->update(attributes: [
-                'value' => $this->orderStatusId,
-            ]);
+        SettingService::updateOrderStatusId(
+            store: currentStore(),
+            orderStatuesId: $this->orderStatusId,
+        );
 
         $this->successToast(action: 'updated', model: 'templates.singular');
     }

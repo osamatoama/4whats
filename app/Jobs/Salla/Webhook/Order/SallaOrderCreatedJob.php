@@ -136,7 +136,7 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_SALLA_CUSTOM_NEW_ORDER_FOR_EMPLOYEES);
+        $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_EVENT);
         $mobiles = explode(separator: ',', string: $mobiles);
 
         foreach ($mobiles as $mobile) {
@@ -166,7 +166,7 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER);
+        $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_EVENT);
         if ($reviewStatusId != $orderStatus->id) {
             return;
         }

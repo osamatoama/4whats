@@ -35,7 +35,7 @@ class SendingForm extends Component
             ],
             attributes: [
                 'message' => __(
-                    key: 'dashboard.pages.campaigns.send.columns.message.label'
+                    key: 'dashboard.pages.campaigns.columns.message.label'
                 ),
             ],
         );

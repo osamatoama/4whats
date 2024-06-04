@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Templates;
 use App\Enums\SettingKey;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Template;
+use App\Services\Setting\SettingService;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -20,7 +21,7 @@ class NewOrderForEmployees extends Component
     {
         $this->mobiles = settings(storeId: currentStore()->id)
             ->value(
-                key: SettingKey::from(value: $this->template->key),
+                key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_EVENT,
             );
     }
 
@@ -32,13 +33,10 @@ class NewOrderForEmployees extends Component
             'mobiles' => ['nullable', 'string'],
         ]);
 
-        settings(storeId: currentStore()->id, eager: false)
-            ->find(
-                key: SettingKey::from(value: $this->template->key),
-            )
-            ->update(attributes: [
-                'value' => $this->mobiles,
-            ]);
+        SettingService::updateEmployeesMobiles(
+            store: currentStore(),
+            mobiles: $this->mobiles,
+        );
 
         $this->successToast(action: 'updated', model: 'templates.singular');
     }

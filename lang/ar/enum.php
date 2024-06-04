@@ -64,6 +64,45 @@ return [
             'description' => 'من اجل ادراج متغيرات في الرسالة استخدم الإختصارات التالية: :placeholders',
             'hint' => 'رسالة الطلبات الجديدة للموظفين في المتجر',
         ],
+
+        MessageTemplate::ZID_ABANDONED_CART->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسائل السلات المتروكة',
+            'description' => 'من اجل ادراج معلومات العميل في رسالة السلة المتروكة يمكنك استخدام الإختصارات التالية ضمن النص: :placeholders',
+            'hint' => 'رسائل السلات المتروكة',
+        ],
+        MessageTemplate::ZID_OTP->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسالة تحقق OTP',
+            'description' => 'من اجل ادراج رمز التحقق في الرسالة استخدم الإختصار التالي: :placeholders',
+        ],
+        MessageTemplate::ZID_CUSTOMER_CREATED->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسالة الترحيب بالعميل',
+            'description' => 'من اجل ادراج اسم العميل في الرسالة استخدم الإختصار التالي: :placeholders',
+            'hint' => 'رسالة الترحيب بالعميل',
+        ],
+        MessageTemplate::ZID_REVIEW_ORDER->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسالة تقييم الطلب',
+            'description' => 'من اجل ادراج معلومات العميل في الرسالة يمكنك استخدام الإختصارات التالية ضمن النص: :placeholders',
+        ],
+        MessageTemplate::ZID_COD->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسالة الدفع عند الاستلام',
+            'description' => 'من اجل ادراج متغيرات في الرسالة استخدم الإختصارات التالية: :placeholders',
+        ],
+        MessageTemplate::ZID_DIGITAL_PRODUCT->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسالة تسليم المنتج الرقمي',
+            'description' => 'من اجل ادراج متغيرات في الرسالة استخدم الإختصارات التالية: :placeholders',
+        ],
+        MessageTemplate::ZID_NEW_ORDER_FOR_EMPLOYEES->name => [
+            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
+            'label' => 'رسالة الطلبات الجديدة للموظفين في المتجر',
+            'description' => 'من اجل ادراج متغيرات في الرسالة استخدم الإختصارات التالية: :placeholders',
+            'hint' => 'رسالة الطلبات الجديدة للموظفين في المتجر',
+        ],
     ],
     MessageStatus::class => [
         MessageStatus::PENDING->name => 'بانتظار المراجعه',
