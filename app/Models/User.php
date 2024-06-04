@@ -76,6 +76,13 @@ class User extends Authenticatable
             ->ofMany();
     }
 
+    public function zidToken(): HasOne
+    {
+        return $this->hasOne(related: Token::class, foreignKey: 'user_id')
+            ->where(column: 'provider_type', operator: '=', value: ProviderType::ZID)
+            ->ofMany();
+    }
+
     public function stores(): HasMany
     {
         return $this->hasMany(related: Store::class, foreignKey: 'user_id');
@@ -84,6 +91,11 @@ class User extends Authenticatable
     public function sallaStore(): HasOne
     {
         return $this->hasOne(related: Store::class, foreignKey: 'store_id')->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA);
+    }
+
+    public function zidStore(): HasOne
+    {
+        return $this->hasOne(related: Store::class, foreignKey: 'store_id')->where(column: 'provider_type', operator: '=', value: ProviderType::ZID);
     }
 
     public function fourWhatsCredential(): HasOne
