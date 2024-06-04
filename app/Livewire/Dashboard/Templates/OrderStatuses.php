@@ -7,11 +7,10 @@ use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
 use App\Livewire\Concerns\InteractsWithToasts;
-use App\Models\QueuedJobBatch;
 use App\Models\Store;
 use App\Models\Template;
+use App\Services\Queue\BatchService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -78,7 +77,7 @@ class OrderStatuses extends Component
     protected function syncSallaOrderStatuses(Store $store): void
     {
         $batchName = BatchName::SALLA_PULL_ORDER_STATUSES;
-        if (QueuedJobBatch::hasRunningBatches(
+        if (BatchService::hasRunningBatches(
             batchName: $batchName,
             storeId: $store->id,
         )) {
@@ -92,15 +91,13 @@ class OrderStatuses extends Component
         }
 
         $accessToken = $store->user->sallaToken->access_token;
-        Bus::batch(
+        BatchService::createPendingBatch(
             jobs: new SallaPullOrderStatusesJob(
                 accessToken: $accessToken,
                 storeId: $store->id,
             ),
-        )->name(
-            name: $batchName->generate(
-                storeId: $store->id,
-            ),
+            batchName: $batchName,
+            storeId: $store->id,
         )->dispatch();
 
         $this->customSuccessToast(

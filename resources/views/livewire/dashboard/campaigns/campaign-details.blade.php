@@ -3,7 +3,7 @@
         {{ $type }}
     </td>
     <td>
-        {{ $campaign->created_at->format('d-m-Y h:i:s') }}
+        {{ $createdAt }}
     </td>
     <td>
         <div class="progress" style="height: 25px;">

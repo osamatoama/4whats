@@ -65,7 +65,8 @@ class SallaPullAbandonedCartsPerPageJob implements ShouldQueue
 
         $this->addOrCreateBatch(
             jobs: $jobs,
-            name: BatchName::SALLA_PULL_ABANDONED_CARTS->generate(storeId: $this->storeId),
+            batchName: BatchName::SALLA_PULL_ABANDONED_CARTS,
+            storeId: $this->storeId,
         );
     }
 }

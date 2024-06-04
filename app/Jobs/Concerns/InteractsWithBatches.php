@@ -2,19 +2,28 @@
 
 namespace App\Jobs\Concerns;
 
+use App\Enums\Jobs\BatchName;
+use App\Services\Queue\BatchService;
 use Illuminate\Bus\Batchable;
-use Illuminate\Support\Facades\Bus;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 trait InteractsWithBatches
 {
     use Batchable;
 
-    protected function addOrCreateBatch(array|object $jobs, string $name): void
+    /**
+     * @param  ShouldQueue|ShouldQueue[]  $jobs
+     */
+    protected function addOrCreateBatch(ShouldQueue|array $jobs, BatchName $batchName, int $storeId): void
     {
         if ($this->batchId !== null) {
             $this->batch()->add(jobs: $jobs);
         } else {
-            Bus::batch(jobs: $jobs)->name(name: $name)->dispatch();
+            BatchService::createPendingBatch(
+                jobs: $jobs,
+                batchName: $batchName,
+                storeId: $storeId,
+            )->dispatch();
         }
     }
 }

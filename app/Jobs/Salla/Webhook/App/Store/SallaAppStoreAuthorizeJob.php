@@ -5,8 +5,8 @@ namespace App\Jobs\Salla\Webhook\App\Store;
 use App\Dto\TokenDto;
 use App\Enums\Jobs\BatchName;
 use App\Jobs\Salla\Installation\InstallAppJob;
-use App\Models\QueuedJobBatch;
 use App\Models\Store;
+use App\Services\Queue\BatchService;
 use App\Services\Token\TokenService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -46,7 +46,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             return;
         }
 
-        QueuedJobBatch::createPendingBatch(
+        BatchService::createPendingBatch(
             jobs: new InstallAppJob(
                 sallaToken: $this->data,
             ),

@@ -48,9 +48,8 @@ class SendContactsCampaignJob implements ShouldQueue
                             message: $this->message,
                             contacts: $contactsChunk,
                         ),
-                        name: BatchName::CAMPAIGNS_CONTACTS->generate(
-                            storeId: $this->store->id,
-                        ),
+                        batchName: BatchName::CAMPAIGNS_CONTACTS,
+                        storeId: $this->store->id,
                     );
                 },
             );

@@ -52,9 +52,8 @@ class SendAbandonedCartsCampaignJob implements ShouldQueue
                             message: $this->message,
                             abandonedCarts: $abandonedCartsChunk,
                         ),
-                        name: BatchName::CAMPAIGNS_ABANDONED_CARTS->generate(
-                            storeId: $this->store->id,
-                        ),
+                        batchName: BatchName::CAMPAIGNS_ABANDONED_CARTS,
+                        storeId: $this->store->id,
                     );
                 },
             );

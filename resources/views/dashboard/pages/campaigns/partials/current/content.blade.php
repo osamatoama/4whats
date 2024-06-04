@@ -21,7 +21,7 @@
                     </thead>
                     <tbody>
                     @forelse($campaigns as $campaign)
-                        <livewire:dashboard.campaigns.campaign-details :campaign="$campaign" wire:key="{{ $campaign->id }}"/>
+                        <livewire:dashboard.campaigns.campaign-details :batch-id="$campaign->id" wire:key="{{ $campaign->id }}"/>
                     @empty
                         <tr>
                             <td class="text-center" colspan="4">

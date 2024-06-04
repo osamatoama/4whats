@@ -6,10 +6,9 @@ use App\Enums\CampaignType;
 use App\Enums\Jobs\BatchName;
 use App\Jobs\Campaigns\AbandonedCarts\SendAbandonedCartsCampaignJob;
 use App\Jobs\Campaigns\Contacts\SendContactsCampaignJob;
-use App\Models\QueuedJobBatch;
 use App\Models\Store;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Bus;
+use App\Services\Queue\BatchService;
+use Illuminate\Support\Collection;
 
 readonly class CampaignsService
 {
@@ -20,7 +19,7 @@ readonly class CampaignsService
 
     public function getRunningCampaigns(): Collection
     {
-        return QueuedJobBatch::getRunningBatchesQuery(
+        return BatchService::getRunningBatchesQuery(
             batchName: $this->getBatchNames(),
             storeId: $this->store->id,
         )->get();
@@ -28,7 +27,7 @@ readonly class CampaignsService
 
     public function getRunningCampaignsCount(): int
     {
-        return QueuedJobBatch::getRunningBatchesCount(
+        return BatchService::getRunningBatchesCount(
             batchName: $this->getBatchNames(),
             storeId: $this->store->id,
         );
@@ -36,7 +35,7 @@ readonly class CampaignsService
 
     public function send(CampaignType $campaignType, string $message): void
     {
-        $batchName = $this->generateBatchNameFromCampaignType(
+        $batchName = $this->getBatchName(
             campaignType: $campaignType,
         );
 
@@ -44,13 +43,13 @@ readonly class CampaignsService
             campaignType: $campaignType,
         );
 
-        Bus::batch(
+        BatchService::createPendingBatch(
             jobs: new $jobClassName(
                 store: $this->store,
                 message: $message,
             ),
-        )->name(
-            name: $batchName,
+            batchName: $batchName,
+            storeId: $this->store->id,
         )->allowFailures()->dispatch();
     }
 
@@ -62,16 +61,12 @@ readonly class CampaignsService
         ];
     }
 
-    protected function generateBatchNameFromCampaignType(CampaignType $campaignType): string
+    protected function getBatchName(CampaignType $campaignType): BatchName
     {
-        $batchName = match ($campaignType) {
+        return match ($campaignType) {
             CampaignType::CONTACTS => BatchName::CAMPAIGNS_CONTACTS,
             CampaignType::ABANDONED_CARTS => BatchName::CAMPAIGNS_ABANDONED_CARTS,
         };
-
-        return $batchName->generate(
-            storeId: $this->store->id,
-        );
     }
 
     protected function getJobClassName(CampaignType $campaignType): string

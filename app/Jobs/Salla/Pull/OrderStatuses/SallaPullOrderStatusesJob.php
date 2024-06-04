@@ -63,7 +63,8 @@ class SallaPullOrderStatusesJob implements ShouldQueue
 
         $this->addOrCreateBatch(
             jobs: $jobs,
-            name: BatchName::SALLA_PULL_ORDER_STATUSES->generate(storeId: $this->storeId),
+            batchName: BatchName::SALLA_PULL_ORDER_STATUSES,
+            storeId: $this->storeId,
         );
     }
 }

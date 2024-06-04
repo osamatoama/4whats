@@ -6,8 +6,8 @@ use App\Dto\TokenDto;
 use App\Enums\Jobs\BatchName;
 use App\Http\Controllers\Controller;
 use App\Jobs\Zid\Installation\InstallAppJob;
-use App\Models\QueuedJobBatch;
 use App\Models\Store;
+use App\Services\Queue\BatchService;
 use App\Services\Token\TokenService;
 use App\Services\Zid\OAuth\ZidOAuthException;
 use App\Services\Zid\OAuth\ZidOAuthService;
@@ -45,8 +45,8 @@ class ZidCallbackController extends Controller
                 return to_route(route: 'dashboard.home');
             }
 
-            if (QueuedJobBatch::doesntHaveRunningBatches(batchName: BatchName::ZID_INSTALLATION, storeId: $resourceOwner->store->id)) {
-                QueuedJobBatch::createPendingBatch(
+            if (BatchService::doesntHaveRunningBatches(batchName: BatchName::ZID_INSTALLATION, storeId: $resourceOwner->store->id)) {
+                BatchService::createPendingBatch(
                     jobs: new InstallAppJob(
                         zidUser: $resourceOwner,
                         zidToken: $zidToken,

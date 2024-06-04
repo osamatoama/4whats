@@ -1,34 +1,58 @@
 <?php
 
-namespace App\Models;
+namespace App\Services\Queue;
 
 use App\Enums\Jobs\BatchName;
 use Closure;
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 
-class QueuedJobBatch extends Model
+class BatchService
 {
-    use HasUuids;
-
-    protected function casts(): array
+    public static function find(string $id): Batch
     {
-        return [
-            'canceled_at' => 'datetime',
-            'finished_at' => 'datetime',
-        ];
+        return Bus::findBatch(
+            batchId: $id,
+        );
     }
 
-    public function getTable(): string
-    {
-        return config(
-            key: 'queue.batching.table',
+    /**
+     * @param  ShouldQueue|ShouldQueue[]  $jobs
+     */
+    public static function createPendingBatch(
+        ShouldQueue|array $jobs,
+        BatchName $batchName,
+        int $storeId,
+        ?Closure $finallyCallback = null,
+        bool $deleteWhenFinished = false,
+    ): PendingBatch {
+        $pendingBatch = Bus::batch(
+            jobs: $jobs,
+        )->name(
+            name: $batchName->generate(
+                storeId: $storeId,
+            ),
         );
+
+        if ($finallyCallback !== null || $deleteWhenFinished) {
+            $pendingBatch->finally(
+                callback: function (Batch $batch) use ($finallyCallback, $deleteWhenFinished): void {
+                    if ($finallyCallback !== null) {
+                        $finallyCallback(batch: $batch);
+                    }
+
+                    if ($deleteWhenFinished) {
+                        $batch->delete();
+                    }
+                },
+            );
+        }
+
+        return $pendingBatch;
     }
 
     /**
@@ -80,7 +104,11 @@ class QueuedJobBatch extends Model
      */
     public static function getRunningBatchesQuery(BatchName|array $batchName, int $storeId, bool $onlyProcessing = true): Builder
     {
-        return static::query()
+        $batchesTable = config(
+            key: 'queue.batching.table',
+        );
+
+        return DB::table(table: $batchesTable)
             ->when(
                 value: $batchName instanceof BatchName,
                 callback: fn (Builder $query): Builder => $query->where(
@@ -114,47 +142,5 @@ class QueuedJobBatch extends Model
                     columns: ['cancelled_at', 'finished_at'],
                 ),
             );
-    }
-
-    /**
-     * @param  ShouldQueue|ShouldQueue[]  $jobs
-     */
-    public static function createPendingBatch(
-        ShouldQueue|array $jobs,
-        BatchName $batchName,
-        int $storeId,
-        ?Closure $finallyCallback = null,
-        bool $deleteWhenFinished = false,
-    ): PendingBatch {
-        $pendingBatch = Bus::batch(
-            jobs: $jobs,
-        )->name(
-            name: $batchName->generate(
-                storeId: $storeId,
-            ),
-        );
-
-        if ($finallyCallback !== null || $deleteWhenFinished) {
-            $pendingBatch->finally(
-                callback: function (Batch $batch) use ($finallyCallback, $deleteWhenFinished): void {
-                    if ($finallyCallback !== null) {
-                        $finallyCallback(batch: $batch);
-                    }
-
-                    if ($deleteWhenFinished) {
-                        $batch->delete();
-                    }
-                },
-            );
-        }
-
-        return $pendingBatch;
-    }
-
-    public function toBatch(): Batch
-    {
-        return Bus::findBatch(
-            batchId: $this->id,
-        );
     }
 }

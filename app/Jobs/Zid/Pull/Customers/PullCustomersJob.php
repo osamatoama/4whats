@@ -73,9 +73,8 @@ class PullCustomersJob implements ShouldQueue
 
         $this->addOrCreateBatch(
             jobs: $jobs,
-            name: BatchName::ZID_PULL_CUSTOMERS->generate(
-                storeId: $this->storeId,
-            ),
+            batchName: BatchName::ZID_PULL_CUSTOMERS,
+            storeId: $this->storeId,
         );
     }
 }

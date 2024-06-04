@@ -14,9 +14,9 @@ use App\Enums\UserRole;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Zid\Pull\AbandonedCarts\PullAbandonedCartsJob;
 use App\Jobs\Zid\Pull\Customers\PullCustomersJob;
-use App\Models\QueuedJobBatch;
 use App\Models\Store;
 use App\Services\OAuth\OAuthService;
+use App\Services\Queue\BatchService;
 use App\Services\Setting\SettingService;
 use App\Services\Store\StoreService;
 use App\Services\Template\TemplateService;
@@ -122,7 +122,7 @@ class InstallAppJob implements ShouldQueue
     protected function getStoreBatches(Store $store): array
     {
         return [
-            QueuedJobBatch::createPendingBatch(
+            BatchService::createPendingBatch(
                 jobs: new PullCustomersJob(
                     managerToken: $this->zidToken->managerToken,
                     accessToken: $this->zidToken->accessToken,
@@ -131,7 +131,7 @@ class InstallAppJob implements ShouldQueue
                 batchName: BatchName::ZID_PULL_CUSTOMERS,
                 storeId: $store->id,
             ),
-            QueuedJobBatch::createPendingBatch(
+            BatchService::createPendingBatch(
                 jobs: new PullAbandonedCartsJob(
                     managerToken: $this->zidToken->managerToken,
                     accessToken: $this->zidToken->accessToken,

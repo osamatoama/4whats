@@ -65,7 +65,8 @@ class SallaPullCustomersPerPageJob implements ShouldQueue
 
         $this->addOrCreateBatch(
             jobs: $jobs,
-            name: BatchName::SALLA_PULL_CUSTOMERS->generate(storeId: $this->storeId),
+            batchName: BatchName::SALLA_PULL_CUSTOMERS,
+            storeId: $this->storeId,
         );
     }
 }

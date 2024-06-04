@@ -16,9 +16,9 @@ use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Salla\Pull\AbandonedCarts\SallaPullAbandonedCartsJob;
 use App\Jobs\Salla\Pull\Customers\SallaPullCustomersJob;
 use App\Jobs\Salla\Pull\OrderStatuses\SallaPullOrderStatusesJob;
-use App\Models\QueuedJobBatch;
 use App\Models\Store;
 use App\Services\OAuth\OAuthService;
+use App\Services\Queue\BatchService;
 use App\Services\Salla\OAuth\SallaOAuthService;
 use App\Services\Setting\SettingService;
 use App\Services\Store\StoreService;
@@ -135,7 +135,7 @@ class InstallAppJob implements ShouldQueue
     protected function getStoreBatches(Store $store): array
     {
         return [
-            QueuedJobBatch::createPendingBatch(
+            BatchService::createPendingBatch(
                 jobs: new SallaPullCustomersJob(
                     accessToken: $this->sallaToken['access_token'],
                     storeId: $store->id,
@@ -143,7 +143,7 @@ class InstallAppJob implements ShouldQueue
                 batchName: BatchName::SALLA_PULL_CUSTOMERS,
                 storeId: $store->id,
             ),
-            QueuedJobBatch::createPendingBatch(
+            BatchService::createPendingBatch(
                 jobs: new SallaPullAbandonedCartsJob(
                     accessToken: $this->sallaToken['access_token'],
                     storeId: $store->id,
@@ -151,7 +151,7 @@ class InstallAppJob implements ShouldQueue
                 batchName: BatchName::SALLA_PULL_ABANDONED_CARTS,
                 storeId: $store->id,
             ),
-            QueuedJobBatch::createPendingBatch(
+            BatchService::createPendingBatch(
                 jobs: new SallaPullOrderStatusesJob(
                     accessToken: $this->sallaToken['access_token'],
                     storeId: $store->id,
