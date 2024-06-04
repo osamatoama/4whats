@@ -23,7 +23,6 @@ return [
         'sync' => 'مزامنه',
         'send' => 'ارسال',
         'something_went_wrong' => 'حدث خطا ما. برجاء المحاولة مرة اخري لاحقا',
-        'please_choose' => 'من فضلك اختر',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',

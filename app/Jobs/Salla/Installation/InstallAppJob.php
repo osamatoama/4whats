@@ -163,7 +163,7 @@ class InstallAppJob implements ShouldQueue
                             value: SettingKey::STORE_SALLA_CUSTOM_REVIEW_ORDER,
                         )
                         ->update(values: [
-                            'value' => $store->orderStatuses()->first()?->id,
+                            'value' => $store->orderStatuses()->first()->id,
                         ]);
                 },
             ),
