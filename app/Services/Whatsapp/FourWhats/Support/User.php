@@ -6,6 +6,7 @@ use App\Services\Whatsapp\FourWhats\Client;
 use App\Services\Whatsapp\FourWhats\Contracts\Support\User as UserContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
+use Illuminate\Http\Client\ConnectionException;
 
 class User implements UserContract
 {
@@ -22,21 +23,29 @@ class User implements UserContract
      */
     public function create(string $name, string $email, string $mobile, string $password): array
     {
-        $response = $this->client->get(
-            url: $this->baseUrl.'/createAppUser',
-            data: [
-                'name' => $name,
-                'email' => $email,
-                'mobile' => $mobile,
-                'password' => $password,
-                'confirmpassword' => $password,
-            ],
-        );
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/createAppUser',
+                data: [
+                    'name' => $name,
+                    'email' => $email,
+                    'mobile' => $mobile,
+                    'password' => $password,
+                    'confirmpassword' => $password,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 
         if (isset($data['success']) && $data['success'] === false) {
-            throw new FourWhatsException(message: $data['msg']);
+            throw new FourWhatsException(
+                message: $data['msg'],
+            );
         }
 
         return [

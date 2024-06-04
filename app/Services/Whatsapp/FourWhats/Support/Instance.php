@@ -8,6 +8,7 @@ use App\Services\Whatsapp\FourWhats\Client;
 use App\Services\Whatsapp\FourWhats\Contracts\Support\Instance as InstanceContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
+use Illuminate\Http\Client\ConnectionException;
 
 class Instance implements InstanceContract
 {
@@ -26,18 +27,26 @@ class Instance implements InstanceContract
      */
     public function qrCode(): array
     {
-        $response = $this->client->get(
-            url: $this->baseUrl.'/qr_code',
-            data: [
-                'instanceid' => $this->instanceId,
-                'token' => $this->instanceToken,
-            ],
-        );
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/qr_code',
+                data: [
+                    'instanceid' => $this->instanceId,
+                    'token' => $this->instanceToken,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 
         if (isset($data['success']) && $data['success'] === false) {
-            throw new FourWhatsException(message: $data['reason']);
+            throw new FourWhatsException(
+                message: $data['reason'],
+            );
         }
 
         return [
@@ -48,13 +57,19 @@ class Instance implements InstanceContract
 
     public function info(): array
     {
-        $response = $this->client->get(
-            url: $this->baseUrl.'/me',
-            data: [
-                'instanceid' => $this->instanceId,
-                'token' => $this->instanceToken,
-            ],
-        );
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/me',
+                data: [
+                    'instanceid' => $this->instanceId,
+                    'token' => $this->instanceToken,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 
@@ -82,13 +97,19 @@ class Instance implements InstanceContract
      */
     public function logout(): array
     {
-        $response = $this->client->get(
-            url: $this->baseUrl.'/logout',
-            data: [
-                'instanceid' => $this->instanceId,
-                'token' => $this->instanceToken,
-            ],
-        );
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/logout',
+                data: [
+                    'instanceid' => $this->instanceId,
+                    'token' => $this->instanceToken,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 

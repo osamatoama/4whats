@@ -6,6 +6,7 @@ use App\Services\Salla\Partner\Dto\SettingsDto;
 use App\Services\Salla\Partner\SallaPartnerClient;
 use App\Services\Salla\Partner\SallaPartnerException;
 use App\Services\Salla\Partner\SallaPartnerService;
+use Illuminate\Http\Client\ConnectionException;
 
 final readonly class Settings
 {
@@ -23,18 +24,27 @@ final readonly class Settings
      */
     public function update(SettingsDto $settingsDto): array
     {
-        $response = $this->client->post(
-            url: $this->baseUrl,
-            data: [
-                'widget_message' => $settingsDto->widgetMessage,
-                'widget_color' => $settingsDto->widgetColor,
-                'widget_is_enabled' => $settingsDto->widgetIsEnabled,
-            ],
-        );
+        try {
+            $response = $this->client->post(
+                url: $this->baseUrl,
+                data: [
+                    'widget_message' => $settingsDto->widgetMessage,
+                    'widget_color' => $settingsDto->widgetColor,
+                    'widget_is_enabled' => $settingsDto->widgetIsEnabled,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw SallaPartnerException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 
-        $this->service->validateResponse(response: $response, data: $data);
+        $this->service->validateResponse(
+            response: $response,
+            data: $data,
+        );
 
         return $data;
     }

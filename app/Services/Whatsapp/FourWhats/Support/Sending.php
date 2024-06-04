@@ -6,6 +6,7 @@ use App\Services\Whatsapp\FourWhats\Client;
 use App\Services\Whatsapp\FourWhats\Contracts\Support\Sending as SendingContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
+use Illuminate\Http\Client\ConnectionException;
 
 class Sending implements SendingContract
 {
@@ -24,20 +25,28 @@ class Sending implements SendingContract
      */
     public function text(string $mobile, string $message): array
     {
-        $response = $this->client->get(
-            url: $this->baseUrl.'/sendMessage',
-            data: [
-                'instanceid' => $this->instanceId,
-                'token' => $this->instanceToken,
-                'phone' => $mobile,
-                'body' => $message,
-            ],
-        );
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/sendMessage',
+                data: [
+                    'instanceid' => $this->instanceId,
+                    'token' => $this->instanceToken,
+                    'phone' => $mobile,
+                    'body' => $message,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 
         if (isset($data['success']) && $data['success'] === false) {
-            throw new FourWhatsException(message: $data['reason'] ?? '');
+            throw new FourWhatsException(
+                message: $data['reason'] ?? '',
+            );
         }
 
         return [

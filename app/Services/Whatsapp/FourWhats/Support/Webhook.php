@@ -6,6 +6,7 @@ use App\Services\Whatsapp\FourWhats\Client;
 use App\Services\Whatsapp\FourWhats\Contracts\Support\Webhook as WebhookContract;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
+use Illuminate\Http\Client\ConnectionException;
 
 class Webhook implements WebhookContract
 {
@@ -24,19 +25,27 @@ class Webhook implements WebhookContract
      */
     public function set(string $url): array
     {
-        $response = $this->client->get(
-            url: $this->baseUrl.'/webhook',
-            data: [
-                'instanceid' => $this->instanceId,
-                'token' => $this->instanceToken,
-                'webhookUrl' => $url,
-            ],
-        );
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/webhook',
+                data: [
+                    'instanceid' => $this->instanceId,
+                    'token' => $this->instanceToken,
+                    'webhookUrl' => $url,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 
         if (isset($data['success']) && $data['success'] === false) {
-            throw new FourWhatsException(message: $data['reason']);
+            throw new FourWhatsException(
+                message: $data['reason'],
+            );
         }
 
         return [

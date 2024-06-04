@@ -5,6 +5,7 @@ namespace App\Services\Salla\Merchant\Support;
 use App\Services\Salla\Merchant\SallaMerchantClient;
 use App\Services\Salla\Merchant\SallaMerchantException;
 use App\Services\Salla\Merchant\SallaMerchantService;
+use Illuminate\Http\Client\ConnectionException;
 
 final readonly class Customers
 {
@@ -22,13 +23,25 @@ final readonly class Customers
      */
     public function get(int $page = 1): array
     {
-        $response = $this->client->get(url: $this->baseUrl, data: [
-            'page' => $page,
-        ]);
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl,
+                data: [
+                    'page' => $page,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw SallaMerchantException::connectionException(
+                exception: $e,
+            );
+        }
 
         $data = $response->json();
 
-        $this->service->validateResponse(response: $response, data: $data);
+        $this->service->validateResponse(
+            response: $response,
+            data: $data,
+        );
 
         return $data;
     }
