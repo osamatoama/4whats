@@ -40,6 +40,16 @@ class SendingForm extends Component
             ],
         );
 
+        if (currentStore()->is_expired) {
+            $this->customErrorToast(
+                message: __(
+                    key: 'dashboard.common.store_expired_message',
+                ),
+            );
+
+            return;
+        }
+
         $service = new CampaignsService(
             store: currentStore(),
         );

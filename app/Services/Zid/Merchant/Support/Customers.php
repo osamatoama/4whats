@@ -11,9 +11,8 @@ final readonly class Customers
 {
     public function __construct(
         protected ZidMerchantService $service,
-        protected MerchantClient     $client,
-    )
-    {
+        protected MerchantClient $client,
+    ) {
     }
 
     /**

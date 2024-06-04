@@ -4,7 +4,6 @@ namespace App\Services\Zid\Merchant;
 
 use App\Services\Zid\Merchant\Support\AbandonedCarts;
 use App\Services\Zid\Merchant\Support\Customers;
-use App\Services\Zid\Merchant\Support\OrderStatuses;
 use Illuminate\Http\Client\Response;
 
 final readonly class ZidMerchantService
@@ -16,8 +15,7 @@ final readonly class ZidMerchantService
     public function __construct(
         protected string $managerToken,
         protected string $accessToken,
-    )
-    {
+    ) {
         $this->baseUrl = 'https://api.zid.sa/v1';
 
         $this->client = new MerchantClient(
@@ -55,11 +53,11 @@ final readonly class ZidMerchantService
 
     protected function resolve(string $name): object
     {
-        $abstract = $name . ':' . $this->managerToken . ':' . $this->accessToken;
+        $abstract = $name.':'.$this->managerToken.':'.$this->accessToken;
 
         return resolveSingletonIf(
             abstract: $abstract,
-            concrete: fn(): object => new $name(service: $this, client: $this->client),
+            concrete: fn (): object => new $name(service: $this, client: $this->client),
         );
     }
 }

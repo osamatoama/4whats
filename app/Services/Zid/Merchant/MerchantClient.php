@@ -12,8 +12,7 @@ final readonly class MerchantClient
     public function __construct(
         protected string $managerToken,
         protected string $accessToken,
-    )
-    {
+    ) {
     }
 
     /**

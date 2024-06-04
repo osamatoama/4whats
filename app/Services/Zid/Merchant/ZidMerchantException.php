@@ -13,7 +13,7 @@ class ZidMerchantException extends ZidException
         $messageDescription = $data['message']['description'];
 
         return new static(
-            message: ($messageName !== null ? $messageName . ' ' : '') . $messageDescription,
+            message: ($messageName !== null ? $messageName.' ' : '').$messageDescription,
             code: $response->status(),
         );
     }
