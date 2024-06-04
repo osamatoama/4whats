@@ -21,6 +21,21 @@ class TemplateService
         );
     }
 
+    public function firstOrCreate(TemplateDto $templateDto): Template
+    {
+        return Template::query()->firstOrCreate(
+            attributes: [
+                'store_id' => $templateDto->storeId,
+                'key' => $templateDto->key,
+            ],
+            values: [
+                'message' => $templateDto->message,
+                'delay_in_seconds' => $templateDto->delayInSeconds,
+                'is_enabled' => $templateDto->isEnabled,
+            ],
+        );
+    }
+
     /**
      * @param  MessageTemplate[]  $messageTemplates
      * @return array<Template>

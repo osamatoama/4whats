@@ -14,6 +14,7 @@ use App\Enums\UserRole;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Zid\Pull\AbandonedCarts\PullAbandonedCartsJob;
 use App\Jobs\Zid\Pull\Customers\PullCustomersJob;
+use App\Jobs\Zid\Pull\OrderStatuses\PullOrderStatusesJob;
 use App\Models\Store;
 use App\Services\OAuth\OAuthService;
 use App\Services\Queue\BatchService;
@@ -25,6 +26,7 @@ use App\Services\WhatsappAccount\WhatsappAccountService;
 use App\Services\Widget\WidgetService;
 use App\Services\Zid\OAuth\Support\Token;
 use App\Services\Zid\OAuth\Support\User;
+use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -139,6 +141,16 @@ class InstallAppJob implements ShouldQueue
                 ),
                 batchName: BatchName::ZID_PULL_ABANDONED_CARTS,
                 storeId: $store->id,
+            ),
+            BatchService::createPendingBatch(
+                jobs: new PullOrderStatusesJob(
+                    storeId: $store->id,
+                ),
+                batchName: BatchName::ZID_PULL_ORDER_STATUSES,
+                storeId: $store->id,
+                finallyCallback: function (Batch $batch): void {
+                    // TODO:update settings
+                }
             ),
         ];
     }

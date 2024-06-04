@@ -25,4 +25,19 @@ final readonly class TemplateDto
             isEnabled: false,
         );
     }
+
+    public static function fromOrderStatusMessageTemplate(int $storeId, int $orderStatusId): self
+    {
+        $messageTemplate = MessageTemplate::ORDER_STATUSES;
+
+        return new self(
+            storeId: $storeId,
+            key: MessageTemplate::generateOrderStatusKey(
+                orderStatusId: $orderStatusId,
+            ),
+            message: $messageTemplate->defaultMessage(),
+            delayInSeconds: $messageTemplate->delayInSeconds(),
+            isEnabled: false,
+        );
+    }
 }

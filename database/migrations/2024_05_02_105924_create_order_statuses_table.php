@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(OrderStatus::class)->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
             $table->string('provider_type');
-            $table->unsignedBigInteger('provider_id');
+            $table->string('provider_id');
             $table->string('name');
             $table->timestamps();
         });

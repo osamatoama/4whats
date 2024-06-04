@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Salla\Pull\OrderStatuses;
+namespace App\Jobs\Zid\Pull\OrderStatuses;
 
 use App\Dto\OrderStatusDto;
 use App\Dto\TemplateDto;
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SallaPullOrderStatusJob implements ShouldQueue
+class PullOrderStatusJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithBatches, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -33,8 +33,7 @@ class SallaPullOrderStatusJob implements ShouldQueue
     public function handle(): void
     {
         $orderStatus = (new OrderStatusService())->updateOrCreate(
-            orderStatusDto: OrderStatusDto::fromSalla(
-                orderStatusId: $this->getOrderStatusId(),
+            orderStatusDto: OrderStatusDto::fromZid(
                 storeId: $this->storeId,
                 data: $this->data,
             ),
@@ -46,19 +45,5 @@ class SallaPullOrderStatusJob implements ShouldQueue
                 orderStatusId: $orderStatus->id,
             ),
         );
-    }
-
-    protected function getOrderStatusId(): ?int
-    {
-        if ($this->data['parent'] === null) {
-            return null;
-        }
-
-        return (new OrderStatusService())->firstOrCreate(
-            orderStatusDto: OrderStatusDto::fromSallaParent(
-                storeId: $this->storeId,
-                data: $this->data,
-            ),
-        )->id;
     }
 }
