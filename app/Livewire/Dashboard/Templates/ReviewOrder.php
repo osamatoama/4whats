@@ -15,7 +15,7 @@ class ReviewOrder extends Component
 
     public Template $template;
 
-    public int $orderStatusId;
+    public ?int $orderStatusId;
 
     public function mount(): void
     {
