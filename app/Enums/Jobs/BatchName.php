@@ -11,6 +11,8 @@ enum BatchName: string
     case SALLA_PULL_ABANDONED_CARTS = 'salla.pull.abandoned-carts';
     case SALLA_PULL_ORDER_STATUSES = 'salla.pull.order-statuses';
     case ZID_INSTALLATION = 'zid.installation';
+    case ZID_PULL_ABANDONED_CARTS = 'zid.pull.abandoned-carts';
+    case ZID_PULL_CUSTOMERS = 'zid.pull.customers';
 
     public function generate(int $storeId): string
     {

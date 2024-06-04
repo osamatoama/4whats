@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Contact::class)->constrained()->restrictOnDelete();
             $table->string('provider_type');
-            $table->unsignedBigInteger('provider_id');
+            $table->string('provider_id');
             $table->unsignedInteger('total_amount');
             $table->string('total_currency');
             $table->string('checkout_url');

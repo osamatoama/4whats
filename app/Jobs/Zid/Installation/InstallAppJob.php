@@ -7,17 +7,20 @@ use App\Dto\TokenDto;
 use App\Dto\UserDto;
 use App\Dto\WhatsappAccountDto;
 use App\Dto\WidgetDto;
+use App\Enums\Jobs\BatchName;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\UserRole;
 use App\Jobs\Concerns\InteractsWithBatches;
+use App\Jobs\Zid\Pull\AbandonedCarts\PullAbandonedCartsJob;
+use App\Jobs\Zid\Pull\Customers\PullCustomersJob;
+use App\Models\QueuedJobBatch;
 use App\Models\Store;
 use App\Services\OAuth\OAuthService;
 use App\Services\Setting\SettingService;
 use App\Services\Store\StoreService;
 use App\Services\Template\TemplateService;
 use App\Services\Token\TokenService;
-use App\Services\User\UserService;
 use App\Services\WhatsappAccount\WhatsappAccountService;
 use App\Services\Widget\WidgetService;
 use App\Services\Zid\OAuth\Support\Token;
@@ -27,6 +30,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 
 class InstallAppJob implements ShouldQueue
@@ -102,12 +106,40 @@ class InstallAppJob implements ShouldQueue
             },
         );
 
-        // TODO:pull data
-        // TODO:register webhooks
+        Bus::chain(
+            jobs: array_merge(
+                $this->getStoreBatches(store: $store), // TODO:register webhooks
+                [
+                    new SendCredentialsJob(
+                        user: $user,
+                        password: $password,
+                    ),
+                ],
+            ),
+        )->dispatch();
+    }
 
-        (new UserService())->sendCredentials(
-            user: $user,
-            password: $password,
-        );
+    protected function getStoreBatches(Store $store): array
+    {
+        return [
+            QueuedJobBatch::createPendingBatch(
+                jobs: new PullCustomersJob(
+                    managerToken: $this->zidToken->managerToken,
+                    accessToken: $this->zidToken->accessToken,
+                    storeId: $store->id,
+                ),
+                batchName: BatchName::ZID_PULL_CUSTOMERS,
+                storeId: $store->id,
+            ),
+            QueuedJobBatch::createPendingBatch(
+                jobs: new PullAbandonedCartsJob(
+                    managerToken: $this->zidToken->managerToken,
+                    accessToken: $this->zidToken->accessToken,
+                    storeId: $store->id,
+                ),
+                batchName: BatchName::ZID_PULL_ABANDONED_CARTS,
+                storeId: $store->id,
+            ),
+        ];
     }
 }

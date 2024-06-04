@@ -43,10 +43,10 @@ class UserService
         return $user;
     }
 
-    public function sendCredentials(User $user, string $password): void
+    public function sendCredentials(User $user, string $password, string $notificationClassName = SendCredentialsToUser::class): void
     {
         $user->notify(
-            instance: new SendCredentialsToUser(
+            instance: new $notificationClassName(
                 email: $user->email,
                 password: $password,
             ),

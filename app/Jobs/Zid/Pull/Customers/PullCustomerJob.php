@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Salla\Pull\Customers;
+namespace App\Jobs\Zid\Pull\Customers;
 
 use App\Dto\ContactDto;
 use App\Jobs\Concerns\InteractsWithBatches;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SallaPullCustomerJob implements ShouldQueue
+class PullCustomerJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithBatches, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -31,7 +31,7 @@ class SallaPullCustomerJob implements ShouldQueue
     public function handle(): void
     {
         (new ContactService())->updateOrCreate(
-            contactDto: ContactDto::fromSalla(
+            contactDto: ContactDto::fromZid(
                 storeId: $this->storeId,
                 data: $this->data,
             ),

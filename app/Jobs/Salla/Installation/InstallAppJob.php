@@ -113,12 +113,15 @@ class InstallAppJob implements ShouldQueue
             });
 
             Bus::chain(
-                jobs: array_merge($this->getStoreBatches(store: $store), [
-                    new SendCredentialsJob(
-                        user: $user,
-                        password: $password,
-                    ),
-                ]),
+                jobs: array_merge(
+                    $this->getStoreBatches(store: $store),
+                    [
+                        new SendCredentialsJob(
+                            user: $user,
+                            password: $password,
+                        ),
+                    ],
+                ),
             )->dispatch();
         } catch (Exception $e) {
             logger()->error(message: $e);

@@ -2,13 +2,14 @@
 
 namespace App\Jobs\Salla\Webhook\Cart;
 
-use App\Enums\ContactSource;
+use App\Dto\AbandonedCartDto;
+use App\Dto\ContactDto;
 use App\Enums\MessageTemplate;
-use App\Enums\ProviderType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\Store;
-use App\Services\Salla\Merchant\SallaMerchantService;
+use App\Services\AbandonedCart\AbandonedCartService;
+use App\Services\Contact\ContactService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -55,17 +56,20 @@ class SallaAbandonedCartJob implements ShouldQueue
             return;
         }
 
-        $store->abandonedCarts()->updateOrCreate(attributes: [
-            'provider_type' => ProviderType::SALLA,
-            'provider_id' => $this->data['id'],
-        ], values: [
-            'contact_id' => $this->getContactId(store: $store),
-            'total_amount' => $this->data['total']['amount'] * 100,
-            'total_currency' => $this->data['total']['currency'],
-            'checkout_url' => $this->data['checkout_url'],
-            'created_at' => SallaMerchantService::parseDate(data: $this->data['created_at']),
-            'updated_at' => SallaMerchantService::parseDate(data: $this->data['updated_at']),
-        ]);
+        $contact = (new ContactService())->firstOrCreate(
+            contactDto: ContactDto::fromSallaAbandonedCart(
+                storeId: $store->id,
+                data: $this->data,
+            ),
+        );
+
+        (new AbandonedCartService())->updateOrCreate(
+            abandonedCartDto: AbandonedCartDto::fromSalla(
+                storeId: $store->id,
+                contactId: $contact->id,
+                data: $this->data,
+            ),
+        );
 
         $whatsappAccount = $store->whatsappAccount;
         if ($whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
@@ -96,22 +100,5 @@ class SallaAbandonedCartJob implements ShouldQueue
             mobile: $mobile,
             message: $message,
         )->delay(delay: $template->delay_in_seconds);
-    }
-
-    protected function getContactId(Store $store): int
-    {
-        $name = str(string: $this->data['customer']['name']);
-
-        return $store->contacts()->firstOrCreate(attributes: [
-            'provider_type' => ProviderType::SALLA,
-            'provider_id' => $this->data['customer']['id'],
-            'source' => ContactSource::SALLA,
-        ], values: [
-            'first_name' => $name->before(search: ' ')->toString(),
-            'last_name' => $name->after(search: ' ')->toString(),
-            'email' => $this->data['customer']['email'],
-            'phone' => $this->data['customer']['mobile'],
-            'gender' => null,
-        ])->id;
     }
 }

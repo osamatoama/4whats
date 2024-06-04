@@ -2,12 +2,11 @@
 
 namespace App\Jobs\Salla\Pull\AbandonedCarts;
 
-use App\Enums\ContactSource;
-use App\Enums\ProviderType;
+use App\Dto\AbandonedCartDto;
+use App\Dto\ContactDto;
 use App\Jobs\Concerns\InteractsWithBatches;
-use App\Models\AbandonedCart;
-use App\Models\Contact;
-use App\Services\Salla\Merchant\SallaMerchantService;
+use App\Services\AbandonedCart\AbandonedCartService;
+use App\Services\Contact\ContactService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -33,36 +32,19 @@ class SallaPullAbandonedCartJob implements ShouldQueue
      */
     public function handle(): void
     {
-        AbandonedCart::query()->updateOrCreate(attributes: [
-            'store_id' => $this->storeId,
-            'provider_type' => ProviderType::SALLA,
-            'provider_id' => $this->data['id'],
-        ], values: [
-            'contact_id' => $this->getContactId(),
-            'total_amount' => $this->data['total']['amount'] * 100,
-            'total_currency' => $this->data['total']['currency'],
-            'checkout_url' => $this->data['checkout_url'],
-            'created_at' => SallaMerchantService::parseDate(data: $this->data['created_at']),
-            'updated_at' => SallaMerchantService::parseDate(data: $this->data['updated_at']),
-        ]);
-    }
+        $contact = (new ContactService())->firstOrCreate(
+            contactDto: ContactDto::fromSallaAbandonedCart(
+                storeId: $this->storeId,
+                data: $this->data,
+            ),
+        );
 
-    protected function getContactId(): int
-    {
-        $name = str(string: $this->data['customer']['name']);
-
-        return Contact::query()
-            ->firstOrCreate(attributes: [
-                'store_id' => $this->storeId,
-                'provider_type' => ProviderType::SALLA,
-                'provider_id' => $this->data['customer']['id'],
-                'source' => ContactSource::SALLA,
-            ], values: [
-                'first_name' => $name->before(search: ' ')->toString(),
-                'last_name' => $name->after(search: ' ')->toString(),
-                'email' => $this->data['customer']['email'],
-                'phone' => $this->data['customer']['mobile'],
-                'gender' => null,
-            ])->id;
+        (new AbandonedCartService())->updateOrCreate(
+            abandonedCartDto: AbandonedCartDto::fromSalla(
+                storeId: $this->storeId,
+                contactId: $contact->id,
+                data: $this->data,
+            ),
+        );
     }
 }

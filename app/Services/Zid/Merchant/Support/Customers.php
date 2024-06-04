@@ -43,4 +43,11 @@ final readonly class Customers
 
         return $data;
     }
+
+    public function getTotalPages(array $data, int $perPage = 15): int
+    {
+        return ceil(
+            num: $data['total_customers_count'] / $perPage,
+        );
+    }
 }
