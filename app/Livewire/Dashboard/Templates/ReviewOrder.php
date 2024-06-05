@@ -22,7 +22,7 @@ class ReviewOrder extends Component
     {
         $this->orderStatusId = settings(storeId: currentStore()->id)
             ->value(
-                key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_EVENT,
+                key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_MESSAGE,
             );
     }
 

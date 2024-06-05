@@ -166,7 +166,7 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_EVENT);
+        $reviewStatusId = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_MESSAGE);
         if ($reviewStatusId != $orderStatus->id) {
             return;
         }
