@@ -3,11 +3,8 @@
 namespace App\Models;
 
 use App\Enums\ProviderType;
-use App\Services\Token\TokenService;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 class Token extends Model
 {
@@ -30,20 +27,5 @@ class Token extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(related: User::class);
-    }
-
-    protected function accessToken(): Attribute
-    {
-        return Attribute::make(
-            get: function (mixed $value, array $attributes): string {
-                if (Carbon::parse(time: $attributes['expired_at'])->lessThanOrEqualTo(date: now())) {
-                    $value = (new TokenService())->getNewAccessToken(
-                        token: $this,
-                    );
-                }
-
-                return $value;
-            },
-        );
     }
 }

@@ -33,7 +33,7 @@ final readonly class ZidOAuthService
     public function getToken(?string $code): Token
     {
         try {
-            $response = Http::post(
+            $response = Http::acceptJson()->asJson()->post(
                 url: 'https://oauth.zid.sa/oauth/token',
                 data: [
                     'grant_type' => 'authorization_code',
@@ -79,7 +79,7 @@ final readonly class ZidOAuthService
     public function getNewToken(string $refreshToken): Token
     {
         try {
-            $response = Http::post(
+            $response = Http::acceptJson()->asJson()->post(
                 url: 'https://oauth.zid.sa/oauth/token',
                 data: [
                     'grant_type' => 'refresh_token',
@@ -105,7 +105,10 @@ final readonly class ZidOAuthService
         $data = $response->json();
 
         if ($response->failed()) {
-            throw new ZidOAuthException();
+            throw new ZidOAuthException(
+                message: $data['message']['description'],
+                code: $response->status(),
+            );
         }
 
         return new Token(
@@ -129,7 +132,7 @@ final readonly class ZidOAuthService
                 ],
             )->withToken(
                 token: $accessToken,
-            )->get(
+            )->acceptJson()->asJson()->get(
                 url: 'https://api.zid.sa/v1/managers/account/profile',
             );
         } catch (ConnectionException $e) {

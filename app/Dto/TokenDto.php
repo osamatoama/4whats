@@ -12,7 +12,7 @@ final readonly class TokenDto
         public ProviderType $providerType,
         public string $accessToken,
         public string $refreshToken,
-        public int|Carbon $expiredAt,
+        public Carbon $expiredAt,
         public ?string $managerToken,
     ) {
     }
@@ -23,7 +23,9 @@ final readonly class TokenDto
             providerType: ProviderType::SALLA,
             accessToken: $sallaToken['access_token'],
             refreshToken: $sallaToken['refresh_token'],
-            expiredAt: $sallaToken['expires'],
+            expiredAt: Carbon::parse(
+                time: $sallaToken['expires'],
+            ),
             managerToken: null,
         );
     }
@@ -34,7 +36,9 @@ final readonly class TokenDto
             providerType: ProviderType::ZID,
             accessToken: $zidToken->accessToken,
             refreshToken: $zidToken->refreshToken,
-            expiredAt: $zidToken->expiresIn,
+            expiredAt: Carbon::parse(
+                time: $zidToken->expiresIn,
+            ),
             managerToken: $zidToken->managerToken,
         );
     }
