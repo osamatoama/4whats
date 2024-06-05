@@ -2,11 +2,11 @@
 
 namespace App\Jobs\Tokens;
 
-use App\Enums\ProviderType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Models\Token;
 use App\Services\Salla\OAuth\SallaOAuthException;
-use App\Services\Salla\OAuth\SallaOAuthService;
+use App\Services\Token\TokenService;
+use App\Services\Zid\OAuth\ZidOAuthException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,15 +31,8 @@ class UpdateExpiredTokenJob implements ShouldQueue
      */
     public function handle(): void
     {
-        match ($this->token->provider_type) {
-            ProviderType::SALLA => $this->handleSalla(),
-        };
-    }
-
-    protected function handleSalla(): void
-    {
         try {
-            $token = (new SallaOAuthService())->getNewToken(refreshToken: $this->token->refresh_token);
+            (new TokenService())->getNewAccessToken($this->token);
         } catch (SallaOAuthException $e) {
             $this->handleException(
                 e: new SallaOAuthException(
@@ -53,14 +46,19 @@ class UpdateExpiredTokenJob implements ShouldQueue
                     code: $e->getCode(),
                 ),
             );
-
-            return;
+        } catch (ZidOAuthException $e) {
+            $this->handleException(
+                e: new ZidOAuthException(
+                    message: generateMessageUsingSeparatedLines(
+                        lines: [
+                            'Exception while updating zid access token',
+                            "Token: {$this->token->id}",
+                            "Reason: {$e->getMessage()}",
+                        ],
+                    ),
+                    code: $e->getCode(),
+                ),
+            );
         }
-
-        $this->token->update(attributes: [
-            'access_token' => $token->getToken(),
-            'refresh_token' => $token->getRefreshToken(),
-            'expired_at' => $token->getExpires(),
-        ]);
     }
 }
