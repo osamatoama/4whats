@@ -4,6 +4,7 @@ namespace App\Services\Zid\Merchant;
 
 use App\Services\Zid\Merchant\Support\AbandonedCarts;
 use App\Services\Zid\Merchant\Support\Customers;
+use App\Services\Zid\Merchant\Support\Webhooks;
 use Illuminate\Http\Client\Response;
 
 final readonly class ZidMerchantService
@@ -35,6 +36,13 @@ final readonly class ZidMerchantService
     {
         return $this->resolve(
             name: Customers::class,
+        );
+    }
+
+    public function webhooks(): Webhooks
+    {
+        return $this->resolve(
+            name: Webhooks::class,
         );
     }
 

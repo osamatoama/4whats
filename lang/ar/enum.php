@@ -71,11 +71,6 @@ return [
             'description' => 'من اجل ادراج معلومات العميل في رسالة السلة المتروكة يمكنك استخدام الإختصارات التالية ضمن النص: :placeholders',
             'hint' => 'رسائل السلات المتروكة',
         ],
-        MessageTemplate::ZID_OTP->name => [
-            'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
-            'label' => 'رسالة تحقق OTP',
-            'description' => 'من اجل ادراج رمز التحقق في الرسالة استخدم الإختصار التالي: :placeholders',
-        ],
         MessageTemplate::ZID_CUSTOMER_CREATED->name => [
             'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
             'label' => 'رسالة الترحيب بالعميل',

@@ -7,14 +7,16 @@ use App\Services\Zid\Webhook\Events\UnknownEvent;
 
 class ZidWebhookHandler
 {
-    public function isVerified(string $token, int $appId): bool
+    public function isVerified(string $token): bool
     {
-        return $token == config(key: 'services.zid.webhook_token') && $appId == config(key: 'services.zid.app_id');
+        return $token == config(key: 'services.zid.webhook_token');
     }
 
-    public function isNotVerified(string $token, int $appId): bool
+    public function isNotVerified(string $token): bool
     {
-        return ! $this->isVerified(token: $token, appId: $appId);
+        return ! $this->isVerified(
+            token: $token,
+        );
     }
 
     public function handle(string $event, int $providerId, array $data): void

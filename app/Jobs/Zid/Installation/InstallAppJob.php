@@ -108,7 +108,8 @@ class InstallAppJob implements ShouldQueue
 
         Bus::chain(
             jobs: array_merge(
-                $this->getStoreBatches(store: $store), // TODO:register webhooks
+                $this->getStoreBatches(store: $store),
+                $this->getWebhooksJobs(),
                 [
                     new SendCredentialsJob(
                         user: $user,
@@ -154,5 +155,29 @@ class InstallAppJob implements ShouldQueue
                 }
             ),
         ];
+    }
+
+    protected function getWebhooksJobs(): array
+    {
+        $events = [
+            'order.create',
+            'order.status.update',
+            'abandoned_cart.created',
+            'abandoned_cart.completed',
+            'customer.create',
+            'customer.update',
+        ];
+
+        $jobs = [];
+        foreach ($events as $event) {
+            $jobs[] = new RegisterWebhookJob(
+                managerToken: $this->zidToken->managerToken,
+                accessToken: $this->zidToken->accessToken,
+                providerId: $this->zidUser->store->id,
+                event: $event,
+            );
+        }
+
+        return $jobs;
     }
 }
