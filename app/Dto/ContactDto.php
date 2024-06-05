@@ -76,7 +76,7 @@ final readonly class ContactDto
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
             email: $data['email'],
-            mobile: $data['mobile'],
+            mobile: '+'.$data['mobile'],
             gender: $data['gender'],
         );
     }
@@ -95,7 +95,7 @@ final readonly class ContactDto
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
             email: $data['customer_email'],
-            mobile: $data['customer_mobile'],
+            mobile: '+'.$data['customer_mobile'],
             gender: null,
         );
     }
