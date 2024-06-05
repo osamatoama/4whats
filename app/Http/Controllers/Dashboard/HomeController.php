@@ -22,8 +22,8 @@ class HomeController extends Controller
     protected function getAdminData(): array
     {
         return [
-            'contactsCount' => Contact::count(),
-            'messagesCount' => Message::count(),
+            'contactsCount' => Contact::query()->count(),
+            'messagesCount' => Message::query()->count(),
         ];
     }
 

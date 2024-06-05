@@ -35,7 +35,7 @@
                             <td>{{ $contact->name }}</td>
                             <td>{{ $contact->email ?? '-----' }}</td>
                             <td>{{ $contact->mobile }}</td>
-                            <td>{{ $contact->created_at->format(format: 'd-m-Y') }}</td>
+                            <td>{{ $contact->provider_created_at->format(format: 'd-m-Y') }}</td>
                             <td>
                                 @if(isNotInBlacklistedMobiles(mobile: $contact->mobile))
                                     @can('addToBlacklist', $contact)

@@ -136,7 +136,7 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
-        $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_EVENT);
+        $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE);
         $mobiles = explode(separator: ',', string: $mobiles);
 
         foreach ($mobiles as $mobile) {

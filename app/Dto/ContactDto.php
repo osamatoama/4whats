@@ -13,14 +13,14 @@ final readonly class ContactDto
         public int $storeId,
         public ProviderType $providerType,
         public int $providerId,
+        public Carbon $providerCreatedAt,
+        public Carbon $providerUpdatedAt,
         public ContactSource $source,
         public string $firstName,
         public ?string $lastName,
         public ?string $email,
         public string $mobile,
         public ?string $gender,
-        public Carbon $createdAt,
-        public Carbon $updatedAt,
     ) {
     }
 
@@ -30,16 +30,16 @@ final readonly class ContactDto
             storeId: $storeId,
             providerType: ProviderType::SALLA,
             providerId: $data['id'],
+            providerCreatedAt: now(),
+            providerUpdatedAt: SallaService::parseDate(
+                data: $data['updated_at'],
+            ),
             source: ContactSource::SALLA,
             firstName: $data['first_name'],
             lastName: $data['last_name'],
-            email: $data['email'],
+            email: $data['email'] ?: null,
             mobile: '+'.$data['mobile_code'].$data['mobile'],
-            gender: $data['gender'],
-            createdAt: now(),
-            updatedAt: SallaService::parseDate(
-                data: $data['updated_at'],
-            ),
+            gender: $data['gender'] ?: null,
         );
     }
 
@@ -51,14 +51,14 @@ final readonly class ContactDto
             storeId: $storeId,
             providerType: ProviderType::SALLA,
             providerId: $data['customer']['id'],
+            providerCreatedAt: now(),
+            providerUpdatedAt: now(),
             source: ContactSource::SALLA,
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
             email: $data['customer']['email'],
             mobile: $data['customer']['mobile'],
             gender: null,
-            createdAt: now(),
-            updatedAt: now(),
         );
     }
 
@@ -70,14 +70,14 @@ final readonly class ContactDto
             storeId: $storeId,
             providerType: ProviderType::ZID,
             providerId: $data['id'],
+            providerCreatedAt: now(),
+            providerUpdatedAt: now(),
             source: ContactSource::ZID,
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
             email: $data['email'],
             mobile: $data['mobile'],
             gender: $data['gender'],
-            createdAt: now(),
-            updatedAt: now(),
         );
     }
 
@@ -89,14 +89,14 @@ final readonly class ContactDto
             storeId: $storeId,
             providerType: ProviderType::ZID,
             providerId: $data['customer_id'],
+            providerCreatedAt: now(),
+            providerUpdatedAt: now(),
             source: ContactSource::ZID,
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
             email: $data['customer_email'],
             mobile: $data['customer_mobile'],
             gender: null,
-            createdAt: now(),
-            updatedAt: now(),
         );
     }
 }

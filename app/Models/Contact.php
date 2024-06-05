@@ -15,20 +15,22 @@ class Contact extends Model
         'store_id',
         'provider_type',
         'provider_id',
+        'provider_created_at',
+        'provider_updated_at',
         'source',
         'first_name',
         'last_name',
         'email',
         'mobile',
         'gender',
-        'created_at',
-        'updated_at',
     ];
 
     protected function casts(): array
     {
         return [
             'provider_type' => ProviderType::class,
+            'provider_created_at' => 'datetime',
+            'provider_updated_at' => 'datetime',
             'source' => ContactSource::class,
         ];
     }

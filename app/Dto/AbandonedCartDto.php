@@ -13,11 +13,11 @@ final readonly class AbandonedCartDto
         public int $contactId,
         public ProviderType $providerType,
         public int|string $providerId,
+        public Carbon $providerCreatedAt,
+        public Carbon $providerUpdatedAt,
         public int $totalAmount,
         public string $totalCurrency,
         public string $checkoutUrl,
-        public Carbon $createdAt,
-        public Carbon $updatedAt,
     ) {
     }
 
@@ -28,15 +28,15 @@ final readonly class AbandonedCartDto
             contactId: $contactId,
             providerType: ProviderType::SALLA,
             providerId: $data['id'],
+            providerCreatedAt: SallaService::parseDate(
+                data: $data['created_at'],
+            ),
+            providerUpdatedAt: SallaService::parseDate(
+                data: $data['updated_at'],
+            ),
             totalAmount: $data['total']['amount'] * 100,
             totalCurrency: $data['total']['currency'],
             checkoutUrl: $data['checkout_url'],
-            createdAt: SallaService::parseDate(
-                data: $data['created_at'],
-            ),
-            updatedAt: SallaService::parseDate(
-                data: $data['updated_at'],
-            ),
         );
     }
 
@@ -47,11 +47,11 @@ final readonly class AbandonedCartDto
             contactId: $contactId,
             providerType: ProviderType::ZID,
             providerId: $data['id'],
+            providerCreatedAt: $data['created_at'],
+            providerUpdatedAt: $data['updated_at'],
             totalAmount: $data['cart_total'] * 100,
             totalCurrency: str(string: $data['cart_total_string'])->after(search: ' ')->toString(),
             checkoutUrl: $data['url'],
-            createdAt: $data['created_at'],
-            updatedAt: $data['updated_at'],
         );
     }
 }

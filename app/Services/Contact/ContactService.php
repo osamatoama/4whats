@@ -18,13 +18,13 @@ class ContactService
                     'source' => $contactDto->source,
                 ],
                 values: [
+                    'provider_created_at' => $contactDto->providerCreatedAt,
+                    'provider_updated_at' => $contactDto->providerUpdatedAt,
                     'first_name' => $contactDto->firstName,
                     'last_name' => $contactDto->lastName,
                     'email' => $contactDto->email,
                     'mobile' => $contactDto->mobile,
                     'gender' => $contactDto->gender,
-                    'created_at' => $contactDto->createdAt,
-                    'updated_at' => $contactDto->updatedAt,
                 ],
             );
     }
@@ -39,13 +39,13 @@ class ContactService
                 'source' => $contactDto->source,
             ],
             values: [
+                'provider_created_at' => $contactDto->providerCreatedAt,
+                'provider_updated_at' => $contactDto->providerUpdatedAt,
                 'first_name' => $contactDto->firstName,
                 'last_name' => $contactDto->lastName,
                 'email' => $contactDto->email,
                 'mobile' => $contactDto->mobile,
                 'gender' => $contactDto->gender,
-                'created_at' => $contactDto->createdAt,
-                'updated_at' => $contactDto->updatedAt,
             ],
         );
     }

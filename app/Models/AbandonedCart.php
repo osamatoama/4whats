@@ -15,17 +15,19 @@ class AbandonedCart extends Model
         'contact_id',
         'provider_type',
         'provider_id',
+        'provider_created_at',
+        'provider_updated_at',
         'total_amount',
         'total_currency',
         'checkout_url',
-        'created_at',
-        'updated_at',
     ];
 
     protected function casts(): array
     {
         return [
             'provider_type' => ProviderType::class,
+            'provider_created_at' => 'datetime',
+            'provider_updated_at' => 'datetime',
         ];
     }
 

@@ -21,7 +21,7 @@ class NewOrderForEmployees extends Component
     {
         $this->mobiles = settings(storeId: currentStore()->id)
             ->value(
-                key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_EVENT,
+                key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE,
             );
     }
 

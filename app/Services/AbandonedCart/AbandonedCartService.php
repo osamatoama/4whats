@@ -18,11 +18,11 @@ class AbandonedCartService
                 ],
                 values: [
                     'contact_id' => $abandonedCartDto->contactId,
+                    'provider_created_at' => $abandonedCartDto->providerCreatedAt,
+                    'provider_updated_at' => $abandonedCartDto->providerUpdatedAt,
                     'total_amount' => $abandonedCartDto->totalAmount,
                     'total_currency' => $abandonedCartDto->totalCurrency,
                     'checkout_url' => $abandonedCartDto->checkoutUrl,
-                    'created_at' => $abandonedCartDto->createdAt,
-                    'updated_at' => $abandonedCartDto->updatedAt,
                 ],
             );
     }

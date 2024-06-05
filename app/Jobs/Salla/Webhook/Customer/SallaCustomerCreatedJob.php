@@ -2,13 +2,12 @@
 
 namespace App\Jobs\Salla\Webhook\Customer;
 
-use App\Enums\ContactSource;
+use App\Dto\ContactDto;
 use App\Enums\MessageTemplate;
-use App\Enums\ProviderType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\Store;
-use App\Services\Salla\Merchant\SallaMerchantService;
+use App\Services\Contact\ContactService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -55,18 +54,12 @@ class SallaCustomerCreatedJob implements ShouldQueue
             return;
         }
 
-        $store->contacts()->updateOrCreate(attributes: [
-            'provider_type' => ProviderType::SALLA,
-            'provider_id' => $this->data['id'],
-            'source' => ContactSource::SALLA,
-        ], values: [
-            'first_name' => $this->data['first_name'],
-            'last_name' => $this->data['last_name'],
-            'email' => $this->data['email'] ?: null,
-            'mobile' => $this->data['mobile_code'].$this->data['mobile'],
-            'gender' => $this->data['gender'] ?: null,
-            'updated_at' => SallaMerchantService::parseDate(data: $this->data['updated_at']),
-        ]);
+        (new ContactService())->updateOrCreate(
+            contactDto: ContactDto::fromSalla(
+                storeId: $store->id,
+                data: $this->data,
+            ),
+        );
 
         $whatsappAccount = $store->whatsappAccount;
         if ($whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {

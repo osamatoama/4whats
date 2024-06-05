@@ -14,8 +14,6 @@ class Message extends Model
         'mobile',
         'body',
         'status',
-        'created_at',
-        'updated_at',
     ];
 
     protected function casts(): array
