@@ -18,7 +18,6 @@ enum MessageTemplate: string
 
     case ZID_ABANDONED_CART = 'zid.event.abandoned_cart.created';
     case ZID_CUSTOMER_CREATED = 'zid.event.customer.create';
-    case ZID_REVIEW_ORDER = 'zid.custom.review_order';
     case ZID_COD = 'zid.custom.cod';
     case ZID_DIGITAL_PRODUCT = 'zid.custom.digital_product';
     case ZID_NEW_ORDER_FOR_EMPLOYEES = 'zid.custom.new_order_for_employees';
@@ -48,7 +47,6 @@ enum MessageTemplate: string
     {
         return [
             self::SALLA_REVIEW_ORDER->value,
-            self::ZID_REVIEW_ORDER->value,
         ];
     }
 
@@ -67,7 +65,7 @@ enum MessageTemplate: string
             self::SALLA_ABANDONED_CART, self::ZID_ABANDONED_CART => ['{CUSTOMER_NAME}', '{AMOUNT}', '{CURRENCY}', '{CHECKOUT_URL}'],
             self::SALLA_OTP => ['{OTP}'],
             self::SALLA_CUSTOMER_CREATED, self::ZID_CUSTOMER_CREATED => ['{CUSTOMER_NAME}'],
-            self::SALLA_REVIEW_ORDER, self::ZID_REVIEW_ORDER => ['{REVIEW_URL}', '{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
+            self::SALLA_REVIEW_ORDER => ['{REVIEW_URL}', '{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
             self::SALLA_COD, self::ZID_COD, self::SALLA_NEW_ORDER_FOR_EMPLOYEES, self::ZID_NEW_ORDER_FOR_EMPLOYEES => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
             self::SALLA_DIGITAL_PRODUCT, self::ZID_DIGITAL_PRODUCT => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{PRODUCTS}'],
         };
@@ -76,7 +74,7 @@ enum MessageTemplate: string
     public function delayInSeconds(): int
     {
         return match ($this) {
-            self::ORDER_STATUSES, self::SALLA_ABANDONED_CART, self::ZID_ABANDONED_CART, self::SALLA_REVIEW_ORDER, self::ZID_REVIEW_ORDER => 60 * 60 * 2,
+            self::ORDER_STATUSES, self::SALLA_ABANDONED_CART, self::ZID_ABANDONED_CART, self::SALLA_REVIEW_ORDER => 60 * 60 * 2,
             default => 0,
         };
     }
