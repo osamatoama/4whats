@@ -2,7 +2,13 @@
 
 namespace App\Services\Zid\Webhook;
 
+use App\Services\Zid\Webhook\Events\AbandonedCart\AbandonedCartCompletedEvent;
+use App\Services\Zid\Webhook\Events\AbandonedCart\AbandonedCartCreatedEvent;
 use App\Services\Zid\Webhook\Events\App\Market\Application\UninstallEvent;
+use App\Services\Zid\Webhook\Events\Customer\CustomerCreateEvent;
+use App\Services\Zid\Webhook\Events\Customer\CustomerUpdateEvent;
+use App\Services\Zid\Webhook\Events\Order\OrderCreateEvent;
+use App\Services\Zid\Webhook\Events\Order\OrderStatusUpdateEvent;
 use App\Services\Zid\Webhook\Events\UnknownEvent;
 
 class ZidWebhookHandler
@@ -23,6 +29,12 @@ class ZidWebhookHandler
     {
         (match ($event) {
             'app.market.application.uninstall' => new UninstallEvent(),
+            'order.create' => new OrderCreateEvent(),
+            'order.status.update' => new OrderStatusUpdateEvent(),
+            'abandoned_cart.created' => new AbandonedCartCreatedEvent(),
+            'abandoned_cart.completed' => new AbandonedCartCompletedEvent(),
+            'customer.create' => new CustomerCreateEvent(),
+            'customer.update' => new CustomerUpdateEvent(),
             default => new UnknownEvent(),
         })(
             event: $event,

@@ -38,7 +38,9 @@ final readonly class ContactDto
             firstName: $data['first_name'],
             lastName: $data['last_name'],
             email: $data['email'] ?: null,
-            mobile: '+'.$data['mobile_code'].$data['mobile'],
+            mobile: ensureMobileStartingWithPlus(
+                mobile: $data['mobile_code'].$data['mobile'],
+            ),
             gender: $data['gender'] ?: null,
         );
     }
@@ -57,7 +59,9 @@ final readonly class ContactDto
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
             email: $data['customer']['email'],
-            mobile: $data['customer']['mobile'],
+            mobile: ensureMobileStartingWithPlus(
+                mobile: $data['customer']['mobile'],
+            ),
             gender: null,
         );
     }
@@ -75,8 +79,10 @@ final readonly class ContactDto
             source: ContactSource::ZID,
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
-            email: $data['email'],
-            mobile: '+'.$data['mobile'],
+            email: $data['email'] ?: null,
+            mobile: ensureMobileStartingWithPlus(
+                mobile: $data['mobile'],
+            ),
             gender: $data['gender'],
         );
     }
@@ -95,8 +101,31 @@ final readonly class ContactDto
             firstName: $name->before(search: ' ')->toString(),
             lastName: $name->after(search: ' ')->toString(),
             email: $data['customer_email'],
-            mobile: '+'.$data['customer_mobile'],
+            mobile: ensureMobileStartingWithPlus(
+                mobile: $data['customer_mobile'],
+            ),
             gender: null,
+        );
+    }
+
+    public static function fromZidWebhook(int $storeId, array $data): self
+    {
+        $name = str(string: $data['name']);
+
+        return new self(
+            storeId: $storeId,
+            providerType: ProviderType::ZID,
+            providerId: $data['id'],
+            providerCreatedAt: now(),
+            providerUpdatedAt: now(),
+            source: ContactSource::ZID,
+            firstName: $name->before(search: ' ')->toString(),
+            lastName: $name->after(search: ' ')->toString(),
+            email: $data['email'] ?: null,
+            mobile: ensureMobileStartingWithPlus(
+                mobile: $data['telephone'],
+            ),
+            gender: $data['gender'],
         );
     }
 }

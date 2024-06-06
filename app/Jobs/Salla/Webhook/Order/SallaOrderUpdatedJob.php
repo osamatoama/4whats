@@ -108,7 +108,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
         if ($template->is_enabled) {
             $message = str(string: $template->message)
-                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
                 ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
                 ->toString();
@@ -141,7 +141,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         $message = str(string: $template->message)
             ->replace(search: '{REVIEW_URL}', replace: $this->data['rating_link'] ?? $this->data['urls']['customer'])
-            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
             ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
             ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
@@ -199,7 +199,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         $message = str(string: $template->message)
-            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
             ->replace(search: '{PRODUCTS}', replace: $products->toString())
             ->toString();

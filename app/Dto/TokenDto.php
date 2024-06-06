@@ -36,8 +36,8 @@ final readonly class TokenDto
             providerType: ProviderType::ZID,
             accessToken: $zidToken->accessToken,
             refreshToken: $zidToken->refreshToken,
-            expiredAt: Carbon::parse(
-                time: $zidToken->expiresIn,
+            expiredAt: now()->addSeconds(
+                value: $zidToken->expiresIn,
             ),
             managerToken: $zidToken->managerToken,
         );

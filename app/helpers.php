@@ -91,3 +91,10 @@ if (! function_exists('generateMessageUsingSeparatedLines')) {
         return $message;
     }
 }
+
+if (! function_exists('ensureMobileStartingWithPlus')) {
+    function ensureMobileStartingWithPlus(string $mobile): string
+    {
+        return str(string: $mobile)->start(prefix: '+')->toString();
+    }
+}

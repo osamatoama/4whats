@@ -110,7 +110,7 @@ class SallaOrderCreatedJob implements ShouldQueue
 
         if ($template->is_enabled) {
             $message = str(string: $template->message)
-                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
                 ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
                 ->toString();
@@ -136,24 +136,22 @@ class SallaOrderCreatedJob implements ShouldQueue
             return;
         }
 
+        $message = str(string: $template->message)
+            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
+            ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
+            ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
+            ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
+            ->replace(search: '{CURRENCY}', replace: $this->data['amounts']['total']['currency'])
+            ->toString();
+
         $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE);
         $mobiles = explode(separator: ',', string: $mobiles);
-
         foreach ($mobiles as $mobile) {
-            $mobile = trim(string: $mobile);
-            $message = str(string: $template->message)
-                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
-                ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
-                ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
-                ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
-                ->replace(search: '{CURRENCY}', replace: $this->data['amounts']['total']['currency'])
-                ->toString();
-
             WhatsappSendTextMessageJob::dispatch(
                 storeId: $store->id,
                 instanceId: $store->whatsappAccount->instance_id,
                 instanceToken: $store->whatsappAccount->instance_token,
-                mobile: $mobile,
+                mobile: trim(string: $mobile),
                 message: $message,
             )->delay(delay: $template->delay_in_seconds);
         }
@@ -174,7 +172,7 @@ class SallaOrderCreatedJob implements ShouldQueue
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         $message = str(string: $template->message)
             ->replace(search: '{REVIEW_URL}', replace: $this->data['rating_link'] ?? $this->data['urls']['customer'])
-            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
             ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
             ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
@@ -203,7 +201,7 @@ class SallaOrderCreatedJob implements ShouldQueue
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         $message = str(string: $template->message)
-            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
             ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
             ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
@@ -261,7 +259,7 @@ class SallaOrderCreatedJob implements ShouldQueue
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         $message = str(string: $template->message)
-            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['first_name'])
+            ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
             ->replace(search: '{PRODUCTS}', replace: $products->toString())
             ->toString();
