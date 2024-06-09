@@ -109,7 +109,10 @@ class OrderStatusUpdateJob implements ShouldQueue, WebhookJob
             $message = str(string: $template->message)
                 ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['id'])
+                ->replace(search: '{ORDER_URL}', replace: $this->data['order_url'])
+                ->replace(search: '{AMOUNT}', replace: $this->data['order_total'])
                 ->replace(search: '{STATUS}', replace: $this->data['order_status']['name'])
+                ->replace(search: '{CURRENCY}', replace: $this->data['currency_code'])
                 ->toString();
 
             WhatsappSendTextMessageJob::dispatch(

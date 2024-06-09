@@ -61,20 +61,62 @@ enum MessageTemplate: string
     public function placeholders(): array
     {
         return match ($this) {
-            self::ORDER_STATUSES => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{STATUS}'],
-            self::SALLA_ABANDONED_CART, self::ZID_ABANDONED_CART => ['{CUSTOMER_NAME}', '{AMOUNT}', '{CURRENCY}', '{CHECKOUT_URL}'],
-            self::SALLA_OTP => ['{OTP}'],
-            self::SALLA_CUSTOMER_CREATED, self::ZID_CUSTOMER_CREATED => ['{CUSTOMER_NAME}'],
-            self::SALLA_REVIEW_ORDER => ['{REVIEW_URL}', '{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
-            self::SALLA_COD, self::ZID_COD, self::SALLA_NEW_ORDER_FOR_EMPLOYEES, self::ZID_NEW_ORDER_FOR_EMPLOYEES => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{AMOUNT}', '{STATUS}', '{CURRENCY}'],
-            self::SALLA_DIGITAL_PRODUCT, self::ZID_DIGITAL_PRODUCT => ['{CUSTOMER_NAME}', '{ORDER_ID}', '{PRODUCTS}'],
+            self::ORDER_STATUSES,
+            self::SALLA_NEW_ORDER_FOR_EMPLOYEES,
+            self::ZID_NEW_ORDER_FOR_EMPLOYEES => [
+                '{CUSTOMER_NAME}',
+                '{ORDER_ID}',
+                '{ORDER_URL}',
+                '{AMOUNT}',
+                '{STATUS}',
+                '{CURRENCY}',
+            ],
+            self::SALLA_ABANDONED_CART,
+            self::ZID_ABANDONED_CART => [
+                '{CUSTOMER_NAME}',
+                '{AMOUNT}',
+                '{CURRENCY}',
+                '{CHECKOUT_URL}',
+            ],
+            self::SALLA_OTP => [
+                '{OTP}',
+            ],
+            self::SALLA_CUSTOMER_CREATED,
+            self::ZID_CUSTOMER_CREATED => [
+                '{CUSTOMER_NAME}',
+            ],
+            self::SALLA_REVIEW_ORDER => [
+                '{REVIEW_URL}',
+                '{CUSTOMER_NAME}',
+                '{ORDER_ID}',
+                '{AMOUNT}',
+                '{STATUS}',
+                '{CURRENCY}',
+            ],
+            self::SALLA_COD,
+            self::ZID_COD => [
+                '{CUSTOMER_NAME}',
+                '{ORDER_ID}',
+                '{AMOUNT}',
+                '{STATUS}',
+                '{CURRENCY}',
+            ],
+            self::SALLA_DIGITAL_PRODUCT,
+            self::ZID_DIGITAL_PRODUCT => [
+                '{CUSTOMER_NAME}',
+                '{ORDER_ID}',
+                '{PRODUCTS}',
+            ],
         };
     }
 
     public function delayInSeconds(): int
     {
         return match ($this) {
-            self::ORDER_STATUSES, self::SALLA_ABANDONED_CART, self::ZID_ABANDONED_CART, self::SALLA_REVIEW_ORDER => 60 * 60 * 2,
+            self::ORDER_STATUSES,
+            self::SALLA_ABANDONED_CART,
+            self::ZID_ABANDONED_CART,
+            self::SALLA_REVIEW_ORDER => 60 * 60 * 2,
             default => 0,
         };
     }

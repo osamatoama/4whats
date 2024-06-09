@@ -59,7 +59,8 @@ class OrderCreateJob implements ShouldQueue, WebhookJob
             return;
         }
 
-        $this->sendToEmployees(store: $store);
+        $amount = round(num: $this->data['order_total'], precision: 2);
+        $this->sendToEmployees(store: $store, amount: $amount);
 
         $sallaOrderStatusProviderId = $this->data['order_status']['code'];
         $orderStatus = $store->orderStatuses()->where(column: 'provider_id', operator: '=', value: $sallaOrderStatusProviderId)->first();
@@ -112,7 +113,10 @@ class OrderCreateJob implements ShouldQueue, WebhookJob
             $message = str(string: $template->message)
                 ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['id'])
+                ->replace(search: '{ORDER_URL}', replace: $this->data['order_url'])
+                ->replace(search: '{AMOUNT}', replace: $amount)
                 ->replace(search: '{STATUS}', replace: $this->data['order_status']['name'])
+                ->replace(search: '{CURRENCY}', replace: $this->data['currency_code'])
                 ->toString();
 
             WhatsappSendTextMessageJob::dispatch(
@@ -124,21 +128,21 @@ class OrderCreateJob implements ShouldQueue, WebhookJob
             )->delay(delay: $template->delay_in_seconds);
         }
 
-        $this->sendCODMessage(store: $store, mobile: $mobile);
+        $this->sendCODMessage(store: $store, mobile: $mobile, amount: $amount);
         $this->sendDigitalMessage(store: $store, mobile: $mobile);
     }
 
-    protected function sendToEmployees(Store $store): void
+    protected function sendToEmployees(Store $store, float $amount): void
     {
         $template = $store->templates()->key(key: MessageTemplate::ZID_NEW_ORDER_FOR_EMPLOYEES)->first();
         if ($template->is_disabled) {
             return;
         }
 
-        $amount = round(num: $this->data['order_total'], precision: 2);
         $message = str(string: $template->message)
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['id'])
+            ->replace(search: '{ORDER_URL}', replace: $this->data['order_url'])
             ->replace(search: '{AMOUNT}', replace: $amount)
             ->replace(search: '{STATUS}', replace: $this->data['order_status']['name'])
             ->replace(search: '{CURRENCY}', replace: $this->data['currency_code'])
@@ -157,7 +161,7 @@ class OrderCreateJob implements ShouldQueue, WebhookJob
         }
     }
 
-    protected function sendCODMessage(Store $store, string $mobile): void
+    protected function sendCODMessage(Store $store, string $mobile, float $amount): void
     {
         if ($this->data['payment']['method']['code'] !== 'zid_cod') {
             return;
@@ -168,7 +172,6 @@ class OrderCreateJob implements ShouldQueue, WebhookJob
             return;
         }
 
-        $amount = round(num: $this->data['order_total'], precision: 2);
         $message = str(string: $template->message)
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['id'])
