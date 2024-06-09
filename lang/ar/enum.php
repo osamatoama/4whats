@@ -45,7 +45,9 @@ return [
         MessageTemplate::SALLA_REVIEW_ORDER->name => [
             'default' => 'من فضلك قم بتغيير نص الرسالة قبل التفعيل',
             'label' => 'رسالة تقييم الطلب',
-            'description' => 'من اجل ادراج معلومات العميل في الرسالة يمكنك استخدام الإختصارات التالية ضمن النص: :placeholders',
+            'description' => 'من اجل ادراج معلومات العميل في الرسالة يمكنك استخدام الإختصارات التالية ضمن النص: :placeholders'
+                .'<br>'
+                .'<span class="text-danger fw-bold">يجب تحديد حالة رسالة التقييم عبر إعدادات التقييم في متجر سلة</span>',
             'hint' => 'رسالة تقييم الطلب',
         ],
         MessageTemplate::SALLA_COD->name => [

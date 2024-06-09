@@ -128,6 +128,10 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
     {
+        if ($this->data['rating_link'] === null) {
+            return;
+        }
+
         $template = $store->templates()->key(key: MessageTemplate::SALLA_REVIEW_ORDER)->first();
         if ($template->is_disabled) {
             return;
@@ -140,7 +144,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         $message = str(string: $template->message)
-            ->replace(search: '{REVIEW_URL}', replace: $this->data['rating_link'] ?? $this->data['urls']['customer'])
+            ->replace(search: '{REVIEW_URL}', replace: $this->data['rating_link'])
             ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
             ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
             ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])

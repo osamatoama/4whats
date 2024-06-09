@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="card-body w-75 mx-auto">
-            <p>{{ $template->enum->description() }}</p>
+            <p>{!! $template->enum->description() !!}</p>
 
             <div class="form-group mb-3">
                 <textarea @class(['form-control', 'is-invalid' => $errors->has(key: 'message')]) rows="5" wire:model.live.debounce.500ms="message"></textarea>
