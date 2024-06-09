@@ -2,7 +2,6 @@
 
 namespace App\Services\Salla\Partner\Support;
 
-use App\Services\Salla\Partner\Dto\SettingsDto;
 use App\Services\Salla\Partner\SallaPartnerClient;
 use App\Services\Salla\Partner\SallaPartnerException;
 use App\Services\Salla\Partner\SallaPartnerService;
@@ -22,16 +21,12 @@ final readonly class Settings
     /**
      * @throws SallaPartnerException
      */
-    public function update(SettingsDto $settingsDto): array
+    public function update(array $data): array
     {
         try {
             $response = $this->client->post(
                 url: $this->baseUrl,
-                data: [
-                    'widget_message' => $settingsDto->widgetMessage,
-                    'widget_color' => $settingsDto->widgetColor,
-                    'widget_is_enabled' => $settingsDto->widgetIsEnabled,
-                ],
+                data: $data,
             );
         } catch (ConnectionException $e) {
             throw SallaPartnerException::connectionException(

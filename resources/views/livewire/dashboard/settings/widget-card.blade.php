@@ -11,6 +11,21 @@
                     <tbody>
                     <tr>
                         <th>
+                            @lang('dashboard.pages.settings.index.widget.mobile')
+                        </th>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" @class(['form-control', 'is-invalid' => $errors->has(key: 'mobile')]) wire:model="mobile">
+                                @error('mobile')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             @lang('dashboard.pages.settings.index.widget.message')
                         </th>
                         <td>

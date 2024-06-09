@@ -3,20 +3,26 @@
 namespace App\Http\Controllers\Api\V1\Salla;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\WidgetResource;
 use App\Models\Store;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class WidgetController extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): WidgetResource
     {
-        $widget = Store::query()->salla(providerId: $request->query(key: 'store_id', default: 0))->firstOrFail()->widget;
+        $widget = Store::query()
+            ->salla(
+                providerId: $request->header(
+                    key: 'X-Salla-Provider-Id',
+                    default: 0,
+                ),
+            )
+            ->firstOrFail()
+            ->widget;
 
-        return response()->json(data: [
-            'message' => $widget->message,
-            'color' => $widget->color,
-            'is_enabled' => $widget->is_enabled,
-        ]);
+        return WidgetResource::make(
+            resource: $widget,
+        );
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Dashboard\Settings;
 
+use App\Dto\SettingDto;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Setting;
+use App\Services\Setting\SettingService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -23,6 +25,14 @@ class TextTableRow extends Component
         $this->validate(rules: [
             'value' => ['required', 'string'],
         ]);
+
+        (new SettingService())->update(
+            setting: $this->setting,
+            settingDto: SettingDto::fromModel(
+                setting: $this->setting,
+                value: $this->value,
+            ),
+        );
 
         $this->successToast(action: 'updated', model: 'settings.singular');
     }

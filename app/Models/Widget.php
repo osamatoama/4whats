@@ -9,6 +9,7 @@ class Widget extends Model
 {
     protected $fillable = [
         'store_id',
+        'mobile',
         'message',
         'color',
         'is_enabled',

@@ -14,10 +14,21 @@ class SettingService
         return Setting::query()->create(
             attributes: [
                 'store_id' => $settingDto->storeId,
-                'key' => $settingDto->settingKey,
+                'key' => $settingDto->key,
                 'value' => $settingDto->value,
             ],
         );
+    }
+
+    public function update(Setting $setting, SettingDto $settingDto): Setting
+    {
+        $setting->update(
+            attributes: [
+                'value' => $settingDto->value,
+            ],
+        );
+
+        return $setting;
     }
 
     /**
@@ -29,14 +40,14 @@ class SettingService
             $this->create(
                 settingDto: new SettingDto(
                     storeId: $storeId,
-                    settingKey: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_MESSAGE,
+                    key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_MESSAGE,
                     value: null,
                 ),
             ),
             $this->create(
                 settingDto: new SettingDto(
                     storeId: $storeId,
-                    settingKey: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE,
+                    key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE,
                     value: null,
                 ),
             ),

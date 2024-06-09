@@ -87,6 +87,7 @@ class InstallAppJob implements ShouldQueue
                 (new WidgetService())->create(
                     widgetDto: WidgetDto::fromDefault(
                         storeId: $store->id,
+                        mobile: $store->mobile,
                     ),
                 );
 

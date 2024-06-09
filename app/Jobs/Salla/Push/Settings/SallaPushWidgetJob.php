@@ -2,8 +2,8 @@
 
 namespace App\Jobs\Salla\Push\Settings;
 
+use App\Dto\WidgetDto;
 use App\Jobs\Concerns\InteractsWithException;
-use App\Services\Salla\Partner\Dto\SettingsDto;
 use App\Services\Salla\Partner\SallaPartnerException;
 use App\Services\Salla\Partner\SallaPartnerService;
 use Illuminate\Bus\Queueable;
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SallaPushSettingsJob implements ShouldQueue
+class SallaPushWidgetJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -22,7 +22,7 @@ class SallaPushSettingsJob implements ShouldQueue
     public function __construct(
         public string $accessToken,
         public int $storeId,
-        public SettingsDto $settingsDto,
+        public WidgetDto $widgetDto,
     ) {
         $this->maxAttempts = 5;
     }
@@ -38,14 +38,19 @@ class SallaPushSettingsJob implements ShouldQueue
 
         try {
             $service->settings()->update(
-                settingsDto: $this->settingsDto,
+                data: [
+                    'widget_mobile' => $this->widgetDto->mobile,
+                    'widget_message' => $this->widgetDto->message,
+                    'widget_color' => $this->widgetDto->color,
+                    'widget_is_enabled' => $this->widgetDto->isEnabled,
+                ],
             );
         } catch (SallaPartnerException $e) {
             $this->handleException(
                 e: new SallaPartnerException(
                     message: generateMessageUsingSeparatedLines(
                         lines: [
-                            'Exception while pushing settings to salla',
+                            'Exception while pushing widget to salla',
                             "Store: {$this->storeId}",
                             "Reason: {$e->getMessage()}",
                         ],

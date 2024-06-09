@@ -2,8 +2,10 @@
 
 namespace App\Jobs\Salla\Webhook\App\Settings;
 
+use App\Dto\WidgetDto;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Models\Store;
+use App\Services\Widget\WidgetService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -52,10 +54,13 @@ class SallaAppSettingsUpdatedJob implements ShouldQueue
 
         $settings = $this->data['settings'];
 
-        $store->widget()->update(values: [
-            'message' => $settings['widget_message'],
-            'color' => $settings['widget_color'],
-            'is_enabled' => $settings['widget_is_enabled'],
-        ]);
+        (new WidgetService())->update(
+            widget: $store->widget,
+            widgetDto: WidgetDto::fromSallaWebhook(
+                storeId: $store->id,
+                settings: $settings,
+            ),
+            updateSallaWidget: false,
+        );
     }
 }

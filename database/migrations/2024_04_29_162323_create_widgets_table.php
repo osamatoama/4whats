@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('widgets', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
+            $table->string('mobile');
             $table->string('message')->nullable();
             $table->string('color')->default('#25D366');
             $table->boolean('is_enabled')->default(true);
