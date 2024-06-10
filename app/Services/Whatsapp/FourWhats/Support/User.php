@@ -44,7 +44,82 @@ class User implements UserContract
 
         if (isset($data['success']) && $data['success'] === false) {
             throw new FourWhatsException(
-                message: $data['msg'],
+                message: $data['reason'],
+                errorCode: $data['errorCode'],
+            );
+        }
+
+        return [
+            'id' => $data['user']['id'],
+            'email' => $data['user']['email'],
+            'mobile' => $data['user']['mobile'],
+            'api_key' => $data['user']['apikey'],
+        ];
+    }
+
+    /**
+     * @throws FourWhatsException
+     */
+    public function findByEmail(string $email): array
+    {
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/getUser',
+                data: [
+                    'email' => $email,
+                    'AuthKey' => config(key: 'services.four_whats.auth_key'),
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
+
+        $data = $response->json();
+
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(
+                message: $data['reason'],
+                errorCode: $data['errorCode'],
+            );
+        }
+
+        return [
+            'id' => $data['user']['id'],
+            'email' => $data['user']['email'],
+            'mobile' => $data['user']['mobile'],
+            'api_key' => $data['user']['apikey'],
+        ];
+    }
+
+    /**
+     * @throws FourWhatsException
+     */
+    public function findByMobile(string $mobile): array
+    {
+        $mobile = str(string: $mobile)->replace(search: ['+', '00'], replace: '')->toString();
+
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/getUser',
+                data: [
+                    'mobile' => $mobile,
+                    'AuthKey' => config(key: 'services.four_whats.auth_key'),
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
+
+        $data = $response->json();
+
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(
+                message: $data['reason'],
+                errorCode: $data['errorCode'],
             );
         }
 

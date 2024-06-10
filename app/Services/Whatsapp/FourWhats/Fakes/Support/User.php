@@ -25,4 +25,24 @@ class User implements UserContract
             'api_key' => 'cd92747a-c704-447a-9063-a7674c85edd1',
         ];
     }
+
+    public function findByEmail(string $email): array
+    {
+        return [
+            'id' => 5929,
+            'email' => 'tech@valantica.com',
+            'mobile' => '966530820588',
+            'api_key' => 'cd92747a-c704-447a-9063-a7674c85edd1',
+        ];
+    }
+
+    public function findByMobile(string $mobile): array
+    {
+        return [
+            'id' => 5929,
+            'email' => 'tech@valantica.com',
+            'mobile' => '966530820588',
+            'api_key' => 'cd92747a-c704-447a-9063-a7674c85edd1',
+        ];
+    }
 }

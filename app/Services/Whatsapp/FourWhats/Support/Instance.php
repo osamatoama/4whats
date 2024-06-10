@@ -114,7 +114,9 @@ class Instance implements InstanceContract
         $data = $response->json();
 
         if (isset($data['success']) && $data['success'] === false) {
-            throw new FourWhatsException(message: $data['reason']);
+            throw new FourWhatsException(
+                message: $data['reason'],
+            );
         }
 
         return [

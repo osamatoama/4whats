@@ -45,7 +45,8 @@ class Instances implements InstancesContract
 
         if (isset($data['success']) && $data['success'] === false) {
             throw new FourWhatsException(
-                message: $data['errorCode'].' | '.$data['reason'],
+                message: $data['reason'],
+                errorCode: $data['errorCode'],
             );
         }
 
@@ -81,7 +82,8 @@ class Instances implements InstancesContract
 
         if (isset($data['success']) && $data['success'] === false) {
             throw new FourWhatsException(
-                message: $data['errorCode'].' | '.$data['reason'],
+                message: $data['reason'],
+                errorCode: $data['errorCode'],
             );
         }
 
