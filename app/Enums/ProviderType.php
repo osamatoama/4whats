@@ -2,13 +2,12 @@
 
 namespace App\Enums;
 
+use App\Enums\Concerns\HasLabel;
+
 enum ProviderType: string
 {
+    use HasLabel;
+
     case SALLA = 'salla';
     case ZID = 'zid';
-
-    public function label(): string
-    {
-        return __(key: 'enum.'.__CLASS__.'.'.$this->name);
-    }
 }

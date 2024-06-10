@@ -2,10 +2,13 @@
 
 namespace App\Enums;
 
+use App\Enums\Concerns\HasLabel;
 use Illuminate\Bus\Batch;
 
 enum CampaignType: string
 {
+    use HasLabel;
+
     case CONTACTS = 'contacts';
     case ABANDONED_CARTS = 'abandoned_carts';
 
@@ -21,13 +24,6 @@ enum CampaignType: string
 
         return self::from(
             value: $name,
-        );
-    }
-
-    public function label(): string
-    {
-        return __(
-            key: 'enum.'.__CLASS__.'.'.$this->name,
         );
     }
 

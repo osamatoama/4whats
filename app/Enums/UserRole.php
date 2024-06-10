@@ -2,10 +2,13 @@
 
 namespace App\Enums;
 
+use App\Enums\Concerns\HasLabel;
 use Spatie\Permission\Models\Role;
 
 enum UserRole: string
 {
+    use HasLabel;
+
     case ADMIN = 'admin';
     case MERCHANT = 'merchant';
     case EMPLOYEE = 'employee';
@@ -13,11 +16,6 @@ enum UserRole: string
     public function guardName(): string
     {
         return 'dashboard';
-    }
-
-    public function label(): string
-    {
-        return __(key: 'enum.'.__CLASS__.'.'.$this->name);
     }
 
     public function asModel()
