@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard\Settings;
 
 use App\Dto\WidgetDto;
+use App\Livewire\Concerns\ConvertEmptyStringsToNull;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Widget;
 use App\Services\Widget\WidgetService;
@@ -12,7 +13,7 @@ use Livewire\Component;
 
 class WidgetCard extends Component
 {
-    use InteractsWithToasts;
+    use ConvertEmptyStringsToNull, InteractsWithToasts;
 
     public Widget $widget;
 
@@ -44,7 +45,9 @@ class WidgetCard extends Component
             widgetDto: new WidgetDto(
                 storeId: $this->widget->store_id,
                 mobile: $this->mobile,
-                message: $this->message,
+                message: $this->convertEmptyStringToNull(
+                    string: $this->message,
+                ),
                 color: $this->color,
                 isEnabled: $this->isEnabled,
             ),

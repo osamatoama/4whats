@@ -112,6 +112,12 @@ class InstallAppJob implements ShouldQueue
                 $this->getStoreBatches(store: $store),
                 $this->getWebhooksJobs(),
                 [
+                    new RegisterWidgetScriptJob(
+                        managerToken: $this->zidToken->managerToken,
+                        accessToken: $this->zidToken->accessToken,
+                    ),
+                ],
+                [
                     new SendCredentialsJob(
                         user: $user,
                         password: $password,

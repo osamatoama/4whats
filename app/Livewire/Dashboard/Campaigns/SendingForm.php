@@ -4,12 +4,12 @@ namespace App\Livewire\Dashboard\Campaigns;
 
 use App\Enums\CampaignType;
 use App\Enums\Whatsapp\MessageType;
+use App\Livewire\Concerns\ConvertEmptyStringsToNull;
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\User;
 use App\Services\Campaigns\CampaignsService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -18,7 +18,7 @@ use Livewire\WithFileUploads;
 
 class SendingForm extends Component
 {
-    use InteractsWithToasts, WithFileUploads;
+    use ConvertEmptyStringsToNull, InteractsWithToasts, WithFileUploads;
 
     public array $campaignTypes;
 
@@ -113,7 +113,9 @@ class SendingForm extends Component
         $service->send(
             campaignType: $this->currentCampaignType,
             messageType: $this->currentMessageType,
-            message: Str::trim(value: $this->message) === '' ? null : $this->message,
+            message: $this->convertEmptyStringToNull(
+                string: $this->message,
+            ),
             imagePath: $this->image?->store(
                 path: 'campaigns/images',
             ),

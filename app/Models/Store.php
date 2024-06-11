@@ -16,6 +16,7 @@ class Store extends Model
         'user_id',
         'provider_type',
         'provider_id',
+        'provider_uuid',
         'name',
         'mobile',
         'email',
@@ -81,17 +82,40 @@ class Store extends Model
 
     public function scopeSalla(Builder $query, ?int $providerId = null): Builder
     {
-        return $query->where(column: 'provider_type', operator: '=', value: ProviderType::SALLA)->when(
+        return $query->where(
+            column: 'provider_type',
+            operator: '=',
+            value: ProviderType::SALLA,
+        )->when(
             value: $providerId !== null,
-            callback: fn (Builder $query): Builder => $query->where(column: 'provider_id', operator: '=', value: $providerId),
+            callback: fn (Builder $query): Builder => $query->where(
+                column: 'provider_id',
+                operator: '=',
+                value: $providerId,
+            ),
         );
     }
 
-    public function scopeZid(Builder $query, ?int $providerId = null): Builder
+    public function scopeZid(Builder $query, ?int $providerId = null, ?string $providerUUID = null): Builder
     {
-        return $query->where(column: 'provider_type', operator: '=', value: ProviderType::ZID)->when(
+        return $query->where(
+            column: 'provider_type',
+            operator: '=',
+            value: ProviderType::ZID,
+        )->when(
             value: $providerId !== null,
-            callback: fn (Builder $query): Builder => $query->where(column: 'provider_id', operator: '=', value: $providerId),
+            callback: fn (Builder $query): Builder => $query->where(
+                column: 'provider_id',
+                operator: '=',
+                value: $providerId,
+            ),
+        )->when(
+            value: $providerUUID !== null,
+            callback: fn (Builder $query): Builder => $query->where(
+                column: 'provider_uuid',
+                operator: '=',
+                value: $providerUUID,
+            ),
         );
     }
 

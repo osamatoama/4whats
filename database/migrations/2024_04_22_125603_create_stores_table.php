@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->string('provider_type');
             $table->unsignedBigInteger('provider_id');
+            $table->string('provider_uuid')->nullable();
             $table->string('name');
             $table->string('mobile');
             $table->string('email');

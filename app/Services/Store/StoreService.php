@@ -14,6 +14,7 @@ class StoreService
                 'user_id' => $storeDto->userId,
                 'provider_type' => $storeDto->providerType,
                 'provider_id' => $storeDto->providerId,
+                'provider_uuid' => $storeDto->providerUUID,
                 'name' => $storeDto->name,
                 'mobile' => $storeDto->mobile,
                 'email' => $storeDto->email,

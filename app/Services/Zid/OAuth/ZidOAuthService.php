@@ -160,6 +160,7 @@ final readonly class ZidOAuthService
             mobile: $userData['mobile'],
             store: new Store(
                 id: $storeData['id'],
+                uuid: $storeData['uuid'],
                 name: $storeData['title'],
                 email: $storeData['email'],
                 mobile: $storeData['phone'],
