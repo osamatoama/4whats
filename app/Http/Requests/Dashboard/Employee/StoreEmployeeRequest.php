@@ -13,7 +13,10 @@ class StoreEmployeeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can(abilities: 'createEmployee', arguments: User::class);
+        return $this->user()->can(
+            abilities: 'createEmployee',
+            arguments: User::class,
+        );
     }
 
     /**
@@ -25,7 +28,27 @@ class StoreEmployeeRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique(table: 'users', column: 'email')],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique(
+                    table: 'users',
+                    column: 'email',
+                ),
+            ],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => __(
+                key: 'dashboard.pages.employees.columns.name',
+            ),
+            'email' => __(
+                key: 'dashboard.pages.employees.columns.email',
+            ),
         ];
     }
 }

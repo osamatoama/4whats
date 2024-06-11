@@ -11,8 +11,13 @@ class MessageController extends Controller
 {
     public function index(): View
     {
-        Gate::authorize(ability: 'viewAny', arguments: Message::class);
+        Gate::authorize(
+            ability: 'viewAny',
+            arguments: Message::class,
+        );
 
-        return view(view: 'dashboard.pages.messages.index');
+        return view(
+            view: 'dashboard.pages.messages.index',
+        );
     }
 }

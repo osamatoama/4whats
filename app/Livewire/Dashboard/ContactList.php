@@ -42,12 +42,17 @@ class ContactList extends Component
 
     public function export(): null|Response|BinaryFileResponse
     {
-        Gate::authorize(ability: 'export', arguments: Contact::class);
+        Gate::authorize(
+            ability: 'export',
+            arguments: Contact::class,
+        );
 
         $store = currentStore();
         if ($store->is_expired) {
             $this->customErrorToast(
-                message: __(key: 'dashboard.common.store_expired_message'),
+                message: __(
+                    key: 'dashboard.common.store_expired_message',
+                ),
             );
 
             return null;
@@ -63,22 +68,38 @@ class ContactList extends Component
 
     public function addToBlacklist(Contact $contact): void
     {
-        Gate::authorize(ability: 'addToBlacklist', arguments: $contact);
+        Gate::authorize(
+            ability: 'addToBlacklist',
+            arguments: $contact,
+        );
 
-        currentStore()->blacklistedMobiles()->create(attributes: [
-            'mobile' => $contact->mobile,
-        ]);
+        currentStore()->blacklistedMobiles()->create(
+            attributes: [
+                'mobile' => $contact->mobile,
+            ],
+        );
 
-        $this->successToast(action: 'updated', model: 'contacts.singular');
+        $this->successToast(
+            action: 'updated',
+            model: 'contacts.singular',
+        );
     }
 
     public function removeFromBlacklist(Contact $contact): void
     {
-        Gate::authorize(ability: 'removeFromBlacklist', arguments: $contact);
+        Gate::authorize(
+            ability: 'removeFromBlacklist',
+            arguments: $contact,
+        );
 
-        currentStore()->blacklistedMobiles()->mobile(mobile: $contact->mobile)->delete();
+        currentStore()->blacklistedMobiles()->mobile(
+            mobile: $contact->mobile,
+        )->delete();
 
-        $this->successToast(action: 'updated', model: 'contacts.singular');
+        $this->successToast(
+            action: 'updated',
+            model: 'contacts.singular',
+        );
     }
 
     public function updatedKeyword(): void
@@ -88,8 +109,12 @@ class ContactList extends Component
 
     public function render(): View
     {
-        currentStore()->load(relations: ['blacklistedMobiles']);
+        currentStore()->load(
+            relations: ['blacklistedMobiles'],
+        );
 
-        return view(view: 'livewire.dashboard.contact-list');
+        return view(
+            view: 'livewire.dashboard.contact-list',
+        );
     }
 }

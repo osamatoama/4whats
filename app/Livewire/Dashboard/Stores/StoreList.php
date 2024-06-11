@@ -22,7 +22,9 @@ class StoreList extends Component
     public function stores(): LengthAwarePaginator
     {
         return Store::query()
-            ->with(relations: ['user.fourWhatsCredential', 'whatsappAccount'])
+            ->with(
+                relations: ['user.fourWhatsCredential', 'whatsappAccount'],
+            )
             ->when(
                 value: $this->keyword !== null,
                 callback: fn (Builder $query): Builder => $query->where(
@@ -42,6 +44,8 @@ class StoreList extends Component
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.stores.store-list');
+        return view(
+            view: 'livewire.dashboard.stores.store-list',
+        );
     }
 }

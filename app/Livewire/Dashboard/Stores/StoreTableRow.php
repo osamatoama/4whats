@@ -23,22 +23,45 @@ class StoreTableRow extends Component
 
     public function updateStore(): void
     {
-        $this->validate(rules: [
-            'fourWhatsProviderId' => ['required', 'integer'],
-            'fourWhatsApiKey' => ['required', 'string'],
-            'instanceId' => ['required', 'integer'],
-            'instanceToken' => ['required', 'string'],
-        ]);
+        $this->validate(
+            rules: [
+                'fourWhatsProviderId' => ['required', 'integer'],
+                'fourWhatsApiKey' => ['required', 'string'],
+                'instanceId' => ['required', 'integer'],
+                'instanceToken' => ['required', 'string'],
+            ],
+            attributes: [
+                'fourWhatsProviderId' => __(
+                    key: 'dashboard.pages.stores.columns.four_whats_provider_id',
+                ),
+                'fourWhatsApiKey' => __(
+                    key: 'dashboard.pages.stores.columns.four_whats_api_key',
+                ),
+                'instanceId' => __(
+                    key: 'dashboard.pages.stores.columns.whatsapp_instance_id',
+                ),
+                'instanceToken' => __(
+                    key: 'dashboard.pages.stores.columns.whatsapp_instance_token',
+                ),
+            ],
+        );
 
-        $this->store->user->fourWhatsCredential()->update(values: [
-            'api_key' => $this->fourWhatsApiKey,
-        ]);
+        $this->store->user->fourWhatsCredential()->update(
+            values: [
+                'api_key' => $this->fourWhatsApiKey,
+            ],
+        );
 
-        $this->store->whatsappAccount()->update(values: [
-            'instance_token' => $this->instanceToken,
-        ]);
+        $this->store->whatsappAccount()->update(
+            values: [
+                'instance_token' => $this->instanceToken,
+            ],
+        );
 
-        $this->successToast(action: 'updated', model: 'stores.singular');
+        $this->successToast(
+            action: 'updated',
+            model: 'stores.singular',
+        );
     }
 
     public function mount(): void
@@ -51,6 +74,8 @@ class StoreTableRow extends Component
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.stores.store-table-row');
+        return view(
+            view: 'livewire.dashboard.stores.store-table-row',
+        );
     }
 }

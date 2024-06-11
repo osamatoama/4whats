@@ -13,23 +13,35 @@ class StoreSwitcher extends Component
     {
         session()->put(
             key: 'current_store_id',
-            value: parentUser()->stores()->findOr(id: $storeId, callback: fn (): Store => currentStore())->id,
+            value: parentUser()->stores()->findOr(
+                id: $storeId,
+                callback: fn (): Store => currentStore(),
+            )->id,
         );
 
         return redirect(
-            to: request()->header(key: 'referer'),
+            to: request()->header(
+                key: 'referer',
+            ),
         );
     }
 
     public function render(): View
     {
         $currentStore = currentStore();
-        $stores = parentUserStores()->reject(callback: fn (Store $store) => $store->is(model: $currentStore));
+        $stores = parentUserStores()->reject(
+            callback: fn (Store $store) => $store->is(
+                model: $currentStore,
+            ),
+        );
 
-        return view(view: 'livewire.dashboard.store-switcher', data: [
-            'currentStore' => $currentStore,
-            'stores' => $stores,
-            'hasMoreStores' => $stores->isNotEmpty(),
-        ]);
+        return view(
+            view: 'livewire.dashboard.store-switcher',
+            data: [
+                'currentStore' => $currentStore,
+                'stores' => $stores,
+                'hasMoreStores' => $stores->isNotEmpty(),
+            ],
+        );
     }
 }

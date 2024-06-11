@@ -34,6 +34,18 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'email' => __(
+                key: 'dashboard.pages.auth.login.email',
+            ),
+            'password' => __(
+                key: 'dashboard.pages.auth.login.password',
+            ),
+        ];
+    }
+
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -43,18 +55,45 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $user = User::query()->canAccessDashboard()->where(column: 'email', operator: '=', value: $this->input('email'))->first();
-        if ($user === null || ! Hash::check(value: $this->input(key: 'password'), hashedValue: $user->password)) {
-            RateLimiter::hit(key: $this->throttleKey());
+        $user = User::query()->canAccessDashboard()->where(
+            column: 'email',
+            operator: '=',
+            value: $this->input(
+                key: 'email',
+            ),
+        )->first();
 
-            throw ValidationException::withMessages(messages: [
-                'email' => trans(key: 'auth.failed'),
-            ]);
+        if ($user === null || ! Hash::check(
+            value: $this->input(
+                key: 'password',
+            ),
+            hashedValue: $user->password,
+        )) {
+            RateLimiter::hit(
+                key: $this->throttleKey(),
+            );
+
+            throw ValidationException::withMessages(
+                messages: [
+                    'email' => __(
+                        key: 'auth.failed',
+                    ),
+                ],
+            );
         }
 
-        Auth::guard(name: 'dashboard')->login(user: $user, remember: $this->boolean(key: 'remember'));
+        Auth::guard(
+            name: 'dashboard',
+        )->login(
+            user: $user,
+            remember: $this->boolean(
+                key: 'remember',
+            ),
+        );
 
-        RateLimiter::clear(key: $this->throttleKey());
+        RateLimiter::clear(
+            key: $this->throttleKey(),
+        );
     }
 
     /**
@@ -64,20 +103,36 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts(key: $this->throttleKey(), maxAttempts: 5)) {
+        if (! RateLimiter::tooManyAttempts(
+            key: $this->throttleKey(),
+            maxAttempts: 5,
+        )) {
             return;
         }
 
-        event(new Lockout(request: $this));
+        event(
+            event: new Lockout(
+                request: $this,
+            ),
+        );
 
-        $seconds = RateLimiter::availableIn(key: $this->throttleKey());
+        $seconds = RateLimiter::availableIn(
+            key: $this->throttleKey(),
+        );
 
-        throw ValidationException::withMessages(messages: [
-            'email' => trans(key: 'auth.throttle', replace: [
-                'seconds' => $seconds,
-                'minutes' => ceil(num: $seconds / 60),
-            ]),
-        ]);
+        throw ValidationException::withMessages(
+            messages: [
+                'email' => __(
+                    key: 'auth.throttle',
+                    replace: [
+                        'seconds' => $seconds,
+                        'minutes' => ceil(
+                            num: $seconds / 60,
+                        ),
+                    ],
+                ),
+            ],
+        );
     }
 
     /**
@@ -85,6 +140,12 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(string: Str::lower(value: $this->input(key: 'email')).'|'.$this->ip());
+        return Str::transliterate(
+            string: Str::lower(
+                value: $this->input(
+                    key: 'email',
+                ),
+            ).'|'.$this->ip(),
+        );
     }
 }

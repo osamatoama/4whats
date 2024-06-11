@@ -1,5 +1,3 @@
-@use(\App\Enums\SettingKey)
-
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -14,7 +12,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <livewire:dashboard.settings.text-table-row :setting="settings()->find(key: SettingKey::SYSTEM_FOUR_WHATS_VOUCHER)"/>
+                        <livewire:dashboard.settings.text-table-row :setting="$voucher"/>
                         </tbody>
                     </table>
                 </div>

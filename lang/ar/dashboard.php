@@ -137,6 +137,23 @@ return [
                 'syncing_order_statuses' => 'جاري مزامنه حالات الطلب',
                 'syncing_order_statuses_please_wait' => 'جاري مزامنه حالات الطلب. من فضلك انتظر',
             ],
+            'columns' => [
+                'message' => [
+                    'label' => 'الرسالة',
+                ],
+                'delay_in_hours' => [
+                    'label' => 'التاخير بالساعات',
+                ],
+                'mobiles' => [
+                    'label' => 'ارقام الموظفين',
+                ],
+                'current_order_status_template' => [
+                    'label' => 'قالب رسائل حالات الطلب الحالي',
+                ],
+                'review_order_status' => [
+                    'label' => 'حالة الطلب الخاصة برسالة تقييم الطلب',
+                ],
+            ],
         ],
         'contacts' => [
             'index' => [

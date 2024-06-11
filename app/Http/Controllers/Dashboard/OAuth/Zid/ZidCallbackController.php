@@ -40,12 +40,21 @@ class ZidCallbackController extends Controller
                     ),
                 );
 
-                auth()->guard(name: 'dashboard')->login(user: $store->user);
+                auth()->guard(
+                    name: 'dashboard',
+                )->login(
+                    user: $store->user,
+                );
 
-                return to_route(route: 'dashboard.home');
+                return to_route(
+                    route: 'dashboard.home',
+                );
             }
 
-            if (BatchService::doesntHaveRunningBatches(batchName: BatchName::ZID_INSTALLATION, storeId: $resourceOwner->store->id)) {
+            if (BatchService::doesntHaveRunningBatches(
+                batchName: BatchName::ZID_INSTALLATION,
+                storeId: $resourceOwner->store->id,
+            )) {
                 BatchService::createPendingBatch(
                     jobs: new InstallAppJob(
                         zidUser: $resourceOwner,
@@ -68,7 +77,9 @@ class ZidCallbackController extends Controller
                 message: $e->getMessage(),
             );
 
-            return to_route(route: 'dashboard.login')->with(
+            return to_route(
+                route: 'dashboard.login',
+            )->with(
                 key: 'error',
                 value: __(
                     key: 'dashboard.common.something_went_wrong',

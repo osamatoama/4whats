@@ -34,7 +34,7 @@
                             <td>{{ $employee->name }}</td>
                             <td>{{ $employee->email }}</td>
                             <td>
-                                @can('delete', $employee)
+                                @can('deleteEmployee', $employee)
                                     <button class="btn btn-danger" wire:confirm="@lang('dashboard.common.are_you_sure')" wire:click="destroy({{ $employee->id }})">
                                         @lang('dashboard.common.delete')
                                     </button>

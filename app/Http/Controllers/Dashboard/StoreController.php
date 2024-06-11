@@ -9,6 +9,8 @@ class StoreController extends Controller
 {
     public function index(): View
     {
-        return view(view: 'dashboard.pages.stores.index');
+        return view(
+            view: 'dashboard.pages.stores.index',
+        );
     }
 }

@@ -39,11 +39,17 @@ class EmployeeList extends Component
 
     public function destroy(User $employee): void
     {
-        $this->authorize(ability: 'deleteEmployee', arguments: $employee);
+        $this->authorize(
+            ability: 'deleteEmployee',
+            arguments: $employee,
+        );
 
         $employee->delete();
 
-        $this->successToast(action: 'deleted', model: 'employees.singular');
+        $this->successToast(
+            action: 'deleted',
+            model: 'employees.singular',
+        );
     }
 
     public function updatedKeyword(): void
@@ -53,6 +59,8 @@ class EmployeeList extends Component
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.employee-list');
+        return view(
+            view: 'livewire.dashboard.employee-list',
+        );
     }
 }

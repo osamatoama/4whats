@@ -20,36 +20,59 @@ class ReviewOrder extends Component
 
     public function mount(): void
     {
-        $this->orderStatusId = settings(storeId: currentStore()->id)
-            ->value(
-                key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_MESSAGE,
-            );
+        $this->orderStatusId = settings(
+            storeId: currentStore()->id,
+        )->value(
+            key: SettingKey::STORE_ORDER_STATUS_ID_FOR_REVIEW_ORDER_MESSAGE,
+        );
     }
 
     public function updated(): void
     {
-        $this->authorize(ability: 'update', arguments: $this->template);
+        $this->authorize(
+            ability: 'update',
+            arguments: $this->template,
+        );
 
-        $this->validate(rules: [
-            'orderStatusId' => [
-                'required',
-                'integer',
-                Rule::exists(table: 'order_statuses', column: 'id')->where(column: 'store_id', value: currentStore()->id),
+        $this->validate(
+            rules: [
+                'orderStatusId' => [
+                    'required',
+                    'integer',
+                    Rule::exists(
+                        table: 'order_statuses',
+                        column: 'id',
+                    )->where(
+                        column: 'store_id',
+                        value: currentStore()->id,
+                    ),
+                ],
             ],
-        ]);
+            attributes: [
+                'orderStatusId' => __(
+                    key: 'dashboard.pages.templates.columns.review_order_status.label',
+                ),
+            ],
+        );
 
         SettingService::updateOrderStatusId(
             store: currentStore(),
             orderStatuesId: $this->orderStatusId,
         );
 
-        $this->successToast(action: 'updated', model: 'templates.singular');
+        $this->successToast(
+            action: 'updated',
+            model: 'templates.singular',
+        );
     }
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.templates.review-order', data: [
-            'orderStatuses' => currentStore()->orderStatuses,
-        ]);
+        return view(
+            view: 'livewire.dashboard.templates.review-order',
+            data: [
+                'orderStatuses' => currentStore()->orderStatuses,
+            ],
+        );
     }
 }

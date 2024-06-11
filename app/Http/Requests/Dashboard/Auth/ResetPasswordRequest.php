@@ -28,4 +28,16 @@ class ResetPasswordRequest extends FormRequest
             'password' => ['required', 'confirmed', Password::default()],
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'email' => __(
+                key: 'dashboard.pages.auth.reset_password.email',
+            ),
+            'password' => __(
+                key: 'dashboard.pages.auth.reset_password.password',
+            ),
+        ];
+    }
 }

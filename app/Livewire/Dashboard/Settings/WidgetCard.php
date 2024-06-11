@@ -38,6 +38,17 @@ class WidgetCard extends Component
                 'message' => ['nullable', 'string', 'max:255'],
                 'color' => ['required', 'hex_color'],
             ],
+            attributes: [
+                'mobile' => __(
+                    key: 'dashboard.pages.settings.index.widget.mobile',
+                ),
+                'message' => __(
+                    key: 'dashboard.pages.settings.index.widget.message',
+                ),
+                'color' => __(
+                    key: 'dashboard.pages.settings.index.widget.color',
+                ),
+            ],
         );
 
         (new WidgetService())->update(

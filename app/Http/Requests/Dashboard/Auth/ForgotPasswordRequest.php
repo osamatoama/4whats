@@ -23,7 +23,23 @@ class ForgotPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', Rule::exists(table: 'users', column: 'email')],
+            'email' => [
+                'required',
+                'email',
+                Rule::exists(
+                    table: 'users',
+                    column: 'email',
+                ),
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'email' => __(
+                key: 'dashboard.pages.auth.forgot_password.email',
+            ),
         ];
     }
 }

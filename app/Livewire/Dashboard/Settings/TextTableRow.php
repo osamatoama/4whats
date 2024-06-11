@@ -20,11 +20,21 @@ class TextTableRow extends Component
 
     public function updateSetting(): void
     {
-        Gate::authorize(ability: 'update', arguments: $this->setting);
+        Gate::authorize(
+            ability: 'update',
+            arguments: $this->setting,
+        );
 
-        $this->validate(rules: [
-            'value' => ['required', 'string'],
-        ]);
+        $this->validate(
+            rules: [
+                'value' => ['required', 'string'],
+            ],
+            attributes: [
+                'value' => __(
+                    key: 'dashboard.pages.settings.columns.value',
+                ),
+            ],
+        );
 
         (new SettingService())->update(
             setting: $this->setting,
@@ -34,7 +44,10 @@ class TextTableRow extends Component
             ),
         );
 
-        $this->successToast(action: 'updated', model: 'settings.singular');
+        $this->successToast(
+            action: 'updated',
+            model: 'settings.singular',
+        );
     }
 
     public function mount(): void
@@ -44,6 +57,8 @@ class TextTableRow extends Component
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.settings.text-table-row');
+        return view(
+            view: 'livewire.dashboard.settings.text-table-row',
+        );
     }
 }

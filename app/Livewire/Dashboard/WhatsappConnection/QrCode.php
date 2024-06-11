@@ -31,7 +31,10 @@ class QrCode extends Component
         $fourWhatsService = new FourWhatsService();
 
         try {
-            $response = $fourWhatsService->instance(instanceId: $this->whatsappAccount->instance_id, instanceToken: $this->whatsappAccount->instance_token)->qrCode();
+            $response = $fourWhatsService->instance(
+                instanceId: $this->whatsappAccount->instance_id,
+                instanceToken: $this->whatsappAccount->instance_token,
+            )->qrCode();
         } catch (FourWhatsException) {
             return null;
         }
@@ -39,7 +42,9 @@ class QrCode extends Component
         if ($response['status'] === QrCodeStatus::AUTHENTICATED) {
             if ($this->status === InstanceStatus::DISCONNECTED->name) {
                 $this->status = InstanceStatus::CONNECTED->name;
-                $this->dispatch(event: 'whatsapp-account-connected');
+                $this->dispatch(
+                    event: 'whatsapp-account-connected',
+                );
             }
 
             return null;
@@ -55,6 +60,8 @@ class QrCode extends Component
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.whatsapp-connection.qr-code');
+        return view(
+            view: 'livewire.dashboard.whatsapp-connection.qr-code',
+        );
     }
 }

@@ -14,20 +14,47 @@ class PasswordResetLinkController extends Controller
 {
     public function create(): View
     {
-        return view(view: 'dashboard.pages.auth.forgot-password');
+        return view(
+            view: 'dashboard.pages.auth.forgot-password',
+        );
     }
 
     public function store(ForgotPasswordRequest $request): RedirectResponse
     {
-        ResetPassword::createUrlUsing(callback: fn (User $user, string $token): string => url(path: route(name: 'dashboard.password.reset', parameters: [
-            'token' => $token,
-            'email' => $user->getEmailForPasswordReset(),
-        ], absolute: false)));
+        ResetPassword::createUrlUsing(
+            callback: fn (User $user, string $token): string => url(
+                path: route(
+                    name: 'dashboard.password.reset',
+                    parameters: [
+                        'token' => $token,
+                        'email' => $user->getEmailForPasswordReset(),
+                    ],
+                    absolute: false,
+                ),
+            ),
+        );
 
-        $status = Password::sendResetLink(credentials: $request->only(['email']));
+        $status = Password::sendResetLink(
+            credentials: $request->only(
+                keys: ['email'],
+            ),
+        );
 
         return $status == Password::RESET_LINK_SENT
-            ? back()->with(key: 'status', value: __($status))
-            : back()->withInput(input: $request->only(keys: ['email']))->withErrors(provider: ['email' => __($status)]);
+            ? back()->with(
+                key: 'status',
+                value: __(
+                    key: $status,
+                ),
+            )
+            : back()->withInput(
+                input: $request->only(
+                    keys: ['email'],
+                )
+            )->withErrors(
+                provider: ['email' => __(
+                    key: $status,
+                )],
+            );
     }
 }

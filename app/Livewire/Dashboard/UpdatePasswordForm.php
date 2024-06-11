@@ -25,9 +25,15 @@ class UpdatePasswordForm extends Component
                 'newPassword' => ['required', Password::default(), 'same:newPasswordConfirmation'],
             ],
             attributes: [
-                'currentPassword' => __(key: 'dashboard.pages.settings.index.password.current_password'),
-                'newPassword' => __(key: 'dashboard.pages.settings.index.password.new_password'),
-                'newPasswordConfirmation' => __(key: 'dashboard.pages.settings.index.password.new_password_confirmation'),
+                'currentPassword' => __(
+                    key: 'dashboard.pages.settings.index.password.current_password',
+                ),
+                'newPassword' => __(
+                    key: 'dashboard.pages.settings.index.password.new_password',
+                ),
+                'newPasswordConfirmation' => __(
+                    key: 'dashboard.pages.settings.index.password.new_password_confirmation',
+                ),
             ],
         );
 

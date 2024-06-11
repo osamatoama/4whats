@@ -11,7 +11,10 @@ class HomeController extends Controller
 {
     public function __invoke(): View
     {
-        return view(view: 'dashboard.pages.home.index', data: $this->getData());
+        return view(
+            view: 'dashboard.pages.home.index',
+            data: $this->getData(),
+        );
     }
 
     protected function getData(): array

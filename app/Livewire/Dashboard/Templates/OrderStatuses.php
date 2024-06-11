@@ -47,14 +47,9 @@ class OrderStatuses extends Component
             return;
         }
 
-        $accessToken = match ($store->provider_type) {
-            ProviderType::SALLA => $store->user->sallaToken->access_token,
-            ProviderType::ZID => null, // $store->user->zidToken->access_token,
-        };
-
         $job = match ($store->provider_type) {
             ProviderType::SALLA => new SallaPullOrderStatusesJob(
-                accessToken: $accessToken,
+                accessToken: $store->user->sallaToken->access_token,
                 storeId: $store->id,
             ),
             ProviderType::ZID => new ZidPullOrderStatusesJob(
@@ -75,9 +70,26 @@ class OrderStatuses extends Component
         );
     }
 
-    public function mount(): void
+    public function updated(): void
     {
-        $this->currentTemplateId = $this->templates->first()->id;
+        $this->validate(
+            rules: [
+                'currentTemplateId' => [
+                    'required',
+                    'integer',
+                    Rule::in(
+                        values: $this->templates->pluck(
+                            value: 'id',
+                        ),
+                    ),
+                ],
+            ],
+            attributes: [
+                'currentTemplateId' => __(
+                    key: 'dashboard.pages.templates.columns.current_order_status_template.label',
+                ),
+            ],
+        );
 
         $this->currentTemplate = $this->templates->firstWhere(
             key: 'id',
@@ -86,16 +98,9 @@ class OrderStatuses extends Component
         );
     }
 
-    public function updated(): void
+    public function mount(): void
     {
-        $this->validate(rules: [
-            'currentTemplateId' => [
-                'required',
-                'integer', Rule::in(
-                    values: $this->templates->pluck(value: 'id'),
-                ),
-            ],
-        ]);
+        $this->currentTemplateId = $this->templates->first()->id;
 
         $this->currentTemplate = $this->templates->firstWhere(
             key: 'id',
@@ -108,10 +113,13 @@ class OrderStatuses extends Component
     {
         $enum = MessageTemplate::ORDER_STATUSES;
 
-        return view(view: 'livewire.dashboard.templates.order-statuses', data: [
-            'label' => $enum->label(),
-            'hint' => $enum->hint(),
-            'orderStatuses' => currentStore()->orderStatuses,
-        ]);
+        return view(
+            view: 'livewire.dashboard.templates.order-statuses',
+            data: [
+                'label' => $enum->label(),
+                'hint' => $enum->hint(),
+                'orderStatuses' => currentStore()->orderStatuses,
+            ],
+        );
     }
 }

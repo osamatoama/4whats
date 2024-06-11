@@ -11,8 +11,13 @@ class ContactController extends Controller
 {
     public function index(): View
     {
-        Gate::authorize(ability: 'viewAny', arguments: Contact::class);
+        Gate::authorize(
+            ability: 'viewAny',
+            arguments: Contact::class,
+        );
 
-        return view(view: 'dashboard.pages.contacts.index');
+        return view(
+            view: 'dashboard.pages.contacts.index',
+        );
     }
 }

@@ -19,30 +19,46 @@ class NewOrderForEmployees extends Component
 
     public function mount(): void
     {
-        $this->mobiles = settings(storeId: currentStore()->id)
-            ->value(
-                key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE,
-            );
+        $this->mobiles = settings(
+            storeId: currentStore()->id,
+        )->value(
+            key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE,
+        );
     }
 
     public function updated(): void
     {
-        $this->authorize(ability: 'update', arguments: $this->template);
+        $this->authorize(
+            ability: 'update',
+            arguments: $this->template,
+        );
 
-        $this->validate(rules: [
-            'mobiles' => ['nullable', 'string'],
-        ]);
+        $this->validate(
+            rules: [
+                'mobiles' => ['nullable', 'string'],
+            ],
+            attributes: [
+                'mobiles' => __(
+                    key: 'dashboard.pages.templates.columns.mobiles.label',
+                ),
+            ],
+        );
 
         SettingService::updateEmployeesMobiles(
             store: currentStore(),
             mobiles: $this->mobiles,
         );
 
-        $this->successToast(action: 'updated', model: 'templates.singular');
+        $this->successToast(
+            action: 'updated',
+            model: 'templates.singular',
+        );
     }
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.templates.new-order-for-employees');
+        return view(
+            view: 'livewire.dashboard.templates.new-order-for-employees',
+        );
     }
 }
