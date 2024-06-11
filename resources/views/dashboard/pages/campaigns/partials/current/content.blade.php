@@ -6,7 +6,7 @@
                     <thead>
                     <tr>
                         <th>
-                            @lang('dashboard.pages.campaigns.columns.type.label')
+                            @lang('dashboard.pages.campaigns.columns.campaign_type.label')
                         </th>
                         <th>
                             @lang('dashboard.pages.campaigns.columns.created_at.label')

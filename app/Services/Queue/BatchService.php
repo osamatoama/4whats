@@ -86,7 +86,7 @@ class BatchService
     /**
      * @param  BatchName|BatchName[]  $batchName
      */
-    public static function getRunningBatchesCount(BatchName|array $batchName, int $storeId, bool $onlyProcessing = true): bool
+    public static function getRunningBatchesCount(BatchName|array $batchName, int $storeId, bool $onlyProcessing = true): int
     {
         return once(
             callback: function () use ($batchName, $storeId, $onlyProcessing): int {

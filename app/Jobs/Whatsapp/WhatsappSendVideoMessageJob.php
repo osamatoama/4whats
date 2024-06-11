@@ -14,8 +14,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
-class WhatsappSendTextMessageJob implements ShouldQueue
+class WhatsappSendVideoMessageJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithBatches, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -27,7 +28,8 @@ class WhatsappSendTextMessageJob implements ShouldQueue
         public int $instanceId,
         public string $instanceToken,
         public string $mobile,
-        public string $message,
+        public string $videoPath,
+        public ?string $caption = null,
     ) {
         $this->maxAttempts = 5;
     }
@@ -37,23 +39,31 @@ class WhatsappSendTextMessageJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $name = str(string: $this->videoPath)->afterLast(search: '/')->toString();
+        $url = Storage::url(
+            path: $this->videoPath,
+        );
+
         $service = new FourWhatsService();
 
         try {
             $response = $service->sending(
                 instanceId: $this->instanceId,
                 instanceToken: $this->instanceToken,
-            )->text(
+            )->file(
                 mobile: $this->mobile,
-                message: $this->message,
+                fileName: $name,
+                fileUrl: $url,
+                caption: $this->caption,
             );
         } catch (FourWhatsException $e) {
             $this->handleException(
                 e: new FourWhatsException(
                     message: generateMessageUsingSeparatedLines(
                         lines: [
-                            'Error while sending whatsapp text message',
+                            'Error while sending whatsapp video message',
                             "Message {$e->getMessage()}",
+                            "VideoPath: {$this->videoPath}",
                             "Instance ID: {$this->instanceId}",
                             "Instance Token: {$this->instanceToken}",
                         ],
@@ -69,10 +79,17 @@ class WhatsappSendTextMessageJob implements ShouldQueue
             attributes: [
                 'store_id' => $this->storeId,
                 'provider_id' => $response['id'],
-                'type' => MessageType::TEXT,
+                'type' => MessageType::VIDEO,
                 'mobile' => $this->mobile,
-                'body' => $this->message,
+                'body' => $this->caption,
                 'status' => MessageStatus::PENDING,
+                'attachments' => [
+                    [
+                        'path' => $this->videoPath,
+                        'name' => $name,
+                        'url' => $url,
+                    ],
+                ],
             ],
         );
     }

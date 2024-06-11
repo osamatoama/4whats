@@ -4,6 +4,7 @@ namespace App\Services\Campaigns;
 
 use App\Enums\CampaignType;
 use App\Enums\Jobs\BatchName;
+use App\Enums\Whatsapp\MessageType;
 use App\Jobs\Campaigns\AbandonedCarts\SendAbandonedCartsCampaignJob;
 use App\Jobs\Campaigns\Contacts\SendContactsCampaignJob;
 use App\Models\Store;
@@ -33,8 +34,14 @@ readonly class CampaignsService
         );
     }
 
-    public function send(CampaignType $campaignType, string $message): void
-    {
+    public function send(
+        CampaignType $campaignType,
+        MessageType $messageType,
+        ?string $message,
+        ?string $imagePath,
+        ?string $videoPath,
+        ?string $audioPath,
+    ): void {
         $batchName = $this->getBatchName(
             campaignType: $campaignType,
         );
@@ -46,7 +53,11 @@ readonly class CampaignsService
         BatchService::createPendingBatch(
             jobs: new $jobClassName(
                 store: $this->store,
+                messageType: $messageType,
                 message: $message,
+                imagePath: $imagePath,
+                videoPath: $videoPath,
+                audioPath: $audioPath,
             ),
             batchName: $batchName,
             storeId: $this->store->id,

@@ -42,7 +42,10 @@ class MessageList extends Component
 
     public function export(): null|Response|BinaryFileResponse
     {
-        Gate::authorize(ability: 'export', arguments: Message::class);
+        Gate::authorize(
+            ability: 'export',
+            arguments: Message::class,
+        );
 
         $store = currentStore();
         if ($store->is_expired) {
@@ -68,6 +71,8 @@ class MessageList extends Component
 
     public function render(): View
     {
-        return view(view: 'livewire.dashboard.message-list');
+        return view(
+            view: 'livewire.dashboard.message-list',
+        );
     }
 }

@@ -16,9 +16,11 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
             $table->string('provider_id');
+            $table->string('type');
             $table->string('mobile');
-            $table->text('body');
+            $table->text('body')->nullable();
             $table->string('status');
+            $table->json('attachments')->nullable();
             $table->timestamps();
         });
     }

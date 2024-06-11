@@ -53,4 +53,80 @@ class Sending implements SendingContract
             'id' => $data['id'],
         ];
     }
+
+    /**
+     * @throws FourWhatsException
+     */
+    public function file(string $mobile, string $fileName, string $fileUrl, ?string $caption = null): array
+    {
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/sendFile',
+                data: [
+                    'instanceid' => $this->instanceId,
+                    'token' => $this->instanceToken,
+                    'phone' => $mobile,
+                    'body' => $fileUrl,
+                    'filename' => $fileName,
+                    'caption' => $caption,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
+
+        $data = $response->json();
+
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(
+                message: $data['reason'],
+            );
+        }
+
+        if (isset($data['sent']) && $data['sent'] === false) {
+            throw new FourWhatsException(
+                message: $data['reason'],
+            );
+        }
+
+        return [
+            'id' => $data['id'],
+        ];
+    }
+
+    /**
+     * @throws FourWhatsException
+     */
+    public function ppt(string $mobile, string $fileUrl): array
+    {
+        try {
+            $response = $this->client->get(
+                url: $this->baseUrl.'/sendPTT',
+                data: [
+                    'instanceid' => $this->instanceId,
+                    'token' => $this->instanceToken,
+                    'phone' => $mobile,
+                    'audio' => $fileUrl,
+                ],
+            );
+        } catch (ConnectionException $e) {
+            throw FourWhatsException::connectionException(
+                exception: $e,
+            );
+        }
+
+        $data = $response->json();
+
+        if (isset($data['success']) && $data['success'] === false) {
+            throw new FourWhatsException(
+                message: $data['reason'],
+            );
+        }
+
+        return [
+            'id' => $data['id'],
+        ];
+    }
 }

@@ -20,6 +20,7 @@
                 <table class="table table-hover mb-0">
                     <thead>
                     <tr>
+                        <th>@lang('dashboard.pages.messages.columns.type')</th>
                         <th>@lang('dashboard.pages.messages.columns.mobile')</th>
                         <th>@lang('dashboard.pages.messages.columns.message')</th>
                         <th>@lang('dashboard.pages.messages.columns.created_at')</th>
@@ -29,9 +30,22 @@
                     <tbody>
                     @forelse($this->messages as $message)
                         <tr>
+                            <td>{{ $message->type->label() }}</td>
                             <td>{{ $message->mobile }}</td>
                             <td>
-                                <textarea class="form-control" readonly>{{ $message->body }}</textarea>
+                                @if($message->body !== null)
+                                    <textarea class="form-control" readonly>{{ $message->body }}</textarea>
+                                @endif
+                                @if($message->attachments !== null)
+                                    <div @class(['mt-1' => $message->body !== null])>
+                                        <span>@lang('dashboard.pages.messages.index.attachments'): </span>
+                                        @foreach($message->attachments as $attachment)
+                                            <a href="{{ $attachment['url'] }}" class="btn btn-xs btn-primary" target="_blank" title="{{ $attachment['name'] }}">
+                                                @lang('dashboard.common.click_here') ({{ str($attachment['name'])->afterLast(search: '.') }})
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </td>
                             <td>{{ $message->created_at->format(format: 'd-m-Y H:i:s') }}</td>
                             <td>{{ $message->status->label() }}</td>

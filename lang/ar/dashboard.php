@@ -23,6 +23,7 @@ return [
         'sync' => 'مزامنه',
         'send' => 'ارسال',
         'something_went_wrong' => 'حدث خطا ما. برجاء المحاولة مرة اخري لاحقا',
+        'click_here' => 'اضغط هنا',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',
@@ -179,13 +180,28 @@ return [
                 ],
             ],
             'columns' => [
-                'type' => [
-                    'label' => 'النوع',
+                'campaign_type' => [
+                    'label' => 'نوع الحملة',
+                ],
+                'message_type' => [
+                    'label' => 'نوع الرسالة',
                 ],
                 'message' => [
                     'label' => 'الرسالة',
                     'description' => 'نص الرسالة الذي سوف يرسل للعميل، يمكنك استخدام الاختصارات التالية: :placeholders',
                 ],
+                'image' => [
+                    'label' => 'الصورة',
+                ],
+                'video' => [
+                    'label' => 'الفيديو',
+                    'description' => 'يجب ان يكون من بصيغة mp4',
+                ],
+                'audio' => [
+                    'label' => 'الصوت',
+                    'description' => 'يجب ان يكون من بصيغة mp3',
+                ],
+
                 'created_at' => [
                     'label' => 'بداية الارسال',
                 ],
@@ -198,8 +214,10 @@ return [
             'index' => [
                 'title' => 'سجل الارسال',
                 'page_title' => 'سجل الارسال',
+                'attachments' => 'المرفقات',
             ],
             'columns' => [
+                'type' => 'النوع',
                 'mobile' => 'رقم الهاتف',
                 'message' => 'الرسالة المرسلة',
                 'created_at' => 'تاريخ الارسال',

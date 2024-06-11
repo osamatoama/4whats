@@ -3,8 +3,12 @@
 namespace App\Jobs\Campaigns\AbandonedCarts;
 
 use App\Enums\Jobs\BatchName;
+use App\Enums\Whatsapp\MessageType;
 use App\Jobs\Concerns\InteractsWithBatches;
+use App\Jobs\Whatsapp\WhatsappSendAudioMessageJob;
+use App\Jobs\Whatsapp\WhatsappSendImageMessageJob;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
+use App\Jobs\Whatsapp\WhatsappSendVideoMessageJob;
 use App\Models\AbandonedCart;
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
@@ -23,7 +27,11 @@ class SendChunkedAbandonedCartsCampaignJob implements ShouldQueue
      */
     public function __construct(
         public Store $store,
-        public string $message,
+        public MessageType $messageType,
+        public ?string $message,
+        public ?string $imagePath,
+        public ?string $videoPath,
+        public ?string $audioPath,
         public Collection $abandonedCarts,
     ) {
         //
@@ -44,7 +52,7 @@ class SendChunkedAbandonedCartsCampaignJob implements ShouldQueue
                     return;
                 }
 
-                $message = str(
+                $message = $this->message === null ? null : str(
                     string: $this->message,
                 )->replace(
                     search: '{CUSTOMER_NAME}',
@@ -60,14 +68,41 @@ class SendChunkedAbandonedCartsCampaignJob implements ShouldQueue
                     replace: $abandonedCart->checkout_url,
                 )->toString();
 
-                $this->addOrCreateBatch(
-                    jobs: new WhatsappSendTextMessageJob(
+                $job = match ($this->messageType) {
+                    MessageType::TEXT => new WhatsappSendTextMessageJob(
                         storeId: $this->store->id,
                         instanceId: $this->store->whatsappAccount->instance_id,
                         instanceToken: $this->store->whatsappAccount->instance_token,
                         mobile: $abandonedCart->contact->mobile,
                         message: $message,
                     ),
+                    MessageType::IMAGE => new WhatsappSendImageMessageJob(
+                        storeId: $this->store->id,
+                        instanceId: $this->store->whatsappAccount->instance_id,
+                        instanceToken: $this->store->whatsappAccount->instance_token,
+                        mobile: $abandonedCart->contact->mobile,
+                        imagePath: $this->imagePath,
+                        caption: $message,
+                    ),
+                    MessageType::VIDEO => new WhatsappSendVideoMessageJob(
+                        storeId: $this->store->id,
+                        instanceId: $this->store->whatsappAccount->instance_id,
+                        instanceToken: $this->store->whatsappAccount->instance_token,
+                        mobile: $abandonedCart->contact->mobile,
+                        videoPath: $this->videoPath,
+                        caption: $message,
+                    ),
+                    MessageType::AUDIO => new WhatsappSendAudioMessageJob(
+                        storeId: $this->store->id,
+                        instanceId: $this->store->whatsappAccount->instance_id,
+                        instanceToken: $this->store->whatsappAccount->instance_token,
+                        mobile: $abandonedCart->contact->mobile,
+                        audioPath: $this->audioPath,
+                    ),
+                };
+
+                $this->addOrCreateBatch(
+                    jobs: $job,
                     batchName: BatchName::CAMPAIGNS_ABANDONED_CARTS,
                     storeId: $this->store->id,
                 );

@@ -6,6 +6,7 @@ use App\Enums\ProviderType;
 use App\Enums\SettingKey;
 use App\Enums\UserRole;
 use App\Enums\Whatsapp\MessageStatus;
+use App\Enums\Whatsapp\MessageType;
 
 return [
     UserRole::class => [
@@ -108,5 +109,11 @@ return [
     CampaignType::class => [
         CampaignType::CONTACTS->name => 'أرقام العملاء',
         CampaignType::ABANDONED_CARTS->name => 'السلات المتروكة',
+    ],
+    MessageType::class => [
+        MessageType::TEXT->name => 'نصية',
+        MessageType::IMAGE->name => 'نص مع صورة',
+        MessageType::VIDEO->name => 'نص مع فيديو',
+        MessageType::AUDIO->name => 'صوت',
     ],
 ];

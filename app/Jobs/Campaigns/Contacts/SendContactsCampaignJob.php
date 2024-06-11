@@ -3,6 +3,7 @@
 namespace App\Jobs\Campaigns\Contacts;
 
 use App\Enums\Jobs\BatchName;
+use App\Enums\Whatsapp\MessageType;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
@@ -21,7 +22,11 @@ class SendContactsCampaignJob implements ShouldQueue
      */
     public function __construct(
         public Store $store,
-        public string $message,
+        public MessageType $messageType,
+        public ?string $message,
+        public ?string $imagePath,
+        public ?string $videoPath,
+        public ?string $audioPath,
     ) {
         //
     }
@@ -45,7 +50,11 @@ class SendContactsCampaignJob implements ShouldQueue
                     $this->addOrCreateBatch(
                         jobs: new SendChunkedContactsCampaignJob(
                             store: $this->store,
+                            messageType: $this->messageType,
                             message: $this->message,
+                            imagePath: $this->imagePath,
+                            videoPath: $this->videoPath,
+                            audioPath: $this->audioPath,
                             contacts: $contactsChunk,
                         ),
                         batchName: BatchName::CAMPAIGNS_CONTACTS,
