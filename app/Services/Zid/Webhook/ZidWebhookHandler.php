@@ -6,6 +6,9 @@ use App\Services\Zid\Webhook\Events\AbandonedCart\AbandonedCartCompletedEvent;
 use App\Services\Zid\Webhook\Events\AbandonedCart\AbandonedCartCreatedEvent;
 use App\Services\Zid\Webhook\Events\App\Market\Application\InstallEvent;
 use App\Services\Zid\Webhook\Events\App\Market\Application\UninstallEvent;
+use App\Services\Zid\Webhook\Events\App\Market\Subscription\RefundedEvent;
+use App\Services\Zid\Webhook\Events\App\Market\Subscription\RenewEvent;
+use App\Services\Zid\Webhook\Events\App\Market\Subscription\UpgradeEvent;
 use App\Services\Zid\Webhook\Events\Customer\CustomerCreateEvent;
 use App\Services\Zid\Webhook\Events\Customer\CustomerUpdateEvent;
 use App\Services\Zid\Webhook\Events\Order\OrderCreateEvent;
@@ -29,6 +32,9 @@ class ZidWebhookHandler
     public function handle(string $event, int $providerId, array $data): void
     {
         (match ($event) {
+            'app.market.subscription.renew' => new RenewEvent(),
+            'app.market.subscription.upgrade' => new UpgradeEvent(),
+            'app.market.subscription.refunded' => new RefundedEvent(),
             'app.market.application.install' => new InstallEvent(),
             'app.market.application.uninstall' => new UninstallEvent(),
             'order.create' => new OrderCreateEvent(),

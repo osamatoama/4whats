@@ -5,6 +5,7 @@ namespace App\Services\Salla\Webhook;
 use App\Services\Salla\Webhook\Events\App\AppUninstalledEvent;
 use App\Services\Salla\Webhook\Events\App\Settings\AppSettingsUpdatedEvent;
 use App\Services\Salla\Webhook\Events\App\Store\AppStoreAuthorizeEvent;
+use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionCanceledEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionRenewedEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionStartedEvent;
 use App\Services\Salla\Webhook\Events\Cart\AbandonedCartEvent;
@@ -33,6 +34,7 @@ class SallaWebhookHandler
             'app.store.authorize' => new AppStoreAuthorizeEvent(),
             'app.uninstalled' => new AppUninstalledEvent(),
             'app.subscription.started' => new AppSubscriptionStartedEvent(),
+            'app.subscription.canceled' => new AppSubscriptionCanceledEvent(),
             'app.subscription.renewed' => new AppSubscriptionRenewedEvent(),
             'app.settings.updated' => new AppSettingsUpdatedEvent(),
             'order.created' => new OrderCreatedEvent(),

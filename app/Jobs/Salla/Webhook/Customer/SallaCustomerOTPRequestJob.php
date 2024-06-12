@@ -53,7 +53,7 @@ class SallaCustomerOTPRequestJob implements ShouldQueue
         }
 
         $whatsappAccount = $store->whatsappAccount;
-        if ($whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
+        if ($store->is_uninstalled || $whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
             return;
         }
 

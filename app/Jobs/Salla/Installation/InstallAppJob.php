@@ -69,46 +69,56 @@ class InstallAppJob implements ShouldQueue
                 password: $password,
             );
 
-            $store = DB::transaction(callback: function () use ($resourceOwner, $user): Store {
-                (new TokenService())->syncToken(
-                    user: $user,
-                    tokenDto: TokenDto::fromSalla(
-                        sallaToken: $this->sallaToken,
-                    ),
+            if ($user->is_uninstalled) {
+                $user->update(
+                    attributes: [
+                        'is_uninstalled' => false,
+                    ],
                 );
+            }
 
-                $store = (new StoreService())->create(
-                    storeDto: StoreDto::fromSalla(
-                        userId: $user->id,
-                        sallaStore: $resourceOwner->toArray(),
-                    ),
-                );
+            $store = DB::transaction(
+                callback: function () use ($resourceOwner, $user): Store {
+                    (new TokenService())->syncToken(
+                        user: $user,
+                        tokenDto: TokenDto::fromSalla(
+                            sallaToken: $this->sallaToken,
+                        ),
+                    );
 
-                (new WidgetService())->create(
-                    widgetDto: WidgetDto::fromDefault(
+                    $store = (new StoreService())->create(
+                        storeDto: StoreDto::fromSalla(
+                            userId: $user->id,
+                            sallaStore: $resourceOwner->toArray(),
+                        ),
+                    );
+
+                    (new WidgetService())->create(
+                        widgetDto: WidgetDto::fromDefault(
+                            storeId: $store->id,
+                            mobile: $store->mobile,
+                        ),
+                    );
+
+                    (new TemplateService())->bulkCreate(
                         storeId: $store->id,
-                        mobile: $store->mobile,
-                    ),
-                );
+                        messageTemplates: MessageTemplate::sallaCases()->toArray(),
+                    );
 
-                (new TemplateService())->bulkCreate(
-                    storeId: $store->id,
-                    messageTemplates: MessageTemplate::sallaCases()->toArray(),
-                );
-
-                (new SettingService())->createDefaultSettings(
-                    storeId: $store->id,
-                );
-
-                (new WhatsappAccountService())->create(
-                    whatsappAccountDto: WhatsappAccountDto::fromExpired(
+                    (new SettingService())->createDefaultSettings(
                         storeId: $store->id,
-                        label: $store->name,
-                    ),
-                );
+                    );
 
-                return $store;
-            });
+                    (new WhatsappAccountService())->create(
+                        whatsappAccountDto: WhatsappAccountDto::fromExpired(
+                            storeId: $store->id,
+                            label: $store->name,
+                        ),
+                    );
+
+                    return $store;
+                },
+            );
 
             Bus::chain(
                 jobs: array_merge(

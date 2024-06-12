@@ -43,6 +43,20 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
                 ),
             );
 
+            if ($store->is_uninstalled) {
+                $store->update(
+                    attributes: [
+                        'is_uninstalled' => false,
+                    ],
+                );
+
+                $store->user()->update(
+                    values: [
+                        'is_uninstalled' => false,
+                    ],
+                );
+            }
+
             return;
         }
 

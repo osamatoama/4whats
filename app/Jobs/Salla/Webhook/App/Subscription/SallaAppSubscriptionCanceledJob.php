@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Salla\Webhook\App;
+namespace App\Jobs\Salla\Webhook\App\Subscription;
 
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 
-class SallaAppUninstalledJob implements ShouldQueue
+class SallaAppSubscriptionCanceledJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
