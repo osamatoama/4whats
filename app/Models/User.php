@@ -112,17 +112,17 @@ class User extends Authenticatable
 
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
-        return $this->where(
-            column: 'is_uninstalled',
-            operator: '=',
-            value: false,
-        )->scopeRole(
+        return $this->scopeRole(
             query: $query,
             roles: [
                 UserRole::ADMIN->asModel(),
                 UserRole::MERCHANT->asModel(),
                 UserRole::EMPLOYEE->asModel(),
             ],
+        )->where(
+            column: 'is_uninstalled',
+            operator: '=',
+            value: false,
         );
     }
 
