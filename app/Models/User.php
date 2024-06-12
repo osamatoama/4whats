@@ -29,6 +29,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_uninstalled',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_uninstalled' => 'boolean',
         ];
     }
 
@@ -110,11 +112,18 @@ class User extends Authenticatable
 
     public function scopeCanAccessDashboard(Builder $query): Builder
     {
-        return $this->scopeRole(query: $query, roles: [
-            UserRole::ADMIN->asModel(),
-            UserRole::MERCHANT->asModel(),
-            UserRole::EMPLOYEE->asModel(),
-        ]);
+        return $this->where(
+            column: 'is_uninstalled',
+            operator: '=',
+            value: false,
+        )->scopeRole(
+            query: $query,
+            roles: [
+                UserRole::ADMIN->asModel(),
+                UserRole::MERCHANT->asModel(),
+                UserRole::EMPLOYEE->asModel(),
+            ],
+        );
     }
 
     protected function isAdmin(): Attribute

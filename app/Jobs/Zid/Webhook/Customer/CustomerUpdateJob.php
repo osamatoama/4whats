@@ -24,7 +24,7 @@ class CustomerUpdateJob implements ShouldQueue, WebhookJob
     public function __construct(
         public readonly string $event,
         public readonly int $providerId,
-        public readonly array $data
+        public readonly array $data,
     ) {
         $this->maxAttempts = 5;
     }

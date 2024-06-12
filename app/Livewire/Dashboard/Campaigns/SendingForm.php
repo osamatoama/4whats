@@ -43,7 +43,7 @@ class SendingForm extends Component
             arguments: User::class,
         );
 
-        if (currentStore()->is_expired) {
+        if (currentStore()->is_uninstalled || currentStore()->is_expired) {
             $this->customErrorToast(
                 message: __(
                     key: 'dashboard.common.store_expired_message',

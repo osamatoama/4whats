@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Zid\Webhook\App\Market\Application;
+namespace App\Jobs\Zid\Webhook\App\Market\Subscription;
 
 use App\Jobs\Zid\Contracts\WebhookJob;
 use App\Models\Store;
@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 
-class UninstallJob implements ShouldQueue, WebhookJob
+class RefundedJob implements ShouldQueue, WebhookJob
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

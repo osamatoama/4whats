@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('mobile');
             $table->string('email');
             $table->string('domain');
+            $table->boolean('is_uninstalled')->default(false);
             $table->timestamps();
         });
     }

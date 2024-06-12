@@ -26,7 +26,7 @@ class CustomerCreateJob implements ShouldQueue, WebhookJob
     public function __construct(
         public readonly string $event,
         public readonly int $providerId,
-        public readonly array $data
+        public readonly array $data,
     ) {
         $this->maxAttempts = 5;
     }
@@ -63,7 +63,7 @@ class CustomerCreateJob implements ShouldQueue, WebhookJob
         );
 
         $whatsappAccount = $store->whatsappAccount;
-        if ($whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
+        if ($store->is_uninstalled || $whatsappAccount->is_expired || $whatsappAccount->is_sending_disabled) {
             return;
         }
 

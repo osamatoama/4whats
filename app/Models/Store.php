@@ -21,12 +21,14 @@ class Store extends Model
         'mobile',
         'email',
         'domain',
+        'is_uninstalled',
     ];
 
     protected function casts(): array
     {
         return [
             'provider_type' => ProviderType::class,
+            'is_uninstalled' => 'boolean',
         ];
     }
 

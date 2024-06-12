@@ -8,9 +8,7 @@ class UnknownEvent implements WebhookEvent
 {
     public function __invoke(string $event, int $providerId, array $data): void
     {
-        $excluded = [
-            'app.market.application.install',
-        ];
+        $excluded = [];
 
         if (in_array(needle: $event, haystack: $excluded)) {
             return;
