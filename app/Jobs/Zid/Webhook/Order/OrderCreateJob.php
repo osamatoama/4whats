@@ -117,6 +117,9 @@ class OrderCreateJob implements ShouldQueue, WebhookJob
                 ->replace(search: '{AMOUNT}', replace: $amount)
                 ->replace(search: '{STATUS}', replace: $this->data['order_status']['name'])
                 ->replace(search: '{CURRENCY}', replace: $this->data['currency_code'])
+                ->replace(search: '{SHIPPING_COMPANY}', replace: $this->data['shipping']['method']['name'])
+                ->replace(search: '{TRACKING_NUMBER}', replace: $this->data['shipping']['method']['tracking']['number'])
+                ->replace(search: '{TRACKING_URL}', replace: $this->data['shipping']['method']['tracking']['url'])
                 ->toString();
 
             WhatsappSendTextMessageJob::dispatch(
@@ -146,6 +149,9 @@ class OrderCreateJob implements ShouldQueue, WebhookJob
             ->replace(search: '{AMOUNT}', replace: $amount)
             ->replace(search: '{STATUS}', replace: $this->data['order_status']['name'])
             ->replace(search: '{CURRENCY}', replace: $this->data['currency_code'])
+            ->replace(search: '{SHIPPING_COMPANY}', replace: $this->data['shipping']['method']['name'])
+            ->replace(search: '{TRACKING_NUMBER}', replace: $this->data['shipping']['method']['tracking']['number'])
+            ->replace(search: '{TRACKING_URL}', replace: $this->data['shipping']['method']['tracking']['url'])
             ->toString();
 
         $mobiles = settings(storeId: $store->id, eager: false)->value(key: SettingKey::STORE_EMPLOYEES_MOBILES_FOR_NEW_ORDER_MESSAGE);

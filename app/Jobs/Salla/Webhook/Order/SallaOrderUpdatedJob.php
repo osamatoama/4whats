@@ -112,6 +112,9 @@ class SallaOrderUpdatedJob implements ShouldQueue
                 ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
                 ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
                 ->replace(search: '{CURRENCY}', replace: $this->data['amounts']['total']['currency'])
+                ->replace(search: '{SHIPPING_COMPANY}', replace: data_get(target: $this->data, key: 'shipments.0.courier_name', default: ''))
+                ->replace(search: '{TRACKING_NUMBER}', replace: data_get(target: $this->data, key: 'shipments.0.tracking_number', default: ''))
+                ->replace(search: '{TRACKING_URL}', replace: data_get(target: $this->data, key: 'shipments.0.tracking_link', default: ''))
                 ->toString();
 
             WhatsappSendTextMessageJob::dispatch(

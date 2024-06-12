@@ -70,6 +70,9 @@ enum MessageTemplate: string
                 '{AMOUNT}',
                 '{STATUS}',
                 '{CURRENCY}',
+                '{SHIPPING_COMPANY}',
+                '{TRACKING_NUMBER}',
+                '{TRACKING_URL}',
             ],
             self::SALLA_ABANDONED_CART,
             self::ZID_ABANDONED_CART => [
