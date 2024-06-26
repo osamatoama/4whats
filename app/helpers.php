@@ -47,14 +47,31 @@ if (! function_exists('currentStore')) {
     function currentStore(): Store
     {
         $key = 'current_store_id';
-
         if (! session()->has(key: $key)) {
             session()->put(key: $key, value: parentUser()->stores->first()->id);
         }
 
-        $storeId = session()->get(key: $key);
+        return once(
+            callback: function () use ($key): Store {
+                $store = parentUserStores()->firstWhere(
+                    key: 'id',
+                    operator: '=',
+                    value: session()->get(
+                        key: $key,
+                    ),
+                );
 
-        return once(callback: fn (): Store => parentUserStores()->firstWhere(key: 'id', operator: '=', value: $storeId));
+                if ($store === null) {
+                    $store = parentUser()->stores->first();
+                    session()->put(
+                        key: $key,
+                        value: $store,
+                    );
+                }
+
+                return $store;
+            },
+        );
     }
 }
 
