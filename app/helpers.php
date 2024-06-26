@@ -65,7 +65,7 @@ if (! function_exists('currentStore')) {
                     $store = parentUser()->stores->first();
                     session()->put(
                         key: $key,
-                        value: $store,
+                        value: $store->id,
                     );
                 }
 
