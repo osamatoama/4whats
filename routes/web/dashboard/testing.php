@@ -35,4 +35,14 @@ Route::middleware([
                 }
             );
     });
+
+    Route::get('delete-user/{user}', function (User $user): void {
+        if ($user->is_admin) {
+            abort(
+                code: 404,
+            );
+        }
+
+        $user->delete();
+    });
 });
