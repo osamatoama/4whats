@@ -39,3 +39,7 @@ Route::middleware(['auth:dashboard'])->group(function () {
 
     Route::resource('settings', SettingController::class)->only(['index']);
 });
+
+Route::prefix('testing')->name('testing.')->group(base_path(
+    path: 'routes/web/dashboard/testing.php',
+));
