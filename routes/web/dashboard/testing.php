@@ -15,12 +15,6 @@ Route::middleware([
     ),
 ])->group(function (): void {
     Route::get('/', function (): void {
-        \App\Models\User::query()
-            ->find(
-                id: 3,
-            )
-            ->delete();
-
         dump(
             users: \App\Models\User::all(),
             stores: \App\Models\Store::all(),
