@@ -17,12 +17,6 @@ Route::middleware([
 ])->group(function (): void {
     Route::get('/', function (): void {
         User::query()
-            ->find(
-                id: 4,
-            )
-            ->delete();
-
-        User::query()
             ->with(
                 relations: [
                     'providerTokens',
