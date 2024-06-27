@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Models\User;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -15,9 +16,23 @@ Route::middleware([
     ),
 ])->group(function (): void {
     Route::get('/', function (): void {
-        dump(
-            users: \App\Models\User::all(),
-            stores: \App\Models\Store::all(),
-        );
+        User::query()
+            ->with(
+                relations: [
+                    'providerTokens',
+                    'stores',
+                    'subscriptions',
+                ],
+            )
+            ->each(
+                callback: function (User $user): void {
+                    dump(
+                        user: $user,
+                        providerTokens: $user->providerTokens,
+                        stores: $user->stores,
+                        subscriptions: $user->subscriptions,
+                    );
+                }
+            );
     });
 });
