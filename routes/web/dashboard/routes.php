@@ -9,6 +9,8 @@ use App\Http\Controllers\Dashboard\MessageController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\StoreController;
 use App\Http\Controllers\Dashboard\TemplateController;
+use App\Http\Middleware\Dashboard\EnsureIsNotUninstalled;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
 Route::group([], base_path(
@@ -19,7 +21,12 @@ Route::prefix('oauth')->name('oauth.')->middleware(['guest:dashboard'])->group(b
     path: 'routes/web/dashboard/oauth.php',
 ));
 
-Route::middleware(['auth:dashboard'])->group(function () {
+Route::middleware([
+    Authenticate::using(
+        guard: 'dashboard',
+    ),
+    EnsureIsNotUninstalled::class,
+])->group(function () {
     Route::get('/', HomeController::class)->name('home');
 
     Route::resource('stores', StoreController::class)->only(['index']);
