@@ -102,6 +102,7 @@ return [
         MessageStatus::SENT->name => 'تم الارسال',
         MessageStatus::DELIVERED->name => 'تم الاستلام',
         MessageStatus::VIEWED->name => 'تم المشاهدة',
+        MessageStatus::PLAYED->name => 'تم التشغيل',
     ],
     SettingKey::class => [
         SettingKey::SYSTEM_FOUR_WHATS_VOUCHER->name => 'Voucher',

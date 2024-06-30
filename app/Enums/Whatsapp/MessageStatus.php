@@ -12,4 +12,5 @@ enum MessageStatus: string
     case SENT = 'sent';
     case DELIVERED = 'delivered';
     case VIEWED = 'viewed';
+    case PLAYED = 'played';
 }

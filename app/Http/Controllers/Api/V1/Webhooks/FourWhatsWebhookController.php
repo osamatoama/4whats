@@ -11,12 +11,30 @@ class FourWhatsWebhookController extends Controller
 {
     public function __invoke(Request $request): void
     {
-        if (! WhatsappAccount::query()->where(column: 'instance_id', operator: '=', value: $request->input(key: 'instanceId'))->exists()) {
+        if (! WhatsappAccount::query()->where(
+            column: 'instance_id',
+            operator: '=',
+            value: $request->input(
+                key: 'instanceId',
+            ),
+        )->exists()) {
             return;
         }
 
-        Message::query()->where(column: 'provider_id', operator: '=', value: $request->input(key: 'ack.0.id'))->update(values: [
-            'status' => $request->input(key: 'ack.0.status'),
-        ]);
+        Message::query()
+            ->where(
+                column: 'provider_id',
+                operator: '=',
+                value: $request->input(
+                    key: 'ack.0.id',
+                ),
+            )
+            ->update(
+                values: [
+                    'status' => $request->input(
+                        key: 'ack.0.status',
+                    ),
+                ],
+            );
     }
 }
