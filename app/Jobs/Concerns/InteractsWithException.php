@@ -6,7 +6,7 @@ use Exception;
 
 trait InteractsWithException
 {
-    public int $tries = 0;
+    public int $tries = 255;
 
     public ?int $maxAttempts = null;
 
@@ -39,6 +39,10 @@ trait InteractsWithException
 
     protected function isAttemptedTooManyTimes(): bool
     {
+        if ($this->attempts() > 250) {
+            return true;
+        }
+
         return $this->maxAttempts !== null && $this->attempts() >= $this->maxAttempts;
     }
 
