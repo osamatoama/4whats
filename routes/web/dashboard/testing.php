@@ -3,6 +3,7 @@
 use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Middleware\RoleMiddleware;
 
@@ -44,5 +45,13 @@ Route::middleware([
         }
 
         $user->delete();
+    });
+
+    Route::get('queue/restart', function (): string {
+        Artisan::call(
+            command: 'queue:restart',
+        );
+
+        return Artisan::output();
     });
 });
