@@ -99,7 +99,7 @@ class Instance implements InstanceContract
     {
         try {
             $response = $this->client->get(
-                url: $this->baseUrl.'/logout',
+                url: $this->baseUrl.'/clean',
                 data: [
                     'instanceid' => $this->instanceId,
                     'token' => $this->instanceToken,
@@ -116,6 +116,7 @@ class Instance implements InstanceContract
         if (isset($data['success']) && $data['success'] === false) {
             throw new FourWhatsException(
                 message: $data['reason'],
+                errorCode: $data['errorCode'],
             );
         }
 
