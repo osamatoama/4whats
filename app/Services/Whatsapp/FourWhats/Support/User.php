@@ -85,6 +85,12 @@ class User implements UserContract
             );
         }
 
+        if ($data['user']['active'] != 1) {
+            throw new FourWhatsException(
+                message: 'User is not active',
+            );
+        }
+
         return [
             'id' => $data['user']['id'],
             'email' => $data['user']['email'],
@@ -120,6 +126,12 @@ class User implements UserContract
             throw new FourWhatsException(
                 message: $data['reason'],
                 errorCode: $data['errorCode'],
+            );
+        }
+
+        if ($data['user']['active'] != 1) {
+            throw new FourWhatsException(
+                message: 'User is not active',
             );
         }
 
