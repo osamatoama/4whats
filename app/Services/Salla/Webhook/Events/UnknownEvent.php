@@ -10,6 +10,11 @@ class UnknownEvent implements SallaWebhookEvent
     {
         $excluded = [
             'app.installed',
+            'app.updated',
+            'app.trial.expired',
+            'app.subscription.expired',
+            'app.feedback.created',
+            'app.settings.updated',
         ];
 
         if (in_array(needle: $event, haystack: $excluded)) {

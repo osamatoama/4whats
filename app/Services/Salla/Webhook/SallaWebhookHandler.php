@@ -8,6 +8,8 @@ use App\Services\Salla\Webhook\Events\App\Store\AppStoreAuthorizeEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionCanceledEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionRenewedEvent;
 use App\Services\Salla\Webhook\Events\App\Subscription\AppSubscriptionStartedEvent;
+use App\Services\Salla\Webhook\Events\App\Trial\AppTrialCanceledEvent;
+use App\Services\Salla\Webhook\Events\App\Trial\AppTrialStartedEvent;
 use App\Services\Salla\Webhook\Events\Cart\AbandonedCartEvent;
 use App\Services\Salla\Webhook\Events\Customer\CustomerCreatedEvent;
 use App\Services\Salla\Webhook\Events\Customer\CustomerOTPRequestEvent;
@@ -33,6 +35,8 @@ class SallaWebhookHandler
         (match ($event) {
             'app.store.authorize' => new AppStoreAuthorizeEvent(),
             'app.uninstalled' => new AppUninstalledEvent(),
+            'app.trial.started' => new AppTrialStartedEvent(),
+            'app.trial.canceled' => new AppTrialCanceledEvent(),
             'app.subscription.started' => new AppSubscriptionStartedEvent(),
             'app.subscription.canceled' => new AppSubscriptionCanceledEvent(),
             'app.subscription.renewed' => new AppSubscriptionRenewedEvent(),
