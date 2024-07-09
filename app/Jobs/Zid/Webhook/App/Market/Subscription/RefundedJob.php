@@ -9,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
 class RefundedJob implements ShouldQueue, WebhookJob
 {
@@ -36,20 +35,10 @@ class RefundedJob implements ShouldQueue, WebhookJob
             return;
         }
 
-        DB::transaction(
-            callback: function () use ($store) {
-                $store->update(
-                    attributes: [
-                        'is_uninstalled' => true,
-                    ],
-                );
-
-                $store->user()->update(
-                    values: [
-                        'is_uninstalled' => true,
-                    ],
-                );
-            },
+        $store->whatsappAccount()->update(
+            values: [
+                'expired_at' => now(),
+            ],
         );
     }
 }
