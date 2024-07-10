@@ -136,6 +136,7 @@ return [
                 'employees_mobiles_description' => 'يمكنك ادخال اكثر من رقم عن طريق فصلهم بفاصلة, هذه الأرقام سوف تستلم رسالة عند كل طلب جديد في المتجر',
                 'syncing_order_statuses' => 'جاري مزامنه حالات الطلب',
                 'syncing_order_statuses_please_wait' => 'جاري مزامنه حالات الطلب. من فضلك انتظر',
+                'salla_review_order_warning' => 'يجب تحديد حالة رسالة التقييم عبر إعدادات التقييم في متجر سلة',
             ],
             'columns' => [
                 'message' => [

@@ -18,7 +18,17 @@
             </div>
         </div>
         <div class="card-body w-75 mx-auto">
-            <p>{!! $template->enum->description() !!}</p>
+            <p>
+                {{ $template->enum->description() }}
+                @foreach($template->enum->placeholders() as $placeholder)
+                    <button class="btn btn-sm btn-outline-info" wire:click="appendPlaceholder('{{ $placeholder }}')">
+                        {{ $placeholder }}
+                    </button>
+                @endforeach
+                @if($template->is_salla_review_order)
+                    <span class="d-block text-danger fw-bold">@lang('dashboard.pages.templates.index.salla_review_order_warning')</span>
+                @endif
+            </p>
 
             <div class="form-group mb-3">
                 <textarea @class(['form-control', 'is-invalid' => $errors->has(key: 'message')]) rows="5" wire:model.live.debounce.500ms="message"></textarea>

@@ -136,9 +136,7 @@ enum MessageTemplate: string
 
     public function description(): string
     {
-        $placeholders = implode(' ', $this->placeholders());
-
-        return __(key: 'enum.'.__CLASS__.'.'.$this->name.'.description', replace: ['placeholders' => $placeholders]);
+        return __(key: 'enum.'.__CLASS__.'.'.$this->name.'.description');
     }
 
     public function hint(): ?string

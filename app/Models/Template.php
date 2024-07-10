@@ -83,6 +83,13 @@ class Template extends Model
         );
     }
 
+    protected function isSallaReviewOrder(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes): bool => $this->key === MessageTemplate::SALLA_REVIEW_ORDER->value,
+        );
+    }
+
     protected function isNewOrderForEmployees(): Attribute
     {
         return Attribute::make(

@@ -62,6 +62,26 @@ class Card extends Component
         );
     }
 
+    public function appendPlaceholder(string $placeholder): void
+    {
+        $this->authorize(
+            ability: 'update',
+            arguments: $this->template,
+        );
+
+        $this->message .= $placeholder;
+        $this->template->update(
+            attributes: [
+                'message' => $this->message,
+            ],
+        );
+
+        $this->successToast(
+            action: 'updated',
+            model: 'templates.singular',
+        );
+    }
+
     public function render(): View
     {
         if ($this->template->is_order_status) {
