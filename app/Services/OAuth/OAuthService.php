@@ -12,7 +12,11 @@ class OAuthService
 {
     public function generatePassword(): string
     {
-        return Str::password();
+        if (app()->isProduction()) {
+            return Str::password();
+        }
+
+        return 'password';
     }
 
     public function getOrCreateUser(UserDto $userDto, UserRole $role, string $password, bool $createFourWhatsUser = true): User

@@ -36,10 +36,26 @@ final readonly class SallaMerchantService extends SallaService
     /**
      * @throws SallaMerchantException
      */
-    public function validateResponse(Response $response, array $data): void
+    public function validateResponse(Response $response, ?array $data): void
     {
         if ($response->failed()) {
-            throw SallaMerchantException::fromResponse(data: $data);
+            if ($data === null) {
+                throw SallaMerchantException::fromNullData(
+                    response: $response,
+                );
+            }
+
+            if ($response->status() === 500) {
+                throw SallaMerchantException::sallaServerError(
+                    response: $response,
+                    data: $data,
+                );
+            }
+
+            throw SallaMerchantException::fromResponse(
+                response: $response,
+                data: $data,
+            );
         }
     }
 }

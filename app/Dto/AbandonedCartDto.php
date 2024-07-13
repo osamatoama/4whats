@@ -47,8 +47,12 @@ final readonly class AbandonedCartDto
             contactId: $contactId,
             providerType: ProviderType::ZID,
             providerId: $data['id'],
-            providerCreatedAt: $data['created_at'],
-            providerUpdatedAt: $data['updated_at'],
+            providerCreatedAt: Carbon::parse(
+                time: $data['created_at'],
+            ),
+            providerUpdatedAt: Carbon::parse(
+                time: $data['updated_at'],
+            ),
             totalAmount: $data['cart_total'] * 100,
             totalCurrency: str(string: $data['cart_total_string'])->after(search: ' ')->toString(),
             checkoutUrl: $data['url'],
