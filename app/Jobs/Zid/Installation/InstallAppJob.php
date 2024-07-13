@@ -54,7 +54,9 @@ class InstallAppJob implements ShouldQueue
     public function handle(): void
     {
         $oauthService = new OAuthService();
-        $password = $oauthService->generatePassword();
+        $password = $oauthService->generatePassword(
+            email: $this->zidUser->email,
+        );
         $user = $oauthService->getOrCreateUser(
             userDto: UserDto::fromZid(
                 zidUser: $this->zidUser,

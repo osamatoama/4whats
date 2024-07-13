@@ -59,7 +59,9 @@ class InstallAppJob implements ShouldQueue
             );
 
             $oauthService = new OAuthService();
-            $password = $oauthService->generatePassword();
+            $password = $oauthService->generatePassword(
+                email: $resourceOwner->getEmail(),
+            );
             $user = $oauthService->getOrCreateUser(
                 userDto: UserDto::fromSalla(
                     sallaUser: $resourceOwner,
