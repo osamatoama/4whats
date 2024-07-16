@@ -34,12 +34,4 @@ enum CampaignType: string
             self::ABANDONED_CARTS => ['{CUSTOMER_NAME}', '{AMOUNT}', '{CURRENCY}', '{CHECKOUT_URL}'],
         };
     }
-
-    public function placeholdersAsString(): string
-    {
-        return implode(
-            separator: ' ',
-            array: $this->placeholders(),
-        );
-    }
 }

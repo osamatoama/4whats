@@ -138,6 +138,11 @@ class SendingForm extends Component
         );
     }
 
+    public function appendPlaceholder(string $placeholder): void
+    {
+        $this->message .= $placeholder;
+    }
+
     public function updated(): void
     {
         $this->validate(

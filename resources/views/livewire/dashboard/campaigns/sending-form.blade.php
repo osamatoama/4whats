@@ -44,13 +44,18 @@
                             <label class="form-label">
                                 @lang('dashboard.pages.campaigns.columns.message.label')
                             </label>
+                            <p class="text-muted mb-1">
+                                @lang('dashboard.pages.campaigns.columns.message.description')
+                                @foreach($currentCampaignType->placeholders() as $placeholder)
+                                    <button class="btn btn-sm btn-outline-info" wire:click="appendPlaceholder('{{ $placeholder }}')">
+                                        {{ $placeholder }}
+                                    </button>
+                                @endforeach
+                            </p>
                             <textarea @class(['form-control', 'is-invalid' => $errors->has(key: 'message')]) wire:model="message"></textarea>
                             @error('message')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="form-text text-muted">
-                                @lang('dashboard.pages.campaigns.columns.message.description', ['placeholders' => $currentCampaignType->placeholdersAsString()])
-                            </small>
                         </div>
                     @endif
 
