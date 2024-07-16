@@ -33,6 +33,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class InstallAppJob implements ShouldQueue
 {
@@ -55,7 +56,12 @@ class InstallAppJob implements ShouldQueue
     {
         $oauthService = new OAuthService();
         $password = $oauthService->generatePassword(
-            email: $this->zidUser->email,
+            isTesting: Str::endsWith(
+                haystack: $this->zidUser->email,
+                needles: [
+                    '@zam-partner.email',
+                ],
+            ),
         );
         $user = $oauthService->getOrCreateUser(
             userDto: UserDto::fromZid(

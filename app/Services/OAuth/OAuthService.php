@@ -10,21 +10,9 @@ use Illuminate\Support\Str;
 
 class OAuthService
 {
-    public function generatePassword(?string $email = null): string
+    public function generatePassword(bool $isTesting = false): string
     {
-        $isTestingPassword = ! app()->isProduction()
-            || (
-                $email !== null
-                && Str::endsWith(
-                    haystack: $email,
-                    needles: [
-                        '@email.partners', // Salla
-                        '@zam-partner.email', // Zid
-                    ],
-                )
-            );
-
-        if ($isTestingPassword) {
+        if (! app()->isProduction() || $isTesting) {
             return 'password';
         }
 
