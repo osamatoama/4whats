@@ -24,6 +24,7 @@ return [
         'send' => 'ارسال',
         'something_went_wrong' => 'حدث خطا ما. برجاء المحاولة مرة اخري لاحقا',
         'click_here' => 'اضغط هنا',
+        'subscription_expired_at' => 'تاريخ انتهاء الاشتراك:',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',

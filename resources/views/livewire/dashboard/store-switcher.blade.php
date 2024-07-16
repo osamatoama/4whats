@@ -4,6 +4,9 @@
         @if($hasMoreStores)
             <i class="mdi mdi-chevron-down"></i>
         @endif
+        <div>
+            @lang('dashboard.common.subscription_expired_at') {{ $subscriptionExpiredAt }}
+        </div>
     </a>
     @if($hasMoreStores)
         <div class="dropdown-menu dropdown-menu-end">

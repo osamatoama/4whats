@@ -41,6 +41,9 @@ class StoreSwitcher extends Component
                 'currentStore' => $currentStore,
                 'stores' => $stores,
                 'hasMoreStores' => $stores->isNotEmpty(),
+                'subscriptionExpiredAt' => $currentStore->whatsappAccount->expired_at->format(
+                    format: 'Y-m-d',
+                ),
             ],
         );
     }
