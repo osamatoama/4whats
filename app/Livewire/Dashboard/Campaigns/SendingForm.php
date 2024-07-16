@@ -30,6 +30,8 @@ class SendingForm extends Component
 
     public ?string $message = null;
 
+    public ?TemporaryUploadedFile $file = null;
+
     public ?TemporaryUploadedFile $image = null;
 
     public ?TemporaryUploadedFile $video = null;
@@ -62,6 +64,14 @@ class SendingForm extends Component
                     ),
                     'string',
                     'max:5000',
+                ],
+                'file' => [
+                    'nullable',
+                    Rule::requiredIf(
+                        callback: $this->currentMessageType === MessageType::FILE,
+                    ),
+                    'file',
+                    'max:4096',
                 ],
                 'image' => [
                     'nullable',
@@ -116,6 +126,9 @@ class SendingForm extends Component
             message: $this->convertEmptyStringToNull(
                 string: $this->message,
             ),
+            filePath: $this->file?->store(
+                path: 'campaigns/files',
+            ),
             imagePath: $this->image?->store(
                 path: 'campaigns/images',
             ),
@@ -159,6 +172,7 @@ class SendingForm extends Component
                         type: MessageType::class,
                     ),
                 ],
+                'file' => ['nullable', 'file', 'max:4096'],
                 'image' => ['nullable', 'image', 'max:4096'],
                 'video' => ['nullable', 'file', 'mimes:mp4', 'max:4096'],
                 'audio' => ['nullable', 'file', 'mimes:mp3', 'max:4096'],
@@ -202,6 +216,7 @@ class SendingForm extends Component
             view: 'livewire.dashboard.campaigns.sending-form',
             data: [
                 'shouldShowMessage' => $this->currentMessageType !== MessageType::AUDIO,
+                'shouldShowFile' => $this->currentMessageType === MessageType::FILE,
                 'shouldShowImage' => $this->currentMessageType === MessageType::IMAGE,
                 'shouldShowVideo' => $this->currentMessageType === MessageType::VIDEO,
                 'shouldShowAudio' => $this->currentMessageType === MessageType::AUDIO,

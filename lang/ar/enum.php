@@ -111,6 +111,7 @@ return [
     ],
     MessageType::class => [
         MessageType::TEXT->name => 'نصية',
+        MessageType::FILE->name => 'نص مع ملف',
         MessageType::IMAGE->name => 'نص مع صورة',
         MessageType::VIDEO->name => 'نص مع فيديو',
         MessageType::AUDIO->name => 'صوت',

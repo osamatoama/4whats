@@ -5,6 +5,7 @@ namespace App\Enums\Whatsapp;
 enum MessageType: string
 {
     case TEXT = 'text';
+    case FILE = 'file';
     case IMAGE = 'image';
     case VIDEO = 'video';
     case AUDIO = 'audio';

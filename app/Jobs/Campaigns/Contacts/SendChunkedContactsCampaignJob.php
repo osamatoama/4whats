@@ -6,6 +6,7 @@ use App\Enums\Jobs\BatchName;
 use App\Enums\Whatsapp\MessageType;
 use App\Jobs\Concerns\InteractsWithBatches;
 use App\Jobs\Whatsapp\WhatsappSendAudioMessageJob;
+use App\Jobs\Whatsapp\WhatsappSendFileMessageJob;
 use App\Jobs\Whatsapp\WhatsappSendImageMessageJob;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Jobs\Whatsapp\WhatsappSendVideoMessageJob;
@@ -29,6 +30,7 @@ class SendChunkedContactsCampaignJob implements ShouldQueue
         public Store $store,
         public MessageType $messageType,
         public ?string $message,
+        public ?string $filePath,
         public ?string $imagePath,
         public ?string $videoPath,
         public ?string $audioPath,
@@ -66,6 +68,14 @@ class SendChunkedContactsCampaignJob implements ShouldQueue
                         instanceToken: $this->store->whatsappAccount->instance_token,
                         mobile: $contact->mobile,
                         message: $message,
+                    ),
+                    MessageType::FILE => new WhatsappSendFileMessageJob(
+                        storeId: $this->store->id,
+                        instanceId: $this->store->whatsappAccount->instance_id,
+                        instanceToken: $this->store->whatsappAccount->instance_token,
+                        mobile: $contact->mobile,
+                        filePath: $this->filePath,
+                        caption: $this->message,
                     ),
                     MessageType::IMAGE => new WhatsappSendImageMessageJob(
                         storeId: $this->store->id,

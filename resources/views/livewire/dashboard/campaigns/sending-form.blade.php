@@ -59,6 +59,18 @@
                         </div>
                     @endif
 
+                    @if($shouldShowFile)
+                        <div class="form-group col-12 col-md-6 mt-3">
+                            <label class="form-label">
+                                @lang('dashboard.pages.campaigns.columns.file.label')
+                            </label>
+                            <input type="file" @class(['form-control', 'is-invalid' => $errors->has(key: 'file')]) wire:model="file"/>
+                            @error('file')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
+
                     @if($shouldShowImage)
                         <div class="form-group col-12 col-md-6 mt-3">
                             <label class="form-label">
