@@ -5,7 +5,9 @@
             <i class="mdi mdi-chevron-down"></i>
         @endif
         <div>
-            @lang('dashboard.common.subscription_expired_at') {{ $subscriptionExpiredAt }}
+            <small>
+                @lang('dashboard.common.subscription_expired_at') {{ $subscriptionExpiredAt }}
+            </small>
         </div>
     </a>
     @if($hasMoreStores)
