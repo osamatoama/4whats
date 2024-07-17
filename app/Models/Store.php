@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ProviderType;
+use App\Enums\SubscriptionType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ class Store extends Model
         'provider_type',
         'provider_id',
         'provider_uuid',
+        'subscription_type',
         'name',
         'mobile',
         'email',
@@ -28,6 +30,7 @@ class Store extends Model
     {
         return [
             'provider_type' => ProviderType::class,
+            'subscription_type' => SubscriptionType::class,
             'is_uninstalled' => 'boolean',
         ];
     }

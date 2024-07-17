@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\App\Trial;
 
+use App\Enums\SubscriptionType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\FourWhats\FourWhatsSetInstanceWebhookJob;
 use App\Models\FourWhatsCredential;
@@ -101,6 +102,12 @@ class SallaAppTrialStartedJob implements ShouldQueue
                 return;
             }
         }
+
+        $store->update(
+            attributes: [
+                'subscription_type' => SubscriptionType::TRIAL,
+            ],
+        );
     }
 
     /**

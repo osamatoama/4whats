@@ -1,10 +1,20 @@
 <div class="topbar">
-    <nav class="navbar-custom" id="navbar-custom">
-        <ul class="list-unstyled topbar-nav float-end mb-0">
-            @if(!auth()->user()->is_admin)
-                <livewire:dashboard.store-switcher/>
-            @endif
+    <nav class="navbar-custom d-flex justify-content-between" id="navbar-custom">
+        <ul class="list-unstyled topbar-nav mb-0">
+            <li>
+                <button class="nav-link button-menu-mobile nav-icon" id="togglemenu">
+                    <i class="ti ti-menu-2"></i>
+                </button>
+            </li>
+        </ul>
 
+        @if(!auth()->user()->is_admin)
+            <ul class="list-unstyled topbar-nav mb-0 flex-grow-1">
+                <livewire:dashboard.store-switcher/>
+            </ul>
+        @endif
+
+        <ul class="list-unstyled topbar-nav mb-0">
             <li class="dropdown">
                 <a class="nav-link dropdown-toggle nav-user" data-bs-toggle="dropdown" href="#" role="button"
                    aria-haspopup="false" aria-expanded="false">
@@ -34,14 +44,6 @@
                         </button>
                     </form>
                 </div>
-            </li>
-        </ul>
-
-        <ul class="list-unstyled topbar-nav mb-0">
-            <li>
-                <button class="nav-link button-menu-mobile nav-icon" id="togglemenu">
-                    <i class="ti ti-menu-2"></i>
-                </button>
             </li>
         </ul>
     </nav>

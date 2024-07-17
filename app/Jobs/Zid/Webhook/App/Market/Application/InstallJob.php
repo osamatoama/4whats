@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Zid\Webhook\App\Market\Application;
 
+use App\Enums\SubscriptionType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\FourWhats\FourWhatsSetInstanceWebhookJob;
 use App\Jobs\Zid\Contracts\WebhookJob;
@@ -147,6 +148,12 @@ class InstallJob implements ShouldQueue, WebhookJob
                 'total_currency' => 'SAR',
                 'started_at' => $startedAt,
                 'ended_at' => $endedAt,
+            ],
+        );
+
+        $store->update(
+            attributes: [
+                'subscription_type' => SubscriptionType::PAID,
             ],
         );
     }

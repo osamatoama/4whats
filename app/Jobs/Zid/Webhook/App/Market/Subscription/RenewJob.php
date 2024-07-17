@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Zid\Webhook\App\Market\Subscription;
 
+use App\Enums\SubscriptionType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Zid\Contracts\WebhookJob;
 use App\Models\Store;
@@ -125,6 +126,12 @@ class RenewJob implements ShouldQueue, WebhookJob
                 'total_currency' => 'SAR',
                 'started_at' => $startedAt,
                 'ended_at' => $endedAt,
+            ],
+        );
+
+        $store->update(
+            attributes: [
+                'subscription_type' => SubscriptionType::PAID,
             ],
         );
     }

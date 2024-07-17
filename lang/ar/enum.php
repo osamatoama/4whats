@@ -4,6 +4,7 @@ use App\Enums\CampaignType;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Enums\SettingKey;
+use App\Enums\SubscriptionType;
 use App\Enums\UserRole;
 use App\Enums\Whatsapp\MessageStatus;
 use App\Enums\Whatsapp\MessageType;
@@ -115,5 +116,10 @@ return [
         MessageType::IMAGE->name => 'نص مع صورة',
         MessageType::VIDEO->name => 'نص مع فيديو',
         MessageType::AUDIO->name => 'صوت',
+    ],
+    SubscriptionType::class => [
+        SubscriptionType::NONE->name => 'لا يوجد',
+        SubscriptionType::TRIAL->name => 'فترة تجريبية',
+        SubscriptionType::PAID->name => 'مدفوع',
     ],
 ];

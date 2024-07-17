@@ -3,6 +3,7 @@
 namespace App\Dto;
 
 use App\Enums\ProviderType;
+use App\Enums\SubscriptionType;
 use App\Services\Zid\OAuth\Support\Store as ZidStore;
 
 final readonly class StoreDto
@@ -12,6 +13,7 @@ final readonly class StoreDto
         public ProviderType $providerType,
         public int $providerId,
         public ?string $providerUUID,
+        public SubscriptionType $subscriptionType,
         public string $name,
         public string $mobile,
         public string $email,
@@ -26,6 +28,7 @@ final readonly class StoreDto
             providerType: ProviderType::SALLA,
             providerId: $sallaStore['merchant']['id'],
             providerUUID: null,
+            subscriptionType: SubscriptionType::NONE,
             name: $sallaStore['merchant']['name'],
             mobile: $sallaStore['mobile'],
             email: $sallaStore['email'],
@@ -40,6 +43,7 @@ final readonly class StoreDto
             providerType: ProviderType::ZID,
             providerId: $zidStore->id,
             providerUUID: $zidStore->uuid,
+            subscriptionType: SubscriptionType::NONE,
             name: $zidStore->name,
             mobile: $zidStore->mobile,
             email: $zidStore->email,

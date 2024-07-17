@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\App\Subscription;
 
+use App\Enums\SubscriptionType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\FourWhats\FourWhatsSetInstanceWebhookJob;
 use App\Models\FourWhatsCredential;
@@ -114,6 +115,12 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
             'started_at' => $this->data['start_date'],
             'ended_at' => $this->data['end_date'],
         ]);
+
+        $store->update(
+            attributes: [
+                'subscription_type' => SubscriptionType::PAID,
+            ],
+        );
     }
 
     /**
