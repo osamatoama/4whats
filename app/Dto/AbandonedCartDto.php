@@ -13,7 +13,7 @@ final readonly class AbandonedCartDto
         public int $contactId,
         public ProviderType $providerType,
         public int|string $providerId,
-        public Carbon $providerCreatedAt,
+        public ?Carbon $providerCreatedAt,
         public ?Carbon $providerUpdatedAt,
         public int $totalAmount,
         public string $totalCurrency,
