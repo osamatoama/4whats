@@ -14,7 +14,7 @@ final readonly class AbandonedCartDto
         public ProviderType $providerType,
         public int|string $providerId,
         public Carbon $providerCreatedAt,
-        public Carbon $providerUpdatedAt,
+        public ?Carbon $providerUpdatedAt,
         public int $totalAmount,
         public string $totalCurrency,
         public string $checkoutUrl,
@@ -23,17 +23,21 @@ final readonly class AbandonedCartDto
 
     public static function fromSalla(int $storeId, int $contactId, array $data): self
     {
+        $providerCreatedAt = $data['created_at'] !== null ? SallaService::parseDate(
+            data: $data['created_at'],
+        ) : null;
+
+        $providerUpdatedAt = $data['updated_at'] !== null ? SallaService::parseDate(
+            data: $data['updated_at'],
+        ) : null;
+
         return new self(
             storeId: $storeId,
             contactId: $contactId,
             providerType: ProviderType::SALLA,
             providerId: $data['id'],
-            providerCreatedAt: SallaService::parseDate(
-                data: $data['created_at'],
-            ),
-            providerUpdatedAt: SallaService::parseDate(
-                data: $data['updated_at'] !== null ? $data['updated_at'] : $data['created_at'],
-            ),
+            providerCreatedAt: $providerCreatedAt,
+            providerUpdatedAt: $providerUpdatedAt,
             totalAmount: $data['total']['amount'] * 100,
             totalCurrency: $data['total']['currency'],
             checkoutUrl: $data['checkout_url'],
