@@ -49,7 +49,7 @@ class UpgradeJob implements ShouldQueue, WebhookJob
                     ),
                     code: 404,
                 ),
-                fail: true,
+                delay: 60,
             );
 
             return;
