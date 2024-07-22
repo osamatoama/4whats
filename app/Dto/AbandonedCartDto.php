@@ -32,7 +32,7 @@ final readonly class AbandonedCartDto
                 data: $data['created_at'],
             ),
             providerUpdatedAt: SallaService::parseDate(
-                data: $data['updated_at'],
+                data: $data['updated_at'] !== null ? $data['updated_at'] : $data['created_at'],
             ),
             totalAmount: $data['total']['amount'] * 100,
             totalCurrency: $data['total']['currency'],
