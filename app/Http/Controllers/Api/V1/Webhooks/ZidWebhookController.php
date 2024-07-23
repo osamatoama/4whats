@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Webhooks;
 
 use App\Http\Controllers\Controller;
+use App\Services\IncomingWebhook\IncomingWebhookService;
 use App\Services\Zid\Webhook\ZidWebhookHandler;
 use Illuminate\Http\Request;
 
@@ -10,6 +11,10 @@ class ZidWebhookController extends Controller
 {
     public function __invoke(Request $request, ZidWebhookHandler $zidWebhookHandler): void
     {
+        IncomingWebhookService::saveZidIncomingWebhook(
+            payload: $request->all(),
+        );
+
         if ($zidWebhookHandler->isNotVerified(
             token: $request->query(
                 key: 'token',
