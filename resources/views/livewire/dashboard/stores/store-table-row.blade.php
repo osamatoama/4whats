@@ -9,6 +9,11 @@
         {{ $this->store->email }}
     </td>
     <td>
+        <a href="https://wa.me/{{ $this->store->mobile }}" target="_blank">
+            {{ $this->store->mobile }}
+        </a>
+    </td>
+    <td>
         <div class="form-group">
             <input type="text" @class(['form-control', 'is-invalid'=> $errors->has(key: 'fourWhatsProviderId')]) wire:model="fourWhatsProviderId">
             @error('fourWhatsProviderId')

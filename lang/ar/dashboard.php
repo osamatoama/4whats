@@ -102,6 +102,7 @@ return [
                 'id' => '#',
                 'type' => 'النوع',
                 'email' => 'البريد الالكتروني',
+                'mobile' => 'رقم الهاتف',
                 'four_whats_provider_id' => 'ID',
                 'four_whats_api_key' => 'API Key',
                 'whatsapp_instance_id' => 'Instance ID',
