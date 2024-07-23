@@ -41,17 +41,6 @@ class SallaException extends Exception
     {
         $exception = $response->toException();
 
-        logger()->warning(
-            message: implode(
-                separator: PHP_EOL,
-                array: [
-                    'Salla exception with null data',
-                    "Message: {$exception->getMessage()}",
-                    "Code: {$exception->getCode()}",
-                ],
-            ),
-        );
-
         return new static(
             message: $exception->getMessage(),
             code: $exception->getCode(),

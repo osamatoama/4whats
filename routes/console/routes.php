@@ -14,3 +14,8 @@ Schedule::command(
 )->dailyAt(
     time: '01:30',
 );
+
+Schedule::command(
+    command: 'queue:retry',
+    parameters: ['all'],
+)->everyTenMinutes();
