@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(Contact::class)->constrained()->restrictOnDelete();
             $table->string('provider_type');
             $table->string('provider_id');
-            $table->timestamp('provider_created_at')->nullable();
-            $table->timestamp('provider_updated_at')->nullable();
+            $table->datetime('provider_created_at')->nullable();
+            $table->datetime('provider_updated_at')->nullable();
             $table->unsignedInteger('total_amount');
             $table->string('total_currency');
             $table->string('checkout_url');

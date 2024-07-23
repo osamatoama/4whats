@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('provider_type');
             $table->text('access_token');
             $table->text('refresh_token');
-            $table->timestamp('expired_at')->nullable();
+            $table->datetime('expired_at')->nullable();
             $table->text('manager_token')->nullable();
             $table->timestamps();
         });

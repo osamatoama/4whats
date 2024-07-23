@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
             $table->string('provider_type')->nullable();
             $table->unsignedBigInteger('provider_id')->nullable();
-            $table->timestamp('provider_created_at')->nullable();
-            $table->timestamp('provider_updated_at')->nullable();
+            $table->datetime('provider_created_at')->nullable();
+            $table->datetime('provider_updated_at')->nullable();
             $table->string('source');
             $table->string('first_name');
             $table->string('last_name')->nullable();
