@@ -16,4 +16,9 @@ class StorePolicy
     {
         return $user->is_admin;
     }
+
+    public function extendTrial(User $user, Store $store): bool
+    {
+        return $user->is_admin;
+    }
 }

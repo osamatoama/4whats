@@ -26,6 +26,7 @@ return [
         'click_here' => 'اضغط هنا',
         'subscription_expired_at' => 'تاريخ انتهاء الاشتراك:',
         'subscription_type' => 'نوع الاشتراك:',
+        'close' => 'اغلاق',
     ],
     'navbar' => [
         'profile' => 'الملف الشخصي',
@@ -97,16 +98,20 @@ return [
             'index' => [
                 'title' => 'المتاجر',
                 'page_title' => 'المتاجر',
+                'extend_trial' => 'تمديد الفترة التجريبية',
+                'trail_extended' => 'تم تمديد الفترة التجريبية بنجاح',
             ],
             'columns' => [
                 'id' => '#',
                 'type' => 'النوع',
+                'name' => 'الاسم',
                 'email' => 'البريد الالكتروني',
                 'mobile' => 'رقم الهاتف',
-                'four_whats_provider_id' => 'ID',
+                'four_whats_provider_id' => '4Whats ID',
                 'four_whats_api_key' => 'API Key',
                 'whatsapp_instance_id' => 'Instance ID',
                 'whatsapp_instance_token' => 'Instance Token',
+                'whatsapp_expired_at' => 'تاريخ الانتهاء',
             ],
         ],
         'employees' => [

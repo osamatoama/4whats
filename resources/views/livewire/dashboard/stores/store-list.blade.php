@@ -15,12 +15,10 @@
                         <tr>
                             <th>@lang('dashboard.pages.stores.columns.id')</th>
                             <th>@lang('dashboard.pages.stores.columns.type')</th>
+                            <th>@lang('dashboard.pages.stores.columns.name')</th>
                             <th>@lang('dashboard.pages.stores.columns.email')</th>
                             <th>@lang('dashboard.pages.stores.columns.mobile')</th>
-                            <th>@lang('dashboard.pages.stores.columns.four_whats_provider_id')</th>
-                            <th>@lang('dashboard.pages.stores.columns.four_whats_api_key')</th>
-                            <th>@lang('dashboard.pages.stores.columns.whatsapp_instance_id')</th>
-                            <th>@lang('dashboard.pages.stores.columns.whatsapp_instance_token')</th>
+                            <th>@lang('dashboard.pages.stores.columns.whatsapp_expired_at')</th>
                             <th>@lang('dashboard.common.actions')</th>
                         </tr>
                         </thead>

@@ -4,6 +4,8 @@ namespace App\Livewire\Dashboard\Stores;
 
 use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Store;
+use App\Services\Whatsapp\FourWhats\FourWhatsException;
+use App\Services\Whatsapp\FourWhats\FourWhatsService;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -48,12 +50,14 @@ class StoreTableRow extends Component
 
         $this->store->user->fourWhatsCredential()->update(
             values: [
+                'provider_id' => $this->fourWhatsProviderId,
                 'api_key' => $this->fourWhatsApiKey,
             ],
         );
 
         $this->store->whatsappAccount()->update(
             values: [
+                'instance_id' => $this->instanceId,
                 'instance_token' => $this->instanceToken,
             ],
         );
@@ -61,6 +65,46 @@ class StoreTableRow extends Component
         $this->successToast(
             action: 'updated',
             model: 'stores.singular',
+        );
+    }
+
+    public function extendTrial(): void
+    {
+        try {
+            (new FourWhatsService())
+                ->instances(
+                    apiKey: $this->fourWhatsApiKey,
+                )
+                ->renew(
+                    email: $this->store->user->fourWhatsCredential->email,
+                    instanceId: $this->instanceId,
+                    packageId: 1,
+                );
+        } catch (FourWhatsException $e) {
+            $this->customErrorToast(
+                message: $e->getMessage(),
+            );
+
+            return;
+        }
+
+        $whatsappAccount = $this->store->whatsappAccount;
+        $date = $whatsappAccount->expired_at->lessThanOrEqualTo(
+            date: now(),
+        ) ? now() : $whatsappAccount->expired_at;
+
+        $whatsappAccount->update(
+            attributes: [
+                'expired_at' => $date->addDays(
+                    value: 7,
+                ),
+            ],
+        );
+
+        $this->customSuccessToast(
+            message: __(
+                key: 'dashboard.pages.stores.index.trail_extended',
+            ),
         );
     }
 
