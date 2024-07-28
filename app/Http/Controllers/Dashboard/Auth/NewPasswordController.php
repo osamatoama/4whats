@@ -39,16 +39,23 @@ class NewPasswordController extends Controller
             callback: function (User $user) use ($request): void {
                 $user->forceFill(
                     attributes: [
-                        'password' => Hash::make(
-                            value: $request->validated(
-                                key: 'password',
-                            )
+                        'password' => $request->validated(
+                            key: 'password',
                         ),
-                        'remember_token' => Str::random(
-                            length: 60,
-                        ),
+                        // 'password' => Hash::make(
+                        //     value: $request->validated(
+                        //         key: 'password',
+                        //     )
+                        // ),
                     ],
-                )->save();
+                )
+                ->setRememberToken(
+                    value: Str::random(
+                        length: 60,
+                    ),
+                );
+
+                $user->save();
 
                 event(
                     event: new PasswordReset(
