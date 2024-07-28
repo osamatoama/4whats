@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Dashboard\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\Auth\ResetPasswordRequest;
 use App\Models\User;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use App\Http\Requests\Dashboard\Auth\ResetPasswordRequest;
 
 class NewPasswordController extends Controller
 {
@@ -38,8 +39,10 @@ class NewPasswordController extends Controller
             callback: function (User $user) use ($request): void {
                 $user->forceFill(
                     attributes: [
-                        'password' => $request->validated(
-                            key: 'password',
+                        'password' => Hash::make(
+                            value: $request->validated(
+                                key: 'password',
+                            )
                         ),
                         'remember_token' => Str::random(
                             length: 60,
