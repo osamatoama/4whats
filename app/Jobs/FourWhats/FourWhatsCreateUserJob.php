@@ -42,7 +42,7 @@ class FourWhatsCreateUserJob implements ShouldQueue
                 password: $this->password,
             );
         } catch (FourWhatsException $e) {
-            if ($e->errorCode === '0010 ') {
+            if ($e->errorCode === '0010') {
                 $this->findByEmail(
                     service: $service,
                 );
