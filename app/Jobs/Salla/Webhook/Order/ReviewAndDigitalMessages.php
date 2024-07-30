@@ -12,7 +12,7 @@ trait ReviewAndDigitalMessages
 {
     protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
     {
-        if ($this->data['rating_link'] === null) {
+        if (($this->data['rating_link'] ?? null) === null) {
             return;
         }
 
