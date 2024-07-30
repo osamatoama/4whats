@@ -100,6 +100,10 @@ return [
                 'page_title' => 'المتاجر',
                 'extend_trial' => 'تمديد الفترة التجريبية',
                 'trail_extended' => 'تم تمديد الفترة التجريبية بنجاح',
+                'general_information' => 'معلومات عامة',
+                'password' => 'كلمة السر',
+                'activate' => 'تفعيل',
+                'deactivate' => 'الغاء التفعيل',
             ],
             'columns' => [
                 'id' => '#',
@@ -112,6 +116,8 @@ return [
                 'whatsapp_instance_id' => 'Instance ID',
                 'whatsapp_instance_token' => 'Instance Token',
                 'whatsapp_expired_at' => 'تاريخ الانتهاء',
+                'new_password' => 'كلمة السر الجديدة',
+                'new_password_confirmation' => 'تآكيد كلمة السر الجديدة',
             ],
         ],
         'employees' => [

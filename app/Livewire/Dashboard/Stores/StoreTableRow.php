@@ -6,6 +6,9 @@ use App\Livewire\Concerns\InteractsWithToasts;
 use App\Models\Store;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -23,8 +26,17 @@ class StoreTableRow extends Component
 
     public ?string $instanceToken;
 
+    public string $newPassword;
+
+    public string $newPasswordConfirmation;
+
     public function updateStore(): void
     {
+        $this->authorize(
+            ability: 'update',
+            arguments: $this->store,
+        );
+
         $this->validate(
             rules: [
                 'fourWhatsProviderId' => ['required', 'integer'],
@@ -68,8 +80,53 @@ class StoreTableRow extends Component
         );
     }
 
+    public function updatePassword(): void
+    {
+        $this->authorize(
+            ability: 'updatePassword',
+            arguments: $this->store,
+        );
+
+        $this->validate(
+            rules: [
+                'newPassword' => ['required', Password::default(), 'same:newPasswordConfirmation'],
+            ],
+            attributes: [
+                'newPassword' => __(
+                    key: 'dashboard.pages.stores.columns.new_password',
+                ),
+                'newPasswordConfirmation' => __(
+                    key: 'dashboard.pages.stores.columns.new_password_confirmation',
+                ),
+            ],
+        );
+
+        $this->store->user()->update(
+            values: [
+                'password' => Hash::make(
+                    value: $this->newPassword,
+                ),
+            ],
+        );
+
+        $this->reset([
+            'newPassword',
+            'newPasswordConfirmation',
+        ]);
+
+        $this->successToast(
+            action: 'updated',
+            model: 'stores.singular',
+        );
+    }
+
     public function extendTrial(): void
     {
+        $this->authorize(
+            ability: 'extendTrial',
+            arguments: $this->store,
+        );
+
         try {
             (new FourWhatsService())
                 ->instances(
@@ -105,6 +162,35 @@ class StoreTableRow extends Component
             message: __(
                 key: 'dashboard.pages.stores.index.trail_extended',
             ),
+        );
+    }
+
+    public function toggle(): void
+    {
+        $this->authorize(
+            ability: 'extendTrial',
+            arguments: $this->store,
+        );
+
+        DB::transaction(
+            callback: function (): void {
+                $this->store->update(
+                    attributes: [
+                        'is_uninstalled' => ! $this->store->is_uninstalled,
+                    ],
+                );
+
+                $this->store->user->update(
+                    attributes: [
+                        'is_uninstalled' => ! $this->store->user->is_uninstalled,
+                    ],
+                );
+            },
+        );
+
+        $this->successToast(
+            action: 'updated',
+            model: 'stores.singular',
         );
     }
 
