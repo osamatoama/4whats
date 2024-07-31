@@ -50,7 +50,7 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
                     ),
                     code: 404,
                 ),
-                delay: 60,
+                delay: 10,
             );
 
             return;

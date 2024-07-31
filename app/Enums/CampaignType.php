@@ -16,6 +16,9 @@ enum CampaignType: string
     {
         $name = str(
             string: $batch->name,
+        )->replace(
+            search: '-',
+            replace: '_',
         )->after(
             search: '.',
         )->before(

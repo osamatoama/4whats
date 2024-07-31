@@ -46,7 +46,7 @@ class SallaAppSettingsUpdatedJob implements ShouldQueue
                     ),
                     code: 404,
                 ),
-                fail: true,
+                delay: 10,
             );
 
             return;

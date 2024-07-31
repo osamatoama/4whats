@@ -48,7 +48,7 @@ class SallaAppSubscriptionRenewedJob implements ShouldQueue
                     ),
                     code: 404,
                 ),
-                delay: 60,
+                delay: 10,
             );
 
             return;
