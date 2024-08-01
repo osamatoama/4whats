@@ -81,7 +81,7 @@ class SallaAbandonedCartJob implements ShouldQueue
             return;
         }
 
-        $mobile = $this->data['mobile_code'].$this->data['mobile'];
+        $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
         if (isInBlacklistedMobiles(mobile: $mobile, store: $store)) {
             return;
         }
