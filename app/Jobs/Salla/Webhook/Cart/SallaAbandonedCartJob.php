@@ -81,8 +81,7 @@ class SallaAbandonedCartJob implements ShouldQueue
             return;
         }
 
-        $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
-        if (isInBlacklistedMobiles(mobile: $mobile, store: $store)) {
+        if (isInBlacklistedMobiles(mobile: $contact->mobile, store: $store)) {
             return;
         }
 
@@ -97,7 +96,7 @@ class SallaAbandonedCartJob implements ShouldQueue
             storeId: $store->id,
             instanceId: $whatsappAccount->instance_id,
             instanceToken: $whatsappAccount->instance_token,
-            mobile: $mobile,
+            mobile: $contact->mobile,
             message: $message,
         )->delay(delay: $template->delay_in_seconds);
     }
