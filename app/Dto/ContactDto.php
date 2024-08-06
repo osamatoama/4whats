@@ -35,8 +35,8 @@ final readonly class ContactDto
                 data: $data['updated_at'],
             ),
             source: ContactSource::SALLA,
-            firstName: $data['first_name'],
-            lastName: $data['last_name'],
+            firstName: $data['first_name'] ?? '',
+            lastName: $data['last_name'] ?? '',
             email: $data['email'] ?: null,
             mobile: ensureMobileStartingWithPlus(
                 mobile: $data['mobile_code'].$data['mobile'],
