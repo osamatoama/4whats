@@ -4,7 +4,7 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <input type="text" class="form-control" placeholder="@lang('dashboard.common.search')" wire:model.live.debounce.250ms="keyword">
+                        <input type="text" class="form-control" placeholder="@lang('dashboard.common.search')" autocomplete="off" wire:model.live.debounce.250ms="keyword">
                     </div>
                 </div>
             </div>
