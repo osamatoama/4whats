@@ -8,6 +8,7 @@ use App\Dto\UserDto;
 use App\Dto\WhatsappAccountDto;
 use App\Dto\WidgetDto;
 use App\Enums\Jobs\BatchName;
+use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
 use App\Enums\UserRole;
 use App\Jobs\Concerns\InteractsWithBatches;
@@ -138,6 +139,8 @@ class InstallAppJob implements ShouldQueue
                         ),
                     ],
                 ),
+            )->onQueue(
+                queue: QueueName::SUBSCRIPTIONS->value
             )->dispatch();
         } catch (Exception $e) {
             logger()->error(message: $e);

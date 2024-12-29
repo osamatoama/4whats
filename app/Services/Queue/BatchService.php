@@ -30,6 +30,7 @@ class BatchService
         ?Closure $finallyCallback = null,
         bool $deleteWhenFinished = false,
         bool $allowFailures = true,
+        string $queue = null,
     ): PendingBatch {
         $pendingBatch = Bus::batch(
             jobs: $jobs,
@@ -40,6 +41,12 @@ class BatchService
         )->allowFailures(
             allowFailures: $allowFailures,
         );
+
+        if ($queue !== null) {
+            $pendingBatch->onQueue(
+                queue: $queue,
+            );
+        }
 
         if ($finallyCallback !== null || $deleteWhenFinished) {
             $pendingBatch->finally(

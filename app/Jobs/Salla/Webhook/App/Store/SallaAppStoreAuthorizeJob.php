@@ -4,6 +4,7 @@ namespace App\Jobs\Salla\Webhook\App\Store;
 
 use App\Dto\TokenDto;
 use App\Enums\Jobs\BatchName;
+use App\Enums\Jobs\QueueName;
 use App\Jobs\Salla\Installation\InstallAppJob;
 use App\Models\Store;
 use App\Services\Queue\BatchService;
@@ -67,6 +68,7 @@ class SallaAppStoreAuthorizeJob implements ShouldQueue
             batchName: BatchName::SALLA_INSTALLATION,
             storeId: $this->merchantId,
             deleteWhenFinished: true,
+            queue: QueueName::SUBSCRIPTIONS->value
         )->dispatch();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\App\Subscription;
 
+use App\Enums\Jobs\QueueName;
 use App\Enums\SubscriptionType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\FourWhats\FourWhatsSetInstanceWebhookJob;
@@ -161,6 +162,8 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
         FourWhatsSetInstanceWebhookJob::dispatch(
             instanceId: $response['instance_id'],
             instanceToken: $response['instance_token'],
+        )->onQueue(
+            queue: QueueName::SUBSCRIPTIONS->value
         );
 
         $whatsappAccount->update(

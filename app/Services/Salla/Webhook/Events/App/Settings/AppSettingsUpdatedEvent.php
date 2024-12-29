@@ -2,6 +2,7 @@
 
 namespace App\Services\Salla\Webhook\Events\App\Settings;
 
+use App\Enums\Jobs\QueueName;
 use App\Jobs\Salla\Webhook\App\Settings\SallaAppSettingsUpdatedJob;
 use App\Services\Salla\Webhook\Contracts\SallaWebhookEvent;
 
@@ -13,6 +14,8 @@ class AppSettingsUpdatedEvent implements SallaWebhookEvent
             event: $event,
             merchantId: $merchantId,
             data: $data,
+        )->onQueue(
+            queue: QueueName::SUBSCRIPTIONS->value
         );
     }
 }

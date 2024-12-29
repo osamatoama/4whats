@@ -2,6 +2,7 @@
 
 namespace App\Services\Salla\Webhook\Events\App\Subscription;
 
+use App\Enums\Jobs\QueueName;
 use App\Jobs\Salla\Webhook\App\Subscription\SallaAppSubscriptionCanceledJob;
 use App\Services\Salla\Webhook\Contracts\SallaWebhookEvent;
 
@@ -13,6 +14,8 @@ class AppSubscriptionCanceledEvent implements SallaWebhookEvent
             event: $event,
             merchantId: $merchantId,
             data: $data,
+        )->onQueue(
+            queue: QueueName::SUBSCRIPTIONS->value
         );
     }
 }

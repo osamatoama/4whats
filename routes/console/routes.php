@@ -1,18 +1,30 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command(
-        command: 'queue:work --stop-when-empty',
-    )
+    command: 'queue:work --stop-when-empty',
+)
     ->everyMinute()
     ->withoutOverlapping();
 
 Schedule::command(
-        command: 'queue:restart',
-    )
+    command: 'queue:work --stop-when-empty',
+)
+    ->everyMinute()
+    ->withoutOverlapping();
+
+Schedule::command(
+    command: 'queue:work --queue=subscriptions,default --stop-when-empty --tries=3',
+)
+    ->everyMinute()
+    ->withoutOverlapping();
+
+Schedule::command(
+    command: 'queue:restart',
+)
     ->everyFiveMinutes();
 
 Schedule::command(
