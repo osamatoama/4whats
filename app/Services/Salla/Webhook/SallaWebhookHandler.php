@@ -48,6 +48,10 @@ class SallaWebhookHandler
             'customer.otp.request'      => new CustomerOTPRequestEvent(),
             'abandoned.cart'            => new AbandonedCartEvent(),
             default                     => new UnknownEvent(),
-        })(event: $event, merchantId: $merchantId, data: $data);
+        })(
+            event: $event,
+            merchantId: $merchantId,
+            data: $data
+        );
     }
 }

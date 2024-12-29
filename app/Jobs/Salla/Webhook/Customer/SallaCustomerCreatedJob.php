@@ -3,6 +3,7 @@
 namespace App\Jobs\Salla\Webhook\Customer;
 
 use App\Dto\ContactDto;
+use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
@@ -86,6 +87,7 @@ class SallaCustomerCreatedJob implements ShouldQueue
             instanceToken: $whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
+            queue: QueueName::CUSTOMERS->value,
         )->delay(delay: $template->delay_in_seconds);
     }
 }
