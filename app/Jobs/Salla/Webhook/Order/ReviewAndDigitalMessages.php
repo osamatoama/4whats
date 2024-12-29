@@ -10,7 +10,7 @@ use App\Models\Store;
 
 trait ReviewAndDigitalMessages
 {
-    protected function sendReviewMessage(Store $store, OrderStatus $orderStatus): void
+    protected function sendReviewMessage(Store $store, OrderStatus $orderStatus, string $queue = null): void
     {
         if (($this->data['rating_link'] ?? null) === null) {
             return;
@@ -42,10 +42,11 @@ trait ReviewAndDigitalMessages
             instanceToken: $store->whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
+            queue: $queue
         )->delay(delay: $template->delay_in_seconds);
     }
 
-    protected function sendDigitalMessage(Store $store): void
+    protected function sendDigitalMessage(Store $store, string $queue = null): void
     {
         $template = $store->templates()->key(key: MessageTemplate::SALLA_DIGITAL_PRODUCT)->first();
         if ($template->is_disabled) {
@@ -98,6 +99,7 @@ trait ReviewAndDigitalMessages
             instanceToken: $store->whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
+            queue: $queue,
         )->delay(delay: $template->delay_in_seconds);
     }
 }

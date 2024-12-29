@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\Order;
 
+use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
 use App\Enums\SettingKey;
 use App\Jobs\Concerns\InteractsWithException;
@@ -145,12 +146,21 @@ class SallaOrderCreatedJob implements ShouldQueue
                 instanceToken: $whatsappAccount->instance_token,
                 mobile: $mobile,
                 message: $message,
+            )->onQueue(
+                queue: QueueName::ORDERS->value
             )->delay(delay: $template->delay_in_seconds);
         }
 
-        $this->sendReviewMessage(store: $store, orderStatus: $orderStatus);
+        $this->sendReviewMessage(
+            store: $store,
+            orderStatus: $orderStatus,
+            queue: QueueName::ORDERS->value
+        );
         $this->sendCODMessage(store: $store);
-        $this->sendDigitalMessage(store: $store);
+        $this->sendDigitalMessage(
+            store: $store,
+            queue: QueueName::ORDERS->value
+        );
     }
 
     protected function sendToEmployees(Store $store): void
@@ -181,6 +191,8 @@ class SallaOrderCreatedJob implements ShouldQueue
                 instanceToken: $store->whatsappAccount->instance_token,
                 mobile: trim(string: $mobile),
                 message: $message,
+            )->onQueue(
+                queue: QueueName::ORDERS->value
             )->delay(delay: $template->delay_in_seconds);
         }
     }
@@ -211,6 +223,8 @@ class SallaOrderCreatedJob implements ShouldQueue
             instanceToken: $store->whatsappAccount->instance_token,
             mobile: $mobile,
             message: $message,
+        )->onQueue(
+            queue: QueueName::ORDERS->value
         )->delay(delay: $template->delay_in_seconds);
     }
 }
