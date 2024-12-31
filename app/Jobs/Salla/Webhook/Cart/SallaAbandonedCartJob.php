@@ -4,6 +4,7 @@ namespace App\Jobs\Salla\Webhook\Cart;
 
 use App\Dto\AbandonedCartDto;
 use App\Dto\ContactDto;
+use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
@@ -98,6 +99,7 @@ class SallaAbandonedCartJob implements ShouldQueue
             instanceToken: $whatsappAccount->instance_token,
             mobile: $contact->mobile,
             message: $message,
+            queue: QueueName::ABANDONED_CARTS->value
         )->delay(delay: $template->delay_in_seconds);
     }
 }

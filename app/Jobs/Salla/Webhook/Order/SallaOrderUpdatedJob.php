@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Salla\Webhook\Order;
 
+use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
@@ -142,10 +143,19 @@ class SallaOrderUpdatedJob implements ShouldQueue
                 instanceToken: $whatsappAccount->instance_token,
                 mobile: $mobile,
                 message: $message,
+                queue: QueueName::ORDERS->value
             )->delay(delay: $template->delay_in_seconds);
         }
 
-        $this->sendReviewMessage(store: $store, orderStatus: $orderStatus);
-        $this->sendDigitalMessage(store: $store);
+        $this->sendReviewMessage(
+            store: $store,
+            orderStatus: $orderStatus,
+            queue: QueueName::ORDERS->value
+        );
+
+        $this->sendDigitalMessage(
+            store: $store,
+            queue: QueueName::ORDERS->value
+        );
     }
 }

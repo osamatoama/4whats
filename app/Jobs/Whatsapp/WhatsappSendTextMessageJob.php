@@ -28,8 +28,12 @@ class WhatsappSendTextMessageJob implements ShouldQueue
         public string $instanceToken,
         public string $mobile,
         public string $message,
+        public $queue = null,
     ) {
         $this->maxAttempts = 5;
+        if ($this->queue !== null) {
+            $this->onQueue($this->queue);
+        }
     }
 
     /**

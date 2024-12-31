@@ -27,27 +27,31 @@ class SallaWebhookHandler
 
     public function isNotVerified(string $token): bool
     {
-        return ! $this->isVerified(token: $token);
+        return !$this->isVerified(token: $token);
     }
 
     public function handle(string $event, int $merchantId, array $data): void
     {
         (match ($event) {
-            'app.store.authorize' => new AppStoreAuthorizeEvent(),
-            'app.uninstalled' => new AppUninstalledEvent(),
-            'app.trial.started' => new AppTrialStartedEvent(),
-            'app.trial.canceled' => new AppTrialCanceledEvent(),
-            'app.subscription.started' => new AppSubscriptionStartedEvent(),
+            'app.store.authorize'       => new AppStoreAuthorizeEvent(),
+            'app.uninstalled'           => new AppUninstalledEvent(),
+            'app.trial.started'         => new AppTrialStartedEvent(),
+            'app.trial.canceled'        => new AppTrialCanceledEvent(),
+            'app.subscription.started'  => new AppSubscriptionStartedEvent(),
             'app.subscription.canceled' => new AppSubscriptionCanceledEvent(),
-            'app.subscription.renewed' => new AppSubscriptionRenewedEvent(),
-            'app.settings.updated' => new AppSettingsUpdatedEvent(),
-            'order.created' => new OrderCreatedEvent(),
-            'order.updated' => new OrderUpdatedEvent(),
-            'customer.created' => new CustomerCreatedEvent(),
-            'customer.updated' => new CustomerUpdatedEvent(),
-            'customer.otp.request' => new CustomerOTPRequestEvent(),
-            'abandoned.cart' => new AbandonedCartEvent(),
-            default => new UnknownEvent(),
-        })(event: $event, merchantId: $merchantId, data: $data);
+            'app.subscription.renewed'  => new AppSubscriptionRenewedEvent(),
+            'app.settings.updated'      => new AppSettingsUpdatedEvent(),
+            'order.created'             => new OrderCreatedEvent(),
+            'order.updated'             => new OrderUpdatedEvent(),
+            'customer.created'          => new CustomerCreatedEvent(),
+            'customer.updated'          => new CustomerUpdatedEvent(),
+            'customer.otp.request'      => new CustomerOTPRequestEvent(),
+            'abandoned.cart'            => new AbandonedCartEvent(),
+            default                     => new UnknownEvent(),
+        })(
+            event: $event,
+            merchantId: $merchantId,
+            data: $data
+        );
     }
 }

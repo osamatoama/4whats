@@ -10,14 +10,27 @@ Schedule::command(
     ->everyMinute()
     ->withoutOverlapping();
 
+
 Schedule::command(
-    command: 'queue:work --stop-when-empty',
+    command: 'queue:work --queue=subscriptions,default --stop-when-empty --tries=3',
 )
     ->everyMinute()
     ->withoutOverlapping();
 
 Schedule::command(
-    command: 'queue:work --queue=subscriptions,default --stop-when-empty --tries=3',
+    command: 'queue:work --queue=orders,default --stop-when-empty',
+)
+    ->everyMinute()
+    ->withoutOverlapping();
+
+Schedule::command(
+    command: 'queue:work --queue=customers,default --stop-when-empty',
+)
+    ->everyMinute()
+    ->withoutOverlapping();
+
+Schedule::command(
+    command: 'queue:work --queue=abandoned-carts,default --stop-when-empty',
 )
     ->everyMinute()
     ->withoutOverlapping();
