@@ -96,6 +96,14 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
             }
         } else {
             try {
+
+                logger()->error('Logging Data', [
+                    'credentials'     => $fourWhatsCredentials,
+                    'whatsappAccount' => $whatsappAccount,
+                    'packageId'       => $packageId,
+                    'expiredAt'       => $this->data['end_date'],
+                ]);
+
                 $this->renew(
                     fourWhatsService: $fourWhatsService,
                     fourWhatsCredentials: $fourWhatsCredentials,
