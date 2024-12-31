@@ -195,31 +195,31 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
         int $packageId,
         string $expiredAt,
     ): array {
-        try {
+//        try {
             $response = $fourWhatsService->instances(apiKey: $fourWhatsCredentials->api_key)->renew(
                 email: $fourWhatsCredentials->email,
                 instanceId: $whatsappAccount->instance_id,
                 packageId: $packageId,
             );
-        } catch (FourWhatsException $e) {
-            $exception = new FourWhatsException(
-                message: generateMessageUsingSeparatedLines(
-                    lines: [
-                        'Exception while renewing four whats instance',
-                        "Merchant: {$this->merchantId}",
-                        "Whatsapp Account: {$whatsappAccount->id}",
-                        "Reason: {$e->getMessage()}",
-                    ],
-                ),
-                code: $e->getCode(),
-            );
-
-            $this->handleException(
-                e: $exception,
-            );
-
-            throw $exception;
-        }
+//        } catch (FourWhatsException $e) {
+//            $exception = new FourWhatsException(
+//                message: generateMessageUsingSeparatedLines(
+//                    lines: [
+//                        'Exception while renewing four whats instance',
+//                        "Merchant: {$this->merchantId}",
+//                        "Whatsapp Account: {$whatsappAccount->id}",
+//                        "Reason: {$e->getMessage()}",
+//                    ],
+//                ),
+//                code: $e->getCode(),
+//            );
+//
+//            $this->handleException(
+//                e: $exception,
+//            );
+//
+//            throw $exception;
+//        }
 
         $whatsappAccount->update(
             attributes: [
