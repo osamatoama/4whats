@@ -117,12 +117,12 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
         }
 
         $user->subscriptions()->create(attributes: [
-            'provider_type' => $store->provider_type,
-            'provider_id' => $store->provider_id,
-            'total_amount' => $this->data['total'] * 100,
+            'provider_type'  => $store->provider_type,
+            'provider_id'    => $store->provider_id,
+            'total_amount'   => $this->data['total'] * 100,
             'total_currency' => 'SAR',
-            'started_at' => $this->data['start_date'],
-            'ended_at' => $this->data['end_date'],
+            'started_at'     => $this->data['start_date'],
+            'ended_at'       => $this->data['end_date'],
         ]);
 
         $store->update(
@@ -143,7 +143,9 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
         string $expiredAt,
     ): array {
         try {
-            $response = $fourWhatsService->instances(apiKey: $fourWhatsCredentials->api_key)->create(
+            $response = $fourWhatsService->instances(
+                apiKey: $fourWhatsCredentials->api_key
+            )->create(
                 email: $fourWhatsCredentials->email,
                 packageId: $packageId,
             );
@@ -176,9 +178,9 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
 
         $whatsappAccount->update(
             attributes: [
-                'instance_id' => $response['instance_id'],
+                'instance_id'    => $response['instance_id'],
                 'instance_token' => $response['instance_token'],
-                'expired_at' => $expiredAt,
+                'expired_at'     => $expiredAt,
             ],
         );
 
@@ -195,31 +197,32 @@ class SallaAppSubscriptionStartedJob implements ShouldQueue
         int $packageId,
         string $expiredAt,
     ): array {
-//        try {
-            $response = $fourWhatsService->instances(apiKey: $fourWhatsCredentials->api_key)->renew(
+        try {
+            $response = $fourWhatsService->instances(
+                apiKey: $fourWhatsCredentials->api_key)->renew(
                 email: $fourWhatsCredentials->email,
                 instanceId: $whatsappAccount->instance_id,
                 packageId: $packageId,
             );
-//        } catch (FourWhatsException $e) {
-//            $exception = new FourWhatsException(
-//                message: generateMessageUsingSeparatedLines(
-//                    lines: [
-//                        'Exception while renewing four whats instance',
-//                        "Merchant: {$this->merchantId}",
-//                        "Whatsapp Account: {$whatsappAccount->id}",
-//                        "Reason: {$e->getMessage()}",
-//                    ],
-//                ),
-//                code: $e->getCode(),
-//            );
-//
-//            $this->handleException(
-//                e: $exception,
-//            );
-//
-//            throw $exception;
-//        }
+        } catch (FourWhatsException $e) {
+            $exception = new FourWhatsException(
+                message: generateMessageUsingSeparatedLines(
+                    lines: [
+                        'Exception while renewing four whats instance',
+                        "Merchant: {$this->merchantId}",
+                        "Whatsapp Account: {$whatsappAccount->id}",
+                        "Reason: {$e->getMessage()}",
+                    ],
+                ),
+                code: $e->getCode(),
+            );
+
+            $this->handleException(
+                e: $exception,
+            );
+
+            throw $exception;
+        }
 
         $whatsappAccount->update(
             attributes: [
