@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class SaveIncomingWebhookJob implements ShouldQueue
 {
@@ -28,9 +29,17 @@ class SaveIncomingWebhookJob implements ShouldQueue
      */
     public function handle(): void
     {
-        (new IncomingWebhookService())
-            ->create(
+        try {
+            app(
+                abstract: IncomingWebhookService::class
+            )->create(
                 incomingWebhookDto: $this->incomingWebhookDto,
             );
+        } catch (Throwable $e) {
+            logger()->error('SaveIncomingWebhookJob failed', [
+                'error'       => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+        }
     }
 }
