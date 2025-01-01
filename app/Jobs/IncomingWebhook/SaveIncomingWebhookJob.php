@@ -40,6 +40,8 @@ class SaveIncomingWebhookJob implements ShouldQueue
                 'error'       => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
             ]);
+
+            throw $e;
         }
     }
 }
