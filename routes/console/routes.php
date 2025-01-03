@@ -39,6 +39,15 @@ use Illuminate\Support\Facades\Schedule;
 //)
 //    ->everyFiveMinutes();
 
+Schedule::call(function (): void {
+    \App\Jobs\TestJob::dispatch();
+    \App\Jobs\TestJob::dispatch()->onQueue('subscriptions');
+    \App\Jobs\TestJob::dispatch()->onQueue('orders');
+    \App\Jobs\TestJob::dispatch()->onQueue('customers');
+    \App\Jobs\TestJob::dispatch()->onQueue('abandoned-carts');
+    \App\Jobs\TestJob::dispatch()->onQueue('others');
+})->everyMinute();
+
 Schedule::command(
     command: 'backup:clean',
 )->dailyAt(
