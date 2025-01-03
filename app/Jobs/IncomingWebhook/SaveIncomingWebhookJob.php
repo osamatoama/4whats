@@ -26,6 +26,7 @@ class SaveIncomingWebhookJob implements ShouldQueue
 
     /**
      * Execute the job.
+     * @throws Throwable
      */
     public function handle(): void
     {
