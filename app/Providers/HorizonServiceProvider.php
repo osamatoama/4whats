@@ -20,7 +20,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         // Horizon::routeMailNotificationsTo('example@example.com');
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
 
-        Horizon::auth(function ($request) {
+//        Horizon::auth(function ($request) {
 //            if ($request->ajax()){
 //                return true;
 //            }
@@ -30,8 +30,8 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
 //                throw new UnauthorizedHttpException('Unauthorized');
 //            }
 
-            return true;
-        });
+//            return true;
+//        });
     }
 
     /**
