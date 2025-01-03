@@ -21,14 +21,16 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
 
         Horizon::auth(function ($request) {
-            if ($request->ajax()){
-                return true;
-            }
-            else if (isset($request->checkstatus) && $request->checkstatus == 'ok'){
-                return true;
-            }else{
-                throw new UnauthorizedHttpException('Unauthorized');
-            }
+//            if ($request->ajax()){
+//                return true;
+//            }
+//            else if (isset($request->checkstatus) && $request->checkstatus == 'ok'){
+//                return true;
+//            }else{
+//                throw new UnauthorizedHttpException('Unauthorized');
+//            }
+
+            return true;
         });
     }
 
@@ -40,7 +42,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ($user) {
-            return $user->email == 'admin@example.com';
+            return true;
         });
     }
 }
