@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
@@ -18,6 +19,17 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         // Horizon::routeSmsNotificationsTo('15556667777');
         // Horizon::routeMailNotificationsTo('example@example.com');
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
+
+        Horizon::auth(function ($request) {
+            if ($request->ajax()){
+                return true;
+            }
+            else if (isset($request->checkstatus) && $request->checkstatus == 'ok'){
+                return true;
+            }else{
+                throw new UnauthorizedHttpException('Unauthorized');
+            }
+        });
     }
 
     /**
@@ -28,9 +40,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ($user) {
-            return in_array($user->email, [
-                'admin@example.com'
-            ]);
+            return $user->email == 'admin@example.com';
         });
     }
 }
