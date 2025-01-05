@@ -120,22 +120,28 @@ class SallaOrderUpdatedJob implements ShouldQueue
         $templateKey = MessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
         $template = $store->templates()->key(key: $templateKey)->first();
         if ($template === null) {
-            $this->handleException(
-                e: new Exception(
-                    message: generateMessageUsingSeparatedLines(
-                        lines: [
-                            'Error while handling salla order updated webhook',
-                            "Store: {$store->id}",
-                            "Template: {$templateKey}",
-                            'Reason: Template not found',
-                        ],
-                    ),
-                    code: 404,
+            (new TemplateService())->firstOrCreate(
+                templateDto: TemplateDto::fromOrderStatusMessageTemplate(
+                    storeId: $store->id,
+                    orderStatusId: $orderStatus->id,
                 ),
-                fail: true,
             );
-
-            return;
+//            $this->handleException(
+//                e: new Exception(
+//                    message: generateMessageUsingSeparatedLines(
+//                        lines: [
+//                            'Error while handling salla order updated webhook',
+//                            "Store: {$store->id}",
+//                            "Template: {$templateKey}",
+//                            'Reason: Template not found',
+//                        ],
+//                    ),
+//                    code: 404,
+//                ),
+//                fail: true,
+//            );
+//
+//            return;
         }
 
         $mobile = $this->data['customer']['mobile_code'].$this->data['customer']['mobile'];
