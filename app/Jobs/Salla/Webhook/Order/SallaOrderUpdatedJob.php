@@ -4,6 +4,7 @@ namespace App\Jobs\Salla\Webhook\Order;
 
 use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
+use App\Enums\ProviderType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\Store;
@@ -83,22 +84,28 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
         $orderStatus = $store->orderStatuses()->where(column: 'provider_id', operator: '=', value: $sallaOrderStatusId)->first();
         if ($orderStatus === null) {
-            $this->handleException(
-                e: new Exception(
-                    message: generateMessageUsingSeparatedLines(
-                        lines: [
-                            'Error while handling salla order updated webhook',
-                            "Store: {$store->id}",
-                            "Status: {$sallaOrderStatusId}",
-                            'Reason: Order status not found',
-                        ],
-                    ),
-                    code: 404,
-                ),
-                fail: true,
-            );
+//            $this->handleException(
+//                e: new Exception(
+//                    message: generateMessageUsingSeparatedLines(
+//                        lines: [
+//                            'Error while handling salla order updated webhook',
+//                            "Store: {$store->id}",
+//                            "Status: {$sallaOrderStatusId}",
+//                            'Reason: Order status not found',
+//                        ],
+//                    ),
+//                    code: 404,
+//                ),
+//                fail: true,
+//            );
+//
+//            return;
 
-            return;
+            $orderStatus = $store->orderStatuses()->create([
+                'provider_type' => ProviderType::SALLA->value,
+                'provider_id' => $sallaOrderStatusId,
+                'name' => $this->data['status']['name'],
+            ]);
         }
 
         $templateKey = MessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
