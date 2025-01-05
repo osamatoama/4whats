@@ -2,12 +2,14 @@
 
 namespace App\Jobs\Salla\Webhook\Order;
 
+use App\Dto\TemplateDto;
 use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
 use App\Enums\ProviderType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\Whatsapp\WhatsappSendTextMessageJob;
 use App\Models\Store;
+use App\Services\Template\TemplateService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -106,6 +108,13 @@ class SallaOrderUpdatedJob implements ShouldQueue
                 'provider_id' => $sallaOrderStatusId,
                 'name' => $this->data['status']['name'],
             ]);
+
+            (new TemplateService())->firstOrCreate(
+                templateDto: TemplateDto::fromOrderStatusMessageTemplate(
+                    storeId: $store->id,
+                    orderStatusId: $orderStatus->id,
+                ),
+            );
         }
 
         $templateKey = MessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
