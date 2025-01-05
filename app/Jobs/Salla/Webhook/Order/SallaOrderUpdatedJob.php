@@ -84,7 +84,8 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
         }
 
-        $orderStatus = $store->orderStatuses()->where(column: 'provider_id', operator: '=', value: $sallaOrderStatusId)->first();
+        $orderStatus = $store->orderStatuses()->where(column: 'provider_id', operator: '=',
+            value: $sallaOrderStatusId)->first();
         if ($orderStatus === null) {
 //            $this->handleException(
 //                e: new Exception(
@@ -105,8 +106,8 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
             $orderStatus = $store->orderStatuses()->create([
                 'provider_type' => ProviderType::SALLA->value,
-                'provider_id' => $sallaOrderStatusId,
-                'name' => $this->data['status']['name'],
+                'provider_id'   => $sallaOrderStatusId,
+                'name'          => $this->data['status']['name'],
             ]);
 
             (new TemplateService())->firstOrCreate(
@@ -120,7 +121,7 @@ class SallaOrderUpdatedJob implements ShouldQueue
         $templateKey = MessageTemplate::generateOrderStatusKey(orderStatusId: $orderStatus->id);
         $template = $store->templates()->key(key: $templateKey)->first();
         if ($template === null) {
-            (new TemplateService())->firstOrCreate(
+            $template = (new TemplateService())->firstOrCreate(
                 templateDto: TemplateDto::fromOrderStatusMessageTemplate(
                     storeId: $store->id,
                     orderStatusId: $orderStatus->id,
@@ -151,15 +152,19 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
         if ($template->is_enabled) {
             $message = str(string: $template->message)
-                ->replace(search: '{CUSTOMER_NAME}', replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
+                ->replace(search: '{CUSTOMER_NAME}',
+                    replace: $this->data['customer']['first_name'].' '.$this->data['customer']['last_name'])
                 ->replace(search: '{ORDER_ID}', replace: $this->data['reference_id'])
                 ->replace(search: '{ORDER_URL}', replace: $this->data['urls']['customer'])
                 ->replace(search: '{AMOUNT}', replace: $this->data['amounts']['total']['amount'])
                 ->replace(search: '{STATUS}', replace: $this->data['status']['customized']['name'])
                 ->replace(search: '{CURRENCY}', replace: $this->data['amounts']['total']['currency'])
-                ->replace(search: '{SHIPPING_COMPANY}', replace: data_get(target: $this->data, key: 'shipments.0.courier_name', default: ''))
-                ->replace(search: '{TRACKING_NUMBER}', replace: data_get(target: $this->data, key: 'shipments.0.tracking_number', default: ''))
-                ->replace(search: '{TRACKING_URL}', replace: data_get(target: $this->data, key: 'shipments.0.tracking_link', default: ''))
+                ->replace(search: '{SHIPPING_COMPANY}', replace: data_get(target: $this->data,
+                    key: 'shipments.0.courier_name', default: ''))
+                ->replace(search: '{TRACKING_NUMBER}', replace: data_get(target: $this->data,
+                    key: 'shipments.0.tracking_number', default: ''))
+                ->replace(search: '{TRACKING_URL}', replace: data_get(target: $this->data,
+                    key: 'shipments.0.tracking_link', default: ''))
                 ->toString();
 
             WhatsappSendTextMessageJob::dispatch(
