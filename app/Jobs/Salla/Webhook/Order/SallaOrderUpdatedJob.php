@@ -60,22 +60,25 @@ class SallaOrderUpdatedJob implements ShouldQueue
 
         $sallaOrderStatusId = $this->data['status']['customized']['id'] ?? null;
         if ($sallaOrderStatusId === null) {
-            $this->handleException(
-                e: new Exception(
-                    message: generateMessageUsingSeparatedLines(
-                        lines: [
-                            'Error while handling salla order created webhook',
-                            "Store: {$store->id}",
-                            "Status: {$sallaOrderStatusId}",
-                            'Reason: Salla order status customized id not found',
-                        ],
-                    ),
-                    code: 404,
-                ),
-                fail: true,
-            );
+//            $this->handleException(
+//                e: new Exception(
+//                    message: generateMessageUsingSeparatedLines(
+//                        lines: [
+//                            'Error while handling salla order created webhook',
+//                            "Store: {$store->id}",
+//                            "Status: {$sallaOrderStatusId}",
+//                            'Reason: Salla order status customized id not found',
+//                        ],
+//                    ),
+//                    code: 404,
+//                ),
+//                fail: true,
+//            );
+//
+//            return;
 
-            return;
+            $sallaOrderStatusId = $this->data['status']['id'];
+
         }
 
         $orderStatus = $store->orderStatuses()->where(column: 'provider_id', operator: '=', value: $sallaOrderStatusId)->first();
