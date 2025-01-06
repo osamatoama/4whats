@@ -4,6 +4,7 @@ namespace App\Services\Campaigns;
 
 use App\Enums\CampaignType;
 use App\Enums\Jobs\BatchName;
+use App\Enums\Jobs\QueueName;
 use App\Enums\Whatsapp\MessageType;
 use App\Jobs\Campaigns\AbandonedCarts\SendAbandonedCartsCampaignJob;
 use App\Jobs\Campaigns\Contacts\SendContactsCampaignJob;
@@ -63,6 +64,7 @@ readonly class CampaignsService
             ),
             batchName: $batchName,
             storeId: $this->store->id,
+            queue: QueueName::OTHERS->value
         )->allowFailures()->dispatch();
     }
 

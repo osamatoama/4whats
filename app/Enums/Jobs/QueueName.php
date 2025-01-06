@@ -11,4 +11,6 @@ enum QueueName: string
     case CUSTOMERS = 'customers';
 
     case ABANDONED_CARTS = 'abandoned-carts';
+
+    case OTHERS = 'others';
 }

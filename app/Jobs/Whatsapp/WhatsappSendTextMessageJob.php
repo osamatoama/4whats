@@ -9,6 +9,7 @@ use App\Jobs\Concerns\InteractsWithException;
 use App\Models\Message;
 use App\Services\Whatsapp\FourWhats\FourWhatsException;
 use App\Services\Whatsapp\FourWhats\FourWhatsService;
+use App\Traits\HasMessageRateLimit;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,7 +18,7 @@ use Illuminate\Queue\SerializesModels;
 
 class WhatsappSendTextMessageJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithBatches, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithBatches, InteractsWithException, InteractsWithQueue, Queueable, SerializesModels, HasMessageRateLimit;
 
     /**
      * Create a new job instance.

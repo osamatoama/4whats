@@ -111,4 +111,10 @@ return [
         'table'    => 'failed_jobs',
     ],
 
+
+
+    'job-delay' => [
+        'whatsapp-message-delay' => 1
+    ]
+
 ];
