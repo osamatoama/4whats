@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use Illuminate\Queue\Middleware\RateLimited;
+use Illuminate\Queue\Middleware\RateLimitedWithRedis;
 
 trait HasMessageRateLimit
 {
@@ -22,7 +22,11 @@ trait HasMessageRateLimit
 
     public function middleware(): array
     {
-        return [new RateLimited('campaign-whatsapp-messages')];
+        return [
+            new RateLimitedWithRedis(
+                limiterName: 'campaign-whatsapp-messages',
+            )
+        ];
     }
 
 }
