@@ -54,7 +54,9 @@ class Sending implements SendingContract
 
         logger()->error(
             message: 'Send whatsapp message logger',
-            context: $data,
+            context: [
+                'data' => $response,
+            ],
         );
 
         if (isset($data['success']) && $data['success'] === false) {
