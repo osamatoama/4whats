@@ -11,7 +11,7 @@ trait HasMessageRateLimit
      *
      * @var int
      */
-    public $tries = 5;
+//    public $tries = 5;
 
     /**
      * The number of seconds to wait before retrying the job.
