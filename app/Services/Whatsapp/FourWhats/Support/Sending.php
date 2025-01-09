@@ -36,12 +36,26 @@ class Sending implements SendingContract
                 ],
             );
         } catch (ConnectionException $e) {
+            logger()->error(
+                message: 'Send whatsapp message catch block logger',
+                context: [
+                    'error' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                    'trace' => $e->getTraceAsString(),
+                    'line' => $e->getLine(),
+                ],
+            );
             throw FourWhatsException::connectionException(
                 exception: $e,
             );
         }
 
         $data = $response->json();
+
+        logger()->error(
+            message: 'Send whatsapp message logger',
+            context: $data,
+        );
 
         if (isset($data['success']) && $data['success'] === false) {
             throw new FourWhatsException(
