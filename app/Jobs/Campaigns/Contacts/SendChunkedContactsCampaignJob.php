@@ -51,7 +51,7 @@ class SendChunkedContactsCampaignJob implements ShouldQueue
 
         foreach ($this->contacts as $index =>$contact) {
             if (isInBlacklistedMobiles(mobile: $contact->mobile, store: $this->store)) {
-                return;
+                continue;
             }
 
             $message = $this->message === null ? null : str(
