@@ -114,7 +114,7 @@ return [
 
 
     'job-delay' => [
-        'whatsapp-message-delay' => 1
+        'whatsapp-message-delay' => 10
     ]
 
 ];
