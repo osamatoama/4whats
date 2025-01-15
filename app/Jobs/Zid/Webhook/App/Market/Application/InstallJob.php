@@ -31,7 +31,7 @@ class InstallJob implements ShouldQueue, WebhookJob
         public readonly int $providerId,
         public readonly array $data,
     ) {
-        $this->maxAttempts = 5;
+        $this->maxAttempts = 20;
     }
 
     /**
@@ -41,21 +41,24 @@ class InstallJob implements ShouldQueue, WebhookJob
     {
         $store = Store::query()->zid(providerId: $this->providerId)->first();
         if ($store === null) {
-            $this->handleException(
-                e: new Exception(
-                    message: generateMessageUsingSeparatedLines(
-                        lines: [
-                            "Error while handling zid {$this->event} webhook",
-                            "ProviderID: {$this->providerId}",
-                            'Reason: Store not found',
-                        ],
-                    ),
-                    code: 404,
-                ),
-                fail: true,
+//            $this->handleException(
+//                e: new Exception(
+//                    message: generateMessageUsingSeparatedLines(
+//                        lines: [
+//                            "Error while handling zid {$this->event} webhook",
+//                            "ProviderID: {$this->providerId}",
+//                            'Reason: Store not found',
+//                        ],
+//                    ),
+//                    code: 404,
+//                ),
+//                fail: true,
+//            );
+//
+//            return;
+            $this->release(
+                delay: 100,
             );
-
-            return;
         }
 
         $user = $store->user;
