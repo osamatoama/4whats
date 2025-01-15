@@ -13,7 +13,7 @@ class OAuthService
     public function generatePassword(bool $isTesting = false): string
     {
         if (! app()->isProduction() || $isTesting) {
-            return 'password';
+            return 'testpassword';
         }
 
         return Str::password();

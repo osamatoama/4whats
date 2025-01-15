@@ -56,10 +56,10 @@ class InstallJob implements ShouldQueue, WebhookJob
 //                fail: true,
 //            );
 //
-//            return;
             $this->release(
-                delay: 100,
+                delay: 60 * $this->attempts(),
             );
+            return;
         }
 
         $user = $store->user;
