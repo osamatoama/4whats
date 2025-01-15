@@ -14,7 +14,6 @@ class InstallEvent implements WebhookEvent
             event: $event,
             providerId: $providerId,
             data: $data,
-        )->delay(now()->addMinutes(5))
-        ->onQueue(QueueName::SUBSCRIPTIONS->value);
+        )->onQueue(QueueName::SUBSCRIPTIONS->value);
     }
 }
