@@ -3,6 +3,7 @@
 namespace App\Services\User;
 
 use App\Dto\UserDto;
+use App\Enums\Jobs\QueueName;
 use App\Enums\UserRole;
 use App\Jobs\FourWhats\FourWhatsCreateUserJob;
 use App\Models\User;
@@ -37,7 +38,7 @@ class UserService
                 user: $user,
                 mobile: $userDto->mobile,
                 password: $userDto->password,
-            );
+            )->onQueue(QueueName::SUBSCRIPTIONS->value);
         }
 
         return $user;

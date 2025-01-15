@@ -2,6 +2,7 @@
 
 namespace App\Services\Zid\Webhook\Events\App\Market\Application;
 
+use App\Enums\Jobs\QueueName;
 use App\Jobs\Zid\Webhook\App\Market\Application\InstallJob;
 use App\Services\Zid\Webhook\Contracts\WebhookEvent;
 
@@ -13,6 +14,7 @@ class InstallEvent implements WebhookEvent
             event: $event,
             providerId: $providerId,
             data: $data,
-        );
+        )->delay(now()->addMinutes(5))
+        ->onQueue(QueueName::SUBSCRIPTIONS->value);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard\OAuth\Zid;
 
 use App\Dto\TokenDto;
 use App\Enums\Jobs\BatchName;
+use App\Enums\Jobs\QueueName;
 use App\Http\Controllers\Controller;
 use App\Jobs\Zid\Installation\InstallAppJob;
 use App\Models\Store;
@@ -63,6 +64,7 @@ class ZidCallbackController extends Controller
                     batchName: BatchName::ZID_INSTALLATION,
                     storeId: $resourceOwner->store->id,
                     deleteWhenFinished: true,
+                    queue: QueueName::SUBSCRIPTIONS->value,
                 )->dispatch();
             }
 

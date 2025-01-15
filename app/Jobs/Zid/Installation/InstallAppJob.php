@@ -8,6 +8,7 @@ use App\Dto\UserDto;
 use App\Dto\WhatsappAccountDto;
 use App\Dto\WidgetDto;
 use App\Enums\Jobs\BatchName;
+use App\Enums\Jobs\QueueName;
 use App\Enums\MessageTemplate;
 use App\Enums\UserRole;
 use App\Jobs\Concerns\InteractsWithBatches;
@@ -146,6 +147,7 @@ class InstallAppJob implements ShouldQueue
                 ),
                 batchName: BatchName::ZID_PULL_CUSTOMERS,
                 storeId: $store->id,
+                queue: QueueName::CUSTOMERS->value,
             ),
             BatchService::createPendingBatch(
                 jobs: new PullAbandonedCartsJob(
@@ -155,6 +157,7 @@ class InstallAppJob implements ShouldQueue
                 ),
                 batchName: BatchName::ZID_PULL_ABANDONED_CARTS,
                 storeId: $store->id,
+                queue: QueueName::ABANDONED_CARTS->value,
             ),
             BatchService::createPendingBatch(
                 jobs: new PullOrderStatusesJob(
@@ -167,7 +170,8 @@ class InstallAppJob implements ShouldQueue
                         store: $store,
                         orderStatuesId: $store->orderStatuses()->first()->id,
                     );
-                }
+                },
+                queue: QueueName::ORDERS->value,
             ),
         ];
     }
