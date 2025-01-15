@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Zid\Webhook\App\Market\Application;
 
+use App\Enums\Jobs\QueueName;
 use App\Enums\SubscriptionType;
 use App\Jobs\Concerns\InteractsWithException;
 use App\Jobs\FourWhats\FourWhatsSetInstanceWebhookJob;
@@ -218,7 +219,7 @@ class InstallJob implements ShouldQueue, WebhookJob
         FourWhatsSetInstanceWebhookJob::dispatch(
             instanceId: $response['instance_id'],
             instanceToken: $response['instance_token'],
-        );
+        )->onQueue(QueueName::SUBSCRIPTIONS->value);
 
         $whatsappAccount->update(
             attributes: [
