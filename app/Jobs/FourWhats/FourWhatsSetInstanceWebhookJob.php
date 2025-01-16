@@ -22,7 +22,7 @@ class FourWhatsSetInstanceWebhookJob implements ShouldQueue
         public int $instanceId,
         public string $instanceToken,
     ) {
-        $this->maxAttempts = 5;
+        $this->maxAttempts = 10;
     }
 
     /**
@@ -32,24 +32,43 @@ class FourWhatsSetInstanceWebhookJob implements ShouldQueue
     {
         $service = new FourWhatsService();
         try {
-            $service->webhook(instanceId: $this->instanceId, instanceToken: $this->instanceToken)->set(
+            $service->webhook(
+                instanceId: $this->instanceId,
+                instanceToken: $this->instanceToken
+            )->set(
                 url: route(name: 'api.v1.webhooks.four-whats'),
             );
         } catch (FourWhatsException $e) {
-            $this->handleException(
-                e: new FourWhatsException(
-                    message: generateMessageUsingSeparatedLines(
-                        lines: [
-                            'Exception while setting four whats instance webhook',
-                            "Id: {$this->instanceId}",
-                            "Token: {$this->instanceToken}",
-                            "Reason: {$e->getMessage()}",
-                        ],
-                    ),
-                    code: $e->getCode(),
-                ),
-                fail: true,
+//            $this->handleException(
+//                e: new FourWhatsException(
+//                    message: generateMessageUsingSeparatedLines(
+//                        lines: [
+//                            'Exception while setting four whats instance webhook',
+//                            "Id: {$this->instanceId}",
+//                            "Token: {$this->instanceToken}",
+//                            "Reason: {$e->getMessage()}",
+//                        ],
+//                    ),
+//                    code: $e->getCode(),
+//                ),
+//                fail: true,
+//            );
+
+            logger()->error(
+                message: 'Exception while setting four whats instance webhook',
+                context: [
+                    'id'          => "Id: {$this->instanceId}",
+                    'token'       => "Token: {$this->instanceToken}",
+                    'reason'      => "Reason: {$e->getMessage()}",
+                    'retry_after' => "Retry after: " . 60 * $this->attempts() . " seconds",
+                ]
             );
+
+            $this->release(
+                delay: 60 * $this->attempts(),
+            );
+
+            return;
         }
     }
 }
