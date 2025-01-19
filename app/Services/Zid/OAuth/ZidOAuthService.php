@@ -50,6 +50,14 @@ final readonly class ZidOAuthService
                 ],
             );
         } catch (ConnectionException $e) {
+            logger()->error(
+                message: 'Zid OAuth Token Exception',
+                context: [
+                    'message' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                ],
+            );
+
             throw new ZidOAuthException(
                 message: $e->getMessage(),
                 code: $e->getCode(),
@@ -57,6 +65,11 @@ final readonly class ZidOAuthService
         }
 
         $data = $response->json();
+
+        logger()->error(
+            message: 'Zid OAuth Token Response',
+            context: $data,
+        );
 
         if ($response->failed()) {
             throw new ZidOAuthException(

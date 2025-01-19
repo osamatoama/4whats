@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console/routes.php',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'log.zid.callback' => \App\Http\Middleware\LogZidCallback::class,
+        ]);
+
         $middleware->redirectTo(
             guests: function (Request $request): string {
                 if ($request->routeIs(patterns: 'dashboard.*')) {

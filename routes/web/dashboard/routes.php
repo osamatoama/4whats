@@ -17,7 +17,7 @@ Route::group([], base_path(
     path: 'routes/web/dashboard/auth.php',
 ));
 
-Route::prefix('oauth')->name('oauth.')->middleware(['guest:dashboard'])->group(base_path(
+Route::prefix('oauth')->name('oauth.')->middleware(['guest:dashboard', 'log.zid.callback'])->group(base_path(
     path: 'routes/web/dashboard/oauth.php',
 ));
 
