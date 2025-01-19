@@ -10,6 +10,13 @@ class ZidRedirectController extends Controller
 {
     public function __invoke(ZidOAuthService $service): RedirectResponse
     {
+        logger()->error(
+            message: 'before redirect',
+            context: [
+                'url' => $service->getRedirectUrl(),
+            ],
+        );
+
         return redirect()->away(
             path: $service->getRedirectUrl(),
         );
