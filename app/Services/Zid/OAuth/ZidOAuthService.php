@@ -17,9 +17,9 @@ final readonly class ZidOAuthService
                 'client_id' => config(
                     key: 'services.zid.client_id',
                 ),
-                'redirect_uri' => route(
+                'redirect_uri' => urlencode(route(
                     name: 'dashboard.oauth.zid.callback',
-                ),
+                )),
                 'response_type' => 'code',
             ],
         );
