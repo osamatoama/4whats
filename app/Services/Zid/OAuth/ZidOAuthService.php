@@ -19,7 +19,7 @@ final readonly class ZidOAuthService
                 ),
                 'redirect_uri' => urlencode(route(
                     name: 'dashboard.oauth.zid.callback',
-                )),
+                )).'?',
                 'response_type' => 'code',
             ],
         );
