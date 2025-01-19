@@ -19,6 +19,13 @@ class ZidCallbackController extends Controller
 {
     public function __invoke(Request $request): RedirectResponse
     {
+        logger()->error(
+            message: 'before callback',
+            context: [
+                'request' => $request->all(),
+            ],
+        );
+
         try {
             $zidOAuthService = new ZidOAuthService();
             $zidToken = $zidOAuthService->getToken(
