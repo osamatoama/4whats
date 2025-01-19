@@ -32,6 +32,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return url(path: '/');
             },
         );
+
+        $middleware->append(\App\Http\Middleware\Log404Middleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
