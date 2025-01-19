@@ -27,18 +27,52 @@ class ZidCallbackController extends Controller
                 ),
             );
 
+            logger()->error(
+                message: 'logger 1',
+                context: [
+                    'zidToken' => $zidToken,
+                ],
+            );
+
             $resourceOwner = $zidOAuthService->getResourceOwner(
                 managerToken: $zidToken->managerToken,
                 accessToken: $zidToken->accessToken,
             );
 
+            logger()->error(
+                message: 'logger 2',
+                context: [
+                    'resourceOwner' => $resourceOwner,
+                ],
+            );
+
             $store = Store::query()->zid(providerId: $resourceOwner->store->id)->first();
+
+            logger()->error(
+                message: 'logger 3',
+                context: [
+                    'store' => $$store,
+                ],
+            );
+
+
             if ($store !== null) {
+                logger()->error(
+                    message: 'before syncToken',
+                
+                );
                 (new TokenService())->syncToken(
                     user: $store->user,
                     tokenDto: TokenDto::fromZid(
                         zidToken: $zidToken,
                     ),
+                );
+
+                logger()->error(
+                    message: 'after syncToken',
+                    context: [
+                        'storeUser' => $store->user,
+                    ],
                 );
 
                 auth()->guard(
@@ -52,10 +86,24 @@ class ZidCallbackController extends Controller
                 );
             }
 
+            logger()->error(
+                message: 'before batch',
+                context: [
+                    'batch' => BatchService::doesntHaveRunningBatches(
+                        batchName: BatchName::ZID_INSTALLATION,
+                        storeId: $resourceOwner->store->id,
+                    ),
+                ],
+            );
+
             if (BatchService::doesntHaveRunningBatches(
                 batchName: BatchName::ZID_INSTALLATION,
                 storeId: $resourceOwner->store->id,
             )) {
+                logger()->error(
+                    message: 'before install app batch',
+                );
+
                 BatchService::createPendingBatch(
                     jobs: new InstallAppJob(
                         zidUser: $resourceOwner,
