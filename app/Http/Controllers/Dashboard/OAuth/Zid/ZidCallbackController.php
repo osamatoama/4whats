@@ -58,7 +58,7 @@ class ZidCallbackController extends Controller
             logger()->error(
                 message: 'logger 3',
                 context: [
-                    'store' => $$store,
+                    'store' => $store,
                 ],
             );
 
